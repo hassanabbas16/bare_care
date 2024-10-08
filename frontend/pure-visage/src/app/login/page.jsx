@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../frontend/pure-visage/src/app/login';
 
 export default function AuthPage() {
     const [email, setEmail] = useState('');
