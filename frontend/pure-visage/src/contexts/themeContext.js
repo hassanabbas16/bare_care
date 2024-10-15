@@ -24,38 +24,24 @@ const lightTheme = createTheme({
     typography: {
         fontFamily: "Poppins, sans-serif",
     },
-    components: {
-        MuiButton: {
-            styleOverrides: {
-                root: {
-                    lineHeight: "1.5",
-                    borderRadius: "8px",
-                    textTransform: "none",
-                    backgroundColor: "#60FF69", // Light Aqua
-                    color: "#00F0B9", // Dark Green for text
-                    boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.2)",
-                },
-            },
-        },
-    },
 });
 
 const darkTheme = createTheme({
     palette: {
         mode: "dark",
         primary: {
-            main: "#4B8070", // Dark Green
-            dark: "#9DD2AF", // Mint Green
-            contrastText: "#D6F0D9", // Mint Peach
-            text1: "#F3A09D", // Soft Peach for text
+            main: "#4B8070",
+            dark: "#9DD2AF",
+            contrastText: "#D6F0D9",
+            text1: "#F3A09D",
         },
         secondary: {
-            main: "#BC9FA9", // Dark Pink
-            light: "#F3A09D", // Soft Peach
+            main: "#BC9FA9",
+            light: "#F3A09D",
         },
         background: {
-            default: "#2B2C34", // Dark gray background
-            paper: "#1F1F23", // Darker background for cards/papers
+            default: "#2B2C34",
+            paper: "#1F1F23",
         },
     },
     typography: {

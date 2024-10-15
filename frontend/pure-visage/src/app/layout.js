@@ -1,5 +1,5 @@
 "use client";
-import { ThemeProvider } from "../contexts/themecontext";
+import { ThemeProvider } from "../contexts/themeContext";
 import "./globals.css";
 
 export default function RootLayout({ children }) {

@@ -3,7 +3,7 @@
   font-family: "Poppins";
   src: url("../public/fonts/Poppins-Regular.ttf") format("woff2"),
   url("../public/fonts/Poppins-Regular.ttf") format("woff");
-  font-weight: normal;
+  font-weight: 300;
   font-style: normal;
 }
 

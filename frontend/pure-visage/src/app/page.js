@@ -1,7 +1,8 @@
 "use client";
-import { useTheme } from "../contexts/themecontext";
+import { useTheme } from "../contexts/themeContext";
 import Typography from "@mui/material/Typography";
 import Footer from "../components/footer/Footer";
+import Navbar from "../components/navbar/Navbar";
 
 export default function Home() {
     const { toggleTheme, theme } = useTheme();
@@ -11,13 +12,13 @@ export default function Home() {
             style={{
                 backgroundColor: theme.palette.background.default,
                 color: theme.palette.primary.contrastText,
-                minHeight: "100vh",  // Ensure full height of the viewport
+                minHeight: "100vh",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between",  // Space between content and footer
+                justifyContent: "space-between",
             }}
         >
-            {/* Main content */}
+            <Navbar />
             <div
                 style={{
                     display: "flex",
@@ -42,7 +43,6 @@ export default function Home() {
                 </button>
             </div>
 
-            {/* Footer Component */}
             <Footer />
         </div>
     );
