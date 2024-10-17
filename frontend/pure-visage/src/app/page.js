@@ -3,6 +3,7 @@ import { useTheme } from "../contexts/themeContext";
 import Typography from "@mui/material/Typography";
 import Footer from "../components/footer/Footer";
 import Navbar from "../components/navbar/Navbar";
+import HeroSection from "../components/Home/Hero/HeroSection";
 
 export default function Home() {
     const { toggleTheme, theme } = useTheme();
@@ -19,6 +20,7 @@ export default function Home() {
             }}
         >
             <Navbar />
+            <HeroSection />
             <div
                 style={{
                     display: "flex",
