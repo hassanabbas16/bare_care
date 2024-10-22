@@ -23,7 +23,7 @@ export default function AuthCallback() {
             localStorage.setItem('expiresIn', expiresIn);
 
             // Redirect the user to the dashboard
-            router.push('/dashboard');
+            router.push('/');
         } else {
             console.error('Error: Tokens not found in the URL');
         }
