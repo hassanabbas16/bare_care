@@ -122,7 +122,7 @@ const HeroSection = () => {
                                 lg: "4rem",
                             },
                             textAlign: "left",
-                            color: "black",
+                            color: theme.palette.mode === 'dark' ? '#FFF' : '#000',
                         }}
                     >
                         Pakistan's 1st Authentic Products Site.
@@ -140,7 +140,7 @@ const HeroSection = () => {
                                     md: "2rem",
                                     lg: "3rem",
                                 },
-                                color: "black",
+                                color: theme.palette.mode === 'dark' ? '#C1C1C1' : '#525252',
                                 marginBottom: "3rem",
                             }}
                         >
