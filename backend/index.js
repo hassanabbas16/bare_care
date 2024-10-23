@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 
+// Import product routes
+const productRoutes = require('./routes/productRoutes');
+
 // Initialize app and load environment variables
 dotenv.config();
 const app = express();
@@ -12,6 +15,9 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Use the product route
+app.use('/api/products', productRoutes);
 
 // JWT Verification Middleware
 const verifyToken = (req, res, next) => {
