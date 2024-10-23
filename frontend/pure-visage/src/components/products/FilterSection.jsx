@@ -6,17 +6,14 @@ import {
     Checkbox,
     TextField,
     FormGroup,
-    IconButton,
     Slider,
 } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 const FilterSection = ({
                            minPrice,
                            maxPrice,
-                           selectedBrands,
-                           selectedSkinTypes,
+                           selectedBrands = [],   // Ensure it's initialized
+                           selectedSkinTypes = [], // Ensure it's initialized
                            authenticityFilter,
                            ratingFilter,
                            handleMinPriceChange,
@@ -101,6 +98,7 @@ const FilterSection = ({
                 ))}
             </FormGroup>
 
+            {/* Rating Filter */}
             <Typography variant="subtitle1" color="black">
                 Rating
             </Typography>
@@ -115,6 +113,7 @@ const FilterSection = ({
                 sx={{ marginBottom: '1rem' }}
             />
 
+            {/* Authenticity Filter */}
             <FormControlLabel
                 control={
                     <Checkbox

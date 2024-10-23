@@ -1,16 +1,17 @@
-// components/CategoryBanner.jsx
 "use client";
-import { useRouter } from "next/router";
 import { Box, Typography } from "@mui/material";
+import { useSearchParams } from "next/navigation";
 import productsImage from "../../public/products/products.png";
 import cleanserImage from "../../public/products/cleanser.png";
 import moisturizerImage from "../../public/products/moisturizer.png";
 import serumImage from "../../public/products/serum.png";
 import sunscreenImage from "../../public/products/sunscreen.png";
 import masksImage from "../../public/products/masks.png";
+import faceCareImage from "../../public/products/facecare.png";
 
 const CategoryBanner = () => {
-    const category = "Serum";
+    const searchParams = useSearchParams();
+    const category = searchParams.get("category") || "Products";
 
     const categoryImages = {
         Products: productsImage,
@@ -18,7 +19,8 @@ const CategoryBanner = () => {
         Moisturizer: moisturizerImage,
         Serum: serumImage,
         Sunscreen: sunscreenImage,
-        Masks: masksImage,
+        "Face Mask": masksImage,
+        "Face Care": faceCareImage,
     };
 
     const backgroundImage = categoryImages[category] || productsImage;
@@ -49,7 +51,13 @@ const CategoryBanner = () => {
                 }}
             >
                 <Typography
-                    sx={{ color: "#fff", fontWeight: "bold", textTransform: "capitalize", fontSize: "4rem", top: "3rem" }}
+                    sx={{
+                        color: "#fff",
+                        fontWeight: "bold",
+                        textTransform: "capitalize",
+                        fontSize: "4rem",
+                        top: "3rem"
+                    }}
                 >
                     {category}
                 </Typography>

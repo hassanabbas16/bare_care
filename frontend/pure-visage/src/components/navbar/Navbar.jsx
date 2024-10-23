@@ -24,26 +24,12 @@ import Link from "next/link";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 
 const productsData = [
-    {
-        title: "Cleansers",
-        link: "/",
-    },
-    {
-        title: "Face Serums",
-        link: "/",
-    },
-    {
-        title: "Sunscreens",
-        link: "/",
-    },
-    {
-        title: "Moisturizers",
-        link: "/",
-    },
-    {
-        title: "Face Masks",
-        link: "/",
-    },
+    { title: "Cleansers", link: "/products?category=Cleanser" },
+    { title: "Face Serums", link: "/products?category=Serum" },
+    { title: "Sunscreens", link: "/products?category=Sunscreen" },
+    { title: "Moisturizers", link: "/products?category=Moisturizer" },
+    { title: "Face Masks", link: "/products?category=Face%20Mask" },
+    { title: "Face Care", link: "/products?category=Face%20Care" },
 ];
 
 // Styled components
@@ -91,7 +77,6 @@ export const DropdownBox = styled(Box)(({ theme }) => ({
     backgroundColor: "rgba(0, 0, 0, 1)",
     padding: theme.spacing(4),
     borderRadius: "8px",
-    backdropFilter: "blur(4px)",
     width: "15rem",
     display: "flex",
     flexDirection: "column",
@@ -99,12 +84,20 @@ export const DropdownBox = styled(Box)(({ theme }) => ({
     marginTop: theme.spacing(1),
 }));
 
+import { useRouter } from "next/navigation";
+
 const NavbarLarge = () => {
     const { toggleTheme, theme } = useTheme();
     const [isProductsOpen, setIsProductsOpen] = useState(false);
+    const router = useRouter();
 
     const handleProductsToggle = () => {
         setIsProductsOpen(!isProductsOpen);
+    };
+
+    const handleCategoryClick = (link) => {
+        router.push(link);
+        setIsProductsOpen(false);
     };
 
     return (
@@ -172,10 +165,7 @@ const NavbarLarge = () => {
                                 {productsData.map((product, index) => (
                                     <DropDownLink
                                         key={index}
-                                        onClick={() => {
-                                            window.location.href = product.link;
-                                            setIsProductsOpen(false);
-                                        }}
+                                        onClick={() => handleCategoryClick(product.link)}
                                     >
                                         {product.title}
                                     </DropDownLink>
