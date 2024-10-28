@@ -1,168 +1,229 @@
-"use client";  // This ensures the component is client-side
-
-import { useState } from 'react';
+"use client";
+import React, { useState } from 'react';
+import { Box, Button, TextField, Typography, Paper, Alert, IconButton, InputAdornment, MenuItem } from '@mui/material';
+import Grid from "@mui/material/Grid2";
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { supabase } from '../../lib/supabaseClient';
-import { Box, Button, TextField, Typography, Alert } from '@mui/material';
 
-// Bright Mode Theme Colors
-const brightMode = {
-    background: "rgba(255, 193, 188, 0.3)",  // Light peach with glassmorphism
-    text: "#FC1CCC",  // Bart pink
-    button: "#F5BFB9",  // Soft peach
-    input: "rgba(255, 255, 255, 0.2)",  // Slightly transparent input field
-    borderColor: "#C5C5C5",  // Light border color
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",  // Glass morph shadow
-    backdropFilter: "blur(10px)",  // Glassmorphism effect
-};
+// Import images from the public folder
+import BrightImage from '../../public/login/Bright.png';
+import DarkImage from '../../public/login/Dark.png';
 
-// Dark Mode Theme Colors
-const darkMode = {
-    background: "rgba(48, 48, 48, 0.3)",  // Dark background with glassmorphism
-    text: "#F3BDBD",  // Soft peach for text
-    button: "#608F69",  // Mint green
-    input: "rgba(48, 48, 48, 0.2)",  // Dark transparent input field
-    borderColor: "#666666",  // Darker border color
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.5)",  // Glass morph shadow
-    backdropFilter: "blur(10px)",  // Glassmorphism effect
-};
+const AuthPage = () => {
+    const [isSignup, setIsSignup] = useState(false);
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        age: '',
+        gender: '',
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const [feedback, setFeedback] = useState({ type: '', message: '' });
 
-export default function AuthPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState(null);
-    const [isLogin, setIsLogin] = useState(true);  // Toggle between login and signup
-    const [message, setMessage] = useState('');     // Store success message
-    const [isDarkMode, setIsDarkMode] = useState(false);  // Track dark/bright mode
+    const toggleForm = () => setIsSignup((prev) => !prev);
 
-    // Function to switch between themes
-    const handleThemeToggle = () => {
-        setIsDarkMode(!isDarkMode);
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // Choose the theme based on the mode
-    const theme = isDarkMode ? darkMode : brightMode;
+    const handlePasswordToggle = () => {
+        setShowPassword((prev) => !prev);
+    };
 
-    const handleAuth = async () => {
-        try {
-            if (isLogin) {
-                // Handle login
-                const { error } = await supabase.auth.signInWithPassword({ email, password });
-                if (error) throw error;
-                setMessage('Login successful!');  // Set success message
-            } else {
-                // Handle signup
-                const { error } = await supabase.auth.signUp({ email, password });
-                if (error) throw error;
-                setMessage('Signup successful! Please check your email.');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setFeedback({ type: '', message: '' }); // Reset feedback before submission
+
+        if (isSignup) {
+            // Signup logic
+            const { data, error } = await supabase.auth.signUp({
+                email: formData.email,
+                password: formData.password,
+                options: {
+                    data: {
+                        first_name: formData.firstName,
+                        last_name: formData.lastName,
+                        display_name: `${formData.firstName} ${formData.lastName}`, // Set display name in auth.users
+                    },
+                },
+            });
+
+            if (error) {
+                setFeedback({ type: 'error', message: error.message });
+                return;
             }
-        } catch (error) {
-            setError(error.message);
+
+            // Insert into profiles table
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert([
+                    {
+                        id: data.user.id,
+                        first_name: formData.firstName,
+                        last_name: formData.lastName,
+                        age: formData.age,
+                        gender: formData.gender,
+                    },
+                ]);
+
+            if (profileError) {
+                setFeedback({ type: 'error', message: profileError.message });
+                return;
+            }
+
+            setFeedback({ type: 'success', message: 'Signup successful! Please log in.' });
+            setIsSignup(false); // Redirect to login form instead of homepage
+        } else {
+            // Login logic
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: formData.email,
+                password: formData.password,
+            });
+
+            if (error) {
+                setFeedback({ type: 'error', message: error.message });
+                return;
+            }
+
+            // Save JWT token and user ID for future use
+            const { session } = data;
+            if (session) {
+                localStorage.setItem('token', session.access_token);
+                localStorage.setItem('user_id', session.user.id);
+            }
+
+            setFeedback({ type: 'success', message: 'Login successful! Redirecting...' });
+            setTimeout(() => {
+                window.location.href = '/dashboard';
+            }, 1500); // Redirect after a short delay
         }
     };
 
     return (
-        <Box
-            sx={{
-                maxWidth: '400px',
-                margin: 'auto',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 2,
-                padding: 4,
-                boxShadow: theme.boxShadow,  // Glass morph shadow effect
-                borderRadius: 2,
-                bgcolor: theme.background,  // Apply background from theme
-                color: theme.text,  // Apply text color from theme
-                borderColor: theme.borderColor,
-                backdropFilter: theme.backdropFilter,  // Glass morph effect
-                transition: 'background-color 0.3s ease, color 0.3s ease',  // Smooth theme transition
-            }}
-        >
-            <Button onClick={handleThemeToggle} variant="outlined" sx={{ marginBottom: 2, color: theme.text }}>
-                {isDarkMode ? "Switch to Bright Mode" : "Switch to Dark Mode"}
-            </Button>
+        <Grid container sx={{ height: '100vh' }}>
+            <Grid item xs={12} md={6}>
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    height="100%"
+                    sx={{
+                        backgroundImage: `url(${isSignup ? DarkImage.src : BrightImage.src})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }}
+                />
+            </Grid>
+            <Grid item xs={12} md={6}>
+                <Paper elevation={6} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ width: '80%', maxWidth: 400 }}>
+                        <Typography variant="h5" component="h1" gutterBottom>
+                            {isSignup ? 'Sign Up' : 'Login'}
+                        </Typography>
 
-            <Typography variant="h4" component="h1" textAlign="center" sx={{ color: theme.text }}>
-                {isLogin ? 'Login' : 'Sign Up'}
-            </Typography>
+                        {feedback.message && (
+                            <Alert severity={feedback.type} sx={{ mb: 2 }}>
+                                {feedback.message}
+                            </Alert>
+                        )}
 
-            <TextField
-                label="Email"
-                variant="outlined"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                fullWidth
-                sx={{
-                    input: { color: theme.text },
-                    bgcolor: theme.input,  // Input background
-                    borderColor: theme.borderColor,
-                    '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                            borderColor: theme.borderColor,
-                        },
-                        '&:hover fieldset': {
-                            borderColor: theme.text,
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: theme.text,
-                        },
-                    },
-                }}
-            />
+                        {isSignup && (
+                            <>
+                                <TextField
+                                    label="First Name"
+                                    name="firstName"
+                                    value={formData.firstName}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                />
+                                <TextField
+                                    label="Last Name"
+                                    name="lastName"
+                                    value={formData.lastName}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                />
+                                <TextField
+                                    label="Age"
+                                    name="age"
+                                    type="number"
+                                    value={formData.age}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                />
+                                <TextField
+                                    select
+                                    label="Gender"
+                                    name="gender"
+                                    value={formData.gender}
+                                    onChange={handleChange}
+                                    fullWidth
+                                    margin="normal"
+                                    required
+                                >
+                                    <MenuItem value="male">Male</MenuItem>
+                                    <MenuItem value="female">Female</MenuItem>
+                                    <MenuItem value="other">Other</MenuItem>
+                                </TextField>
+                            </>
+                        )}
 
-            <TextField
-                label="Password"
-                variant="outlined"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                fullWidth
-                sx={{
-                    input: { color: theme.text },
-                    bgcolor: theme.input,  // Input background
-                    borderColor: theme.borderColor,
-                    '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                            borderColor: theme.borderColor,
-                        },
-                        '&:hover fieldset': {
-                            borderColor: theme.text,
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: theme.text,
-                        },
-                    },
-                }}
-            />
-
-            {error && (
-                <Alert severity="error" sx={{ color: theme.text }}>
-                    {error}
-                </Alert>
-            )}
-
-            {message && (
-                <Alert severity="success" sx={{ color: theme.text }}>
-                    {message}
-                </Alert>
-            )}
-
-            <Button
-                variant="contained"
-                onClick={handleAuth}
-                fullWidth
-                sx={{ bgcolor: theme.button, color: theme.text }}
-            >
-                {isLogin ? 'Login' : 'Sign Up'}
-            </Button>
-
-            <Typography variant="body2" textAlign="center" sx={{ color: theme.text }}>
-                {isLogin ? "Don’t have an account?" : "Already have an account?"}
-                <Button onClick={() => setIsLogin(!isLogin)} variant="text" sx={{ color: theme.text }}>
-                    {isLogin ? "Sign Up" : "Login"}
-                </Button>
-            </Typography>
-        </Box>
+                        <TextField
+                            label="Email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            label="Password"
+                            name="password"
+                            type={showPassword ? 'text' : 'password'}
+                            value={formData.password}
+                            onChange={handleChange}
+                            fullWidth
+                            margin="normal"
+                            required
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={handlePasswordToggle}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                        <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+                            {isSignup ? 'Sign Up' : 'Login'}
+                        </Button>
+                        <Button
+                            onClick={toggleForm}
+                            variant="text"
+                            fullWidth
+                            sx={{ mt: 1 }}
+                        >
+                            {isSignup ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
+                        </Button>
+                    </Box>
+                </Paper>
+            </Grid>
+        </Grid>
     );
-}
+};
+
+export default AuthPage;

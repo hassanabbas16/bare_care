@@ -43,11 +43,6 @@ app.get('/', (req, res) => {
     res.send('Backend server is running!');
 });
 
-// Protected Route Example
-app.get('/api/protected', verifyToken, (req, res) => {
-    res.json({ message: 'This is a protected route!', userId: req.userId });
-});
-
 // Other routes
 // app.use('/api/users', userRoutes);
 // app.use('/api/products', productRoutes);
