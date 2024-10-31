@@ -1,9 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Container, Typography, Button, TextField, Card, CardContent, Box } from '@mui/material';
-import { useRouter } from 'next/router'; // Import Next.js router
-const { id } = useRouter().query; // Fetch the dynamic blog post ID
-
 
 // Blog Post Page
 export default function BlogPostPage({ params }) {
@@ -26,7 +23,7 @@ export default function BlogPostPage({ params }) {
                 console.error('Error fetching blog data:', error);
             }
         }
-        fetchBlogData();
+        if (id) fetchBlogData();
     }, [id]);
 
     // Function to handle like

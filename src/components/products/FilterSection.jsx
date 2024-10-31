@@ -9,21 +9,7 @@ import {
     Slider,
 } from "@mui/material";
 
-const FilterSection = ({
-                           minPrice,
-                           maxPrice,
-                           selectedBrands = [],   // Ensure it's initialized
-                           selectedSkinTypes = [], // Ensure it's initialized
-                           authenticityFilter,
-                           ratingFilter,
-                           handleMinPriceChange,
-                           handleMaxPriceChange,
-                           handleBrandChange,
-                           handleSkinTypeChange,
-                           handleAuthenticityChange,
-                           handleRatingChange,
-                           brands,
-                       }) => (
+const FilterSection = ({ minPrice, maxPrice, selectedBrands = [], selectedSkinTypes = [], authenticityFilter, ratingFilter, handleMinPriceChange, handleMaxPriceChange, handleBrandChange, handleSkinTypeChange, handleAuthenticityChange, handleRatingChange, brands }) => (
     <Box sx={{ width: "25%", backgroundColor: "#f9f9f9", padding: "3rem", borderRadius: "10px" }}>
         <Typography variant="h6" color="black">
             Filter by:

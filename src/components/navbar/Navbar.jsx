@@ -14,7 +14,7 @@ import {
     NavbarInnerContainer,
     NavbarRightContainer,
     NavLinksContainer,
-} from "../mui/navbarPkgs";
+} from "../mui/NavbarPkgs";
 import MoonIcon from "../../public/navbar/Moon.svg";
 import UserIcon from "../../public/navbar/User.svg";
 import EllipsisIcon from "../../public/navbar/Ellipsis.svg";

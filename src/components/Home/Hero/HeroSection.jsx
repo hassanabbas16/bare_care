@@ -125,7 +125,7 @@ const HeroSection = () => {
                             color: theme.palette.mode === 'dark' ? '#FFF' : '#000',
                         }}
                     >
-                        Pakistan's 1st Authentic Products Site.
+                        Pakistan&apos;s 1st Authentic Products Site.
                     </Typography>
 
                     <Box ref={typographyRef}>

@@ -1,15 +1,15 @@
 "use client";
+import dynamic from 'next/dynamic';
 import React, { useState, useEffect } from "react";
 import { Box, TextField } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useSearchParams } from "next/navigation";
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/footer/Footer";
 import ProductCard from "../../components/products/ProductCard";
 import FilterSection from "../../components/products/FilterSection";
 import ProductModal from "../../components/products/ProductModal";
 import CategoryBanner from "../../components/products/CategoryBanner";
 
+// Main ProductsPage component
 const ProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -18,6 +18,7 @@ const ProductsPage = () => {
     const [brands, setBrands] = useState([]);
     const searchParams = useSearchParams();
 
+    // Fetch products from API
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -35,12 +36,14 @@ const ProductsPage = () => {
         fetchProducts();
     }, []);
 
+    // Filter products based on search and category
     useEffect(() => {
         const categoryFromQuery = searchParams.get("category") || "Products";
         setCategory(categoryFromQuery);
         filterProducts(categoryFromQuery);
     }, [search, searchParams, products]);
 
+    // Filter products helper function
     const filterProducts = (categoryFromQuery) => {
         let filtered = products.filter((product) => {
             return (
@@ -52,14 +55,12 @@ const ProductsPage = () => {
         setFilteredProducts(filtered);
     };
 
-
     return (
         <Box>
-            <Navbar />
             <CategoryBanner category={category} />
             <Box sx={{ padding: "2rem", backgroundColor: "white" }}>
                 <Box sx={{ display: "flex", gap: "2rem" }}>
-                    <FilterSection brands={brands} /> {/* Add FilterSection if necessary */}
+                    <FilterSection brands={brands} />
 
                     <Box sx={{ width: "75%", display: "flex", flexDirection: "column" }}>
                         <Box sx={{ mb: 2, maxWidth: "400px", marginLeft: "2rem" }}>
@@ -83,10 +84,8 @@ const ProductsPage = () => {
                     </Box>
                 </Box>
             </Box>
-
-            <Footer />
         </Box>
     );
 };
 
-export default ProductsPage;
+export default dynamic(() => Promise.resolve(ProductsPage), { ssr: false });
