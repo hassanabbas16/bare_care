@@ -1,23 +1,27 @@
+// pages/products/page.jsx
 "use client";
 import dynamic from 'next/dynamic';
 import React, { useState, useEffect } from "react";
-import { Box, TextField } from "@mui/material";
+import { Box, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../../components/products/ProductCard";
 import FilterSection from "../../components/products/FilterSection";
-import ProductModal from "../../components/products/ProductModal";
 import CategoryBanner from "../../components/products/CategoryBanner";
+import ProductModal from "../../components/products/ProductModal";
 
 const ProductsPage = () => {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [openProductModal, setOpenProductModal] = useState(false);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("Products");
     const [brands, setBrands] = useState([]);
-    const searchParams = useSearchParams();
 
-    // New state variables for filters
+    // State variables for filters
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
     const [selectedBrands, setSelectedBrands] = useState([]);
@@ -56,7 +60,6 @@ const ProductsPage = () => {
                 const response = await fetch('/api/products');
                 const data = await response.json();
                 setProducts(data);
-                setFilteredProducts(data);
 
                 const uniqueBrands = [...new Set(data.map((product) => product.brand))];
                 setBrands(uniqueBrands);
@@ -83,6 +86,18 @@ const ProductsPage = () => {
         authenticityFilter,
         ratingFilter,
     ]);
+
+    // Open modal if 'product' query parameter exists
+    useEffect(() => {
+        const productIdFromQuery = searchParams.get("product");
+        if (productIdFromQuery && products.length > 0) {
+            const product = products.find(p => p.id === parseInt(productIdFromQuery));
+            if (product) {
+                setSelectedProduct(product);
+                setOpenProductModal(true);
+            }
+        }
+    }, [searchParams, products]);
 
     // Filter products helper function
     const filterProducts = (categoryFromQuery) => {
@@ -137,8 +152,6 @@ const ProductsPage = () => {
         setFilteredProducts(filtered);
     };
 
-
-
     return (
         <Box>
             <CategoryBanner category={category} />
@@ -172,16 +185,41 @@ const ProductsPage = () => {
                             />
                         </Box>
 
-                        <Grid container spacing={2} sx={{ padding: "0 2rem", justifyContent: "flex-start" }}>
-                            {filteredProducts.map((product) => (
-                                <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                                    <ProductCard product={product} />
-                                </Grid>
-                            ))}
-                        </Grid>
+                        {filteredProducts.length > 0 ? (
+                            <Grid container spacing={2} sx={{ padding: "0 2rem", justifyContent: "flex-start" }}>
+                                {filteredProducts.map((product) => (
+                                    <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+                                        <ProductCard product={product} />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        ) : (
+                            <Typography variant="h6" color="textSecondary" sx={{ marginLeft: "2rem" }}>
+                                No products match your filters.
+                            </Typography>
+                        )}
                     </Box>
                 </Box>
             </Box>
+
+            {selectedProduct && (
+                <ProductModal
+                    open={openProductModal}
+                    onClose={() => {
+                        setOpenProductModal(false);
+                        setSelectedProduct(null);
+
+                        const params = new URLSearchParams(window.location.search);
+                        params.delete('product');
+
+                        const newQueryString = params.toString();
+                        const newUrl = newQueryString ? `/products?${newQueryString}` : '/products';
+
+                        router.push(newUrl, { shallow: true });
+                    }}
+                    product={selectedProduct}
+                />
+            )}
         </Box>
     );
 };

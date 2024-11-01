@@ -1,14 +1,18 @@
+// pages/login/page.jsx
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Box, Button, TextField, Typography, Alert, IconButton, InputAdornment, MenuItem, Card, useTheme } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useRouter } from 'next/navigation';
 
 import BrightImage from '../../../public/login/Bright.png';
 import DarkImage from '../../../public/login/Dark.png';
 
 const AuthPage = () => {
     const theme = useTheme();
+    const router = useRouter();
+    const [redirectUrl, setRedirectUrl] = useState('/dashboard'); // Default redirect
     const [isSignup, setIsSignup] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
@@ -20,6 +24,14 @@ const AuthPage = () => {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [feedback, setFeedback] = useState({ type: '', message: '' });
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        if (redirect) {
+            setRedirectUrl(redirect);
+        }
+    }, []);
 
     const toggleForm = () => setIsSignup((prev) => !prev);
 
@@ -70,8 +82,8 @@ const AuthPage = () => {
             } else {
                 setFeedback({ type: 'success', message: 'Login successful! Redirecting...' });
                 setTimeout(() => {
-                    window.location.href = '/dashboard';
-                }, 3000);
+                    router.push(redirectUrl);
+                }, 2000);
             }
         } catch (error) {
             setFeedback({ type: 'error', message: 'An error occurred, please try again.' });

@@ -1,3 +1,6 @@
+// components/products/ProductCard.jsx
+"use client";
+
 import React, { useState } from "react";
 import {
     Card,
@@ -8,10 +11,6 @@ import {
     IconButton,
     Button,
     Chip,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -19,10 +18,11 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, hideReviewsButton = false }) => {
     const [wishlist, setWishlist] = useState(false);
-    const [openReviewModal, setOpenReviewModal] = useState(false); // State for review modal
+    const router = useRouter();
 
     const handleWishlistToggle = () => {
         setWishlist(!wishlist);
@@ -30,25 +30,40 @@ const ProductCard = ({ product }) => {
 
     const handleBuyNowClick = () => {
         if (product.product_link) {
-            window.open(product.product_link, '_blank');
+            window.open(product.product_link, "_blank");
         } else {
-            console.error('No product link available');
+            console.error("No product link available");
         }
     };
 
     const handleOpenReviewModal = () => {
-        setOpenReviewModal(true); // Open modal
+        // Preserve existing query parameters and add 'product'
+        const params = new URLSearchParams(window.location.search);
+        params.set('product', product.id);
+
+        const newQueryString = params.toString();
+        const newUrl = newQueryString ? `/products?${newQueryString}` : '/products';
+
+        router.push(newUrl, { shallow: true });
     };
 
-    const handleCloseReviewModal = () => {
-        setOpenReviewModal(false); // Close modal
-    };
+    const salePrice = product.sale_price
+        ? parseFloat(product.sale_price.replace(/[^0-9.-]+/g, ""))
+        : null;
+    const regularPrice = product.regular_price
+        ? parseFloat(product.regular_price.replace(/[^0-9.-]+/g, ""))
+        : null;
 
-    const salePrice = product.sale_price ? parseFloat(product.sale_price) : null;
-    const regularPrice = product.regular_price ? parseFloat(product.regular_price) : null;
-
-    const displayPrice = salePrice !== null ? salePrice.toFixed(2) : 'No price available';
-    const displayRegularPrice = regularPrice !== null && regularPrice !== salePrice ? regularPrice.toFixed(2) : null;
+    const displayPrice =
+        salePrice !== null && !isNaN(salePrice)
+            ? salePrice.toFixed(2)
+            : "No price available";
+    const displayRegularPrice =
+        regularPrice !== null &&
+        !isNaN(regularPrice) &&
+        regularPrice !== salePrice
+            ? regularPrice.toFixed(2)
+            : null;
 
     const productImageUrl = product.image_url.startsWith("//")
         ? `https:${product.image_url}`
@@ -58,9 +73,12 @@ const ProductCard = ({ product }) => {
     const renderStarRating = (rating) => {
         const maxStars = 5;
         return (
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: "flex" }}>
                 {[...Array(maxStars)].map((_, index) => (
-                    <IconButton key={index} sx={{ padding: 0, color: index < rating ? '#FFD700' : '#e0e0e0' }}>
+                    <IconButton
+                        key={index}
+                        sx={{ padding: 0, color: index < rating ? "#FFD700" : "#e0e0e0" }}
+                    >
                         {index < rating ? <StarIcon /> : <StarBorderIcon />}
                     </IconButton>
                 ))}
@@ -121,7 +139,7 @@ const ProductCard = ({ product }) => {
                     <CardMedia component="div" sx={{ height: 200, position: "relative" }}>
                         <Image
                             src={productImageUrl}
-                            alt={product.product_name || 'Product Image'}
+                            alt={product.product_name || "Product Image"}
                             layout="fill"
                             objectFit="contain"
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -153,7 +171,7 @@ const ProductCard = ({ product }) => {
                                 width: "70%",
                             }}
                         >
-                            {product.product_name || 'No product name available'}
+                            {product.product_name || "No product name available"}
                         </Typography>
 
                         <Typography
@@ -161,7 +179,7 @@ const ProductCard = ({ product }) => {
                             color="black"
                             sx={{ width: "30%", textAlign: "right", whiteSpace: "nowrap" }}
                         >
-                            {product.brand || 'No brand'}
+                            {product.brand || "No brand"}
                         </Typography>
                     </Box>
 
@@ -219,27 +237,19 @@ const ProductCard = ({ product }) => {
                         >
                             Buy Now
                         </Button>
-                        <Button
-                            variant="outlined"
-                            color="primary"
-                            sx={{ padding: "0.7rem 2.6rem", fontWeight: "bold", width: "100%" }}
-                            onClick={handleOpenReviewModal} // Open modal on click
-                        >
-                            Reviews
-                        </Button>
+                        {!hideReviewsButton && (
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                sx={{ padding: "0.7rem 2.6rem", fontWeight: "bold", width: "100%" }}
+                                onClick={handleOpenReviewModal}
+                            >
+                                Reviews
+                            </Button>
+                        )}
                     </Box>
                 </CardContent>
             </Card>
-
-            <Dialog open={openReviewModal} onClose={handleCloseReviewModal}>
-                <DialogTitle>Reviews</DialogTitle>
-                <DialogContent>
-                    Reviews are coming soon! {/* Placeholder message */}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseReviewModal}>Close</Button>
-                </DialogActions>
-            </Dialog>
         </>
     );
 };
