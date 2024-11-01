@@ -29,14 +29,12 @@ const ProductModal = ({ open, onClose, product }) => {
             fetchReviews();
             checkSession();
 
-            // Check localStorage for pending review
             const pendingReview = localStorage.getItem("pendingReview");
             if (pendingReview) {
                 const { productId, comment, rating } = JSON.parse(pendingReview);
                 if (productId === product.id) {
                     setNewComment(comment);
                     setNewRating(rating);
-                    // Remove the pending review from localStorage
                     localStorage.removeItem("pendingReview");
                 }
             }
@@ -69,7 +67,6 @@ const ProductModal = ({ open, onClose, product }) => {
 
     const handleSubmitReview = async () => {
         if (!session) {
-            // Save comment and rating to localStorage
             localStorage.setItem(
                 "pendingReview",
                 JSON.stringify({
@@ -79,7 +76,6 @@ const ProductModal = ({ open, onClose, product }) => {
                 })
             );
 
-            // Preserve existing query parameters and add 'product'
             const params = new URLSearchParams(window.location.search);
             params.set("product", product.id);
 
@@ -101,7 +97,7 @@ const ProductModal = ({ open, onClose, product }) => {
             if (res.ok) {
                 setNewComment("");
                 setNewRating(0);
-                fetchReviews(); // Refresh reviews
+                fetchReviews();
             } else {
                 const errorData = await res.json();
                 console.error("Error submitting review:", errorData.error);
@@ -119,7 +115,7 @@ const ProductModal = ({ open, onClose, product }) => {
                 body: JSON.stringify({ review_id }),
             });
             if (res.ok) {
-                fetchReviews(); // Refresh reviews
+                fetchReviews();
             } else {
                 const errorData = await res.json();
                 console.error("Error liking review:", errorData.error);
@@ -181,8 +177,7 @@ const ProductModal = ({ open, onClose, product }) => {
                             Reviews for {product.product_name}
                         </Typography>
 
-                        {/* Review Form */}
-                        <Box mb={4}>
+                        <Box mb={2}>
                             <Typography variant="h6" color="black" mb={1}>
                                 Write a Review
                             </Typography>
@@ -210,64 +205,73 @@ const ProductModal = ({ open, onClose, product }) => {
                             </Button>
                         </Box>
 
-                        {/* Reviews List */}
-                        {reviews.length > 0 ? (
-                            reviews.map((review) => (
-                                <Box
-                                    key={review.id}
-                                    mb={2}
-                                    borderBottom="1px solid #ccc"
-                                    pb={2}
-                                >
-                                    <Box display="flex" alignItems="center" mb={1}>
-                                        <Avatar sx={{ bgcolor: "#1976d2", mr: 2 }}>
-                                            <PersonIcon />
-                                        </Avatar>
-                                        <Box>
-                                            <Typography
-                                                variant="h6"
-                                                fontWeight="bold"
-                                                color="black"
+                        {/* Scrollable Reviews List */}
+                        <Box
+                            sx={{
+                                maxHeight: "300px",
+                                overflowY: "auto",
+                                borderTop: "1px solid #ccc",
+                                paddingTop: "1rem",
+                            }}
+                        >
+                            {reviews.length > 0 ? (
+                                reviews.map((review) => (
+                                    <Box
+                                        key={review.id}
+                                        mb={2}
+                                        borderBottom="1px solid #ccc"
+                                        pb={2}
+                                    >
+                                        <Box display="flex" alignItems="center" mb={1}>
+                                            <Avatar sx={{ bgcolor: "#1976d2", mr: 2 }}>
+                                                <PersonIcon />
+                                            </Avatar>
+                                            <Box>
+                                                <Typography
+                                                    variant="h6"
+                                                    fontWeight="bold"
+                                                    color="black"
+                                                >
+                                                    {review.profiles
+                                                        ? `${review.profiles.first_name} ${review.profiles.last_name}`
+                                                        : "Anonymous"}
+                                                </Typography>
+                                                <Rating
+                                                    value={review.rating}
+                                                    readOnly
+                                                    precision={0.5}
+                                                />
+                                            </Box>
+                                        </Box>
+                                        <Typography variant="body2" color="black">
+                                            {review.comment}
+                                        </Typography>
+                                        <Typography
+                                            variant="caption"
+                                            sx={{ color: "gray", display: "block", mt: 1 }}
+                                        >
+                                            {new Date(review.created_at).toLocaleDateString()}
+                                        </Typography>
+                                        <Box display="flex" alignItems="center" mt={1}>
+                                            <IconButton
+                                                size="small"
+                                                sx={{ color: "#1976d2" }}
+                                                onClick={() => handleLike(review.id)}
                                             >
-                                                {review.profiles
-                                                    ? `${review.profiles.first_name} ${review.profiles.last_name}`
-                                                    : "Anonymous"}
+                                                <ThumbUpIcon fontSize="small" />
+                                            </IconButton>
+                                            <Typography variant="caption" sx={{ color: "black", fontSize: "1rem" }}>
+                                                {review.likes || 0} Likes
                                             </Typography>
-                                            <Rating
-                                                value={review.rating}
-                                                readOnly
-                                                precision={0.5}
-                                            />
                                         </Box>
                                     </Box>
-                                    <Typography variant="body2" color="black">
-                                        {review.comment}
-                                    </Typography>
-                                    <Typography
-                                        variant="caption"
-                                        sx={{ color: "gray", display: "block", mt: 1 }}
-                                    >
-                                        {new Date(review.created_at).toLocaleDateString()}
-                                    </Typography>
-                                    <Box display="flex" alignItems="center" mt={1}>
-                                        <IconButton
-                                            size="small"
-                                            sx={{ color: "#1976d2" }}
-                                            onClick={() => handleLike(review.id)}
-                                        >
-                                            <ThumbUpIcon fontSize="small" />
-                                        </IconButton>
-                                        <Typography variant="caption" sx={{ color: "black", fontSize: "1rem" }}>
-                                            {review.likes || 0} Likes
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                            ))
-                        ) : (
-                            <Typography variant="body2" color="black">
-                                No reviews yet.
-                            </Typography>
-                        )}
+                                ))
+                            ) : (
+                                <Typography variant="body2" color="black">
+                                    No reviews yet.
+                                </Typography>
+                            )}
+                        </Box>
                     </Box>
                 </Box>
             </Box>
