@@ -87,19 +87,40 @@ const ProductsPage = () => {
     // Filter products helper function
     const filterProducts = (categoryFromQuery) => {
         let filtered = products.filter((product) => {
-            const matchesSearch = product.product_name.toLowerCase().includes(search.toLowerCase());
+            // Ensure properties are defined before accessing them
+            const productName = product.product_name || '';
+            const productCategory = product.category || '';
+            const productBrand = product.brand || '';
+            const productRating = product.rating !== undefined ? product.rating : 0;
+            const productAuthenticity = product.authenticity !== undefined ? product.authenticity : true; // Assuming authentic by default
+
+            // Convert price strings to numbers
+            const regularPrice = parseFloat(product.regular_price.replace(/[^0-9.-]+/g, '')) || 0;
+            const salePrice = parseFloat(product.sale_price.replace(/[^0-9.-]+/g, '')) || 0;
+            const productPrice = salePrice > 0 ? salePrice : regularPrice; // Use sale price if available, otherwise regular price
+
+            const matchesSearch = productName.toLowerCase().includes(search.toLowerCase());
             const matchesCategory =
-                categoryFromQuery === "Products" ||
-                product.category.toLowerCase() === categoryFromQuery.toLowerCase();
+                categoryFromQuery === 'Products' ||
+                productCategory.toLowerCase() === categoryFromQuery.toLowerCase();
             const matchesBrand =
-                selectedBrands.length === 0 || selectedBrands.includes(product.brand);
+                selectedBrands.length === 0 || selectedBrands.includes(productBrand);
+
+            // Adjusted skin type matching logic
             const matchesSkinType =
                 selectedSkinTypes.length === 0 ||
-                selectedSkinTypes.some((type) => product.skin_type.includes(type));
-            const matchesAuthenticity = !authenticityFilter || product.isAuthentic;
-            const matchesRating = product.rating >= ratingFilter[0] && product.rating <= ratingFilter[1];
-            const matchesMinPrice = minPrice === '' || product.price >= parseFloat(minPrice);
-            const matchesMaxPrice = maxPrice === '' || product.price <= parseFloat(maxPrice);
+                selectedSkinTypes.some((type) =>
+                    productName.toLowerCase().includes(type.toLowerCase())
+                );
+
+            const matchesAuthenticity =
+                !authenticityFilter || productAuthenticity === true;
+            const matchesRating =
+                productRating >= ratingFilter[0] && productRating <= ratingFilter[1];
+            const matchesMinPrice =
+                minPrice === '' || productPrice >= parseFloat(minPrice);
+            const matchesMaxPrice =
+                maxPrice === '' || productPrice <= parseFloat(maxPrice);
 
             return (
                 matchesSearch &&
@@ -115,6 +136,8 @@ const ProductsPage = () => {
 
         setFilteredProducts(filtered);
     };
+
+
 
     return (
         <Box>
