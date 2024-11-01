@@ -1,59 +1,72 @@
-import React, { useState } from 'react';
-import { Box, Typography, Card, CardContent, CardMedia, IconButton, Grid } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-
-const initialWishlist = [
-    {
-        id: 1,
-        name: 'Gentle Facial Cleanser',
-        image: '/images/cleanser.jpg',
-    },
-    {
-        id: 2,
-        name: 'Daily Moisturizing Cream',
-        image: '/images/moisturizer.jpg',
-    },
-    {
-        id: 3,
-        name: 'Brightening Eye Cream',
-        image: '/images/eye-cream.jpg',
-    },
-];
+import React, { useState, useEffect } from 'react';
+import { Box, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { useRouter } from 'next/navigation';
+import ProductCard from '../products/ProductCard';
 
 const Wishlist = () => {
-    const [wishlist, setWishlist] = useState(initialWishlist);
+    const [wishlist, setWishlist] = useState([]);
+    const router = useRouter();
 
-    const handleRemove = (id) => {
-        setWishlist(wishlist.filter(item => item.id !== id));
+    useEffect(() => {
+        const fetchWishlist = async () => {
+            try {
+                const res = await fetch('/api/wishlist');
+                if (res.status === 401) {
+                    router.push(`/login?redirect=${encodeURIComponent('/wishlist')}`);
+                    return;
+                }
+                const data = await res.json();
+                const products = data.wishlistItems.map((item) => item.products);
+                setWishlist(products);
+            } catch (error) {
+                console.error('Error fetching wishlist:', error);
+            }
+        };
+        fetchWishlist();
+    }, []);
+
+    const handleRemove = async (productId) => {
+        try {
+            const res = await fetch('/api/wishlist/remove', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ product_id: productId }),
+            });
+            if (res.ok) {
+                setWishlist(wishlist.filter((item) => item.id !== productId));
+            } else {
+                const errorData = await res.json();
+                console.error('Error removing from wishlist:', errorData.error);
+            }
+        } catch (error) {
+            console.error('Error removing from wishlist:', error);
+        }
     };
 
     return (
         <Box sx={{ mt: 2 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#38b593' }}>Your Wishlist</Typography>
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-                {wishlist.map((item) => (
-                    <Grid item xs={12} sm={6} md={4} key={item.id}>
-                        <Card>
-                            <CardMedia
-                                component="img"
-                                height="140"
-                                image={item.image}
-                                alt={item.name}
+            <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#38b593' }}>
+                Your Wishlist
+            </Typography>
+            {wishlist.length > 0 ? (
+                <Grid container spacing={2} sx={{ mt: 1 }}>
+                    {wishlist.map((product) => (
+                        <Grid item xs={12} sm={6} md={4} key={product.id}>
+                            <ProductCard
+                                product={product}
+                                hideReviewsButton={false}
+                                showRemoveButton={true}
+                                onRemove={() => handleRemove(product.id)}
                             />
-                            <CardContent>
-                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{item.name}</Typography>
-                                <IconButton
-                                    color="error"
-                                    onClick={() => handleRemove(item.id)}
-                                    sx={{ mt: 1 }}
-                                >
-                                    <DeleteIcon />
-                                </IconButton>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : (
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                    Your wishlist is empty.
+                </Typography>
+            )}
         </Box>
     );
 };
