@@ -15,9 +15,9 @@ import {
     NavbarRightContainer,
     NavLinksContainer,
 } from "../mui/NavbarPkgs";
-import MoonIcon from "../../public/navbar/Moon.svg";
-import UserIcon from "../../public/navbar/User.svg";
-import EllipsisIcon from "../../public/navbar/Ellipsis.svg";
+import MoonIcon from "../../../public/navbar/Moon.svg";
+import UserIcon from "../../../public/navbar/User.svg";
+import EllipsisIcon from "../../../public/navbar/Ellipsis.svg";
 import { useTheme } from "../../contexts/themeContext";
 import SunIcon from "@mui/icons-material/WbSunny";
 import Link from "next/link";

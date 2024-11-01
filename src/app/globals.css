@@ -1,16 +1,16 @@
 
 @font-face {
   font-family: "Poppins";
-  src: url("../public/fonts/Poppins-Regular.ttf") format("woff2"),
-  url("../public/fonts/Poppins-Regular.ttf") format("woff");
+  src: url("../../public/fonts/Poppins-Regular.ttf") format("woff2"),
+  url("../../public/fonts/Poppins-Regular.ttf") format("woff");
   font-weight: 300;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Poppins";
-  src: url("../public/fonts/Poppins-Bold.ttf") format("woff2"),
-  url("../public/fonts/Poppins-Bold.ttf") format("woff");
+  src: url("../../public/fonts/Poppins-Bold.ttf") format("woff2"),
+  url("../../public/fonts/Poppins-Bold.ttf") format("woff");
   font-weight: normal;
   font-style: normal;
 }

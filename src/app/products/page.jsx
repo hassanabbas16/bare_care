@@ -9,7 +9,6 @@ import FilterSection from "../../components/products/FilterSection";
 import ProductModal from "../../components/products/ProductModal";
 import CategoryBanner from "../../components/products/CategoryBanner";
 
-// Main ProductsPage component
 const ProductsPage = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -17,6 +16,38 @@ const ProductsPage = () => {
     const [category, setCategory] = useState("Products");
     const [brands, setBrands] = useState([]);
     const searchParams = useSearchParams();
+
+    // New state variables for filters
+    const [minPrice, setMinPrice] = useState('');
+    const [maxPrice, setMaxPrice] = useState('');
+    const [selectedBrands, setSelectedBrands] = useState([]);
+    const [selectedSkinTypes, setSelectedSkinTypes] = useState([]);
+    const [authenticityFilter, setAuthenticityFilter] = useState(false);
+    const [ratingFilter, setRatingFilter] = useState([1, 5]); // Assuming a range
+
+    // Handler functions
+    const handleMinPriceChange = (e) => setMinPrice(e.target.value);
+    const handleMaxPriceChange = (e) => setMaxPrice(e.target.value);
+
+    const handleBrandChange = (brand) => {
+        setSelectedBrands((prev) =>
+            prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+        );
+    };
+
+    const handleSkinTypeChange = (skinType) => {
+        setSelectedSkinTypes((prev) =>
+            prev.includes(skinType) ? prev.filter((s) => s !== skinType) : [...prev, skinType]
+        );
+    };
+
+    const handleAuthenticityChange = () => {
+        setAuthenticityFilter((prev) => !prev);
+    };
+
+    const handleRatingChange = (event, newValue) => {
+        setRatingFilter(newValue);
+    };
 
     // Fetch products from API
     useEffect(() => {
@@ -41,14 +72,44 @@ const ProductsPage = () => {
         const categoryFromQuery = searchParams.get("category") || "Products";
         setCategory(categoryFromQuery);
         filterProducts(categoryFromQuery);
-    }, [search, searchParams, products]);
+    }, [
+        search,
+        searchParams,
+        products,
+        minPrice,
+        maxPrice,
+        selectedBrands,
+        selectedSkinTypes,
+        authenticityFilter,
+        ratingFilter,
+    ]);
 
     // Filter products helper function
     const filterProducts = (categoryFromQuery) => {
         let filtered = products.filter((product) => {
+            const matchesSearch = product.product_name.toLowerCase().includes(search.toLowerCase());
+            const matchesCategory =
+                categoryFromQuery === "Products" ||
+                product.category.toLowerCase() === categoryFromQuery.toLowerCase();
+            const matchesBrand =
+                selectedBrands.length === 0 || selectedBrands.includes(product.brand);
+            const matchesSkinType =
+                selectedSkinTypes.length === 0 ||
+                selectedSkinTypes.some((type) => product.skin_type.includes(type));
+            const matchesAuthenticity = !authenticityFilter || product.isAuthentic;
+            const matchesRating = product.rating >= ratingFilter[0] && product.rating <= ratingFilter[1];
+            const matchesMinPrice = minPrice === '' || product.price >= parseFloat(minPrice);
+            const matchesMaxPrice = maxPrice === '' || product.price <= parseFloat(maxPrice);
+
             return (
-                product.product_name.toLowerCase().includes(search.toLowerCase()) &&
-                (categoryFromQuery === "Products" || product.category.toLowerCase() === categoryFromQuery.toLowerCase())
+                matchesSearch &&
+                matchesCategory &&
+                matchesBrand &&
+                matchesSkinType &&
+                matchesAuthenticity &&
+                matchesRating &&
+                matchesMinPrice &&
+                matchesMaxPrice
             );
         });
 
@@ -60,7 +121,21 @@ const ProductsPage = () => {
             <CategoryBanner category={category} />
             <Box sx={{ padding: "2rem", backgroundColor: "white" }}>
                 <Box sx={{ display: "flex", gap: "2rem" }}>
-                    <FilterSection brands={brands} />
+                    <FilterSection
+                        minPrice={minPrice}
+                        maxPrice={maxPrice}
+                        selectedBrands={selectedBrands}
+                        selectedSkinTypes={selectedSkinTypes}
+                        authenticityFilter={authenticityFilter}
+                        ratingFilter={ratingFilter}
+                        handleMinPriceChange={handleMinPriceChange}
+                        handleMaxPriceChange={handleMaxPriceChange}
+                        handleBrandChange={handleBrandChange}
+                        handleSkinTypeChange={handleSkinTypeChange}
+                        handleAuthenticityChange={handleAuthenticityChange}
+                        handleRatingChange={handleRatingChange}
+                        brands={brands}
+                    />
 
                     <Box sx={{ width: "75%", display: "flex", flexDirection: "column" }}>
                         <Box sx={{ mb: 2, maxWidth: "400px", marginLeft: "2rem" }}>

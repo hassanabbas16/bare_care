@@ -1,13 +1,13 @@
 "use client";
 import { Box, Typography } from "@mui/material";
 import { useSearchParams } from "next/navigation";
-import productsImage from "../../public/products/products.png";
-import cleanserImage from "../../public/products/cleanser.png";
-import moisturizerImage from "../../public/products/moisturizer.png";
-import serumImage from "../../public/products/serum.png";
-import sunscreenImage from "../../public/products/sunscreen.png";
-import masksImage from "../../public/products/masks.png";
-import faceCareImage from "../../public/products/facecare.png";
+import productsImage from "../../../public/products/products.png";
+import cleanserImage from "../../../public/products/cleanser.png";
+import moisturizerImage from "../../../public/products/moisturizer.png";
+import serumImage from "../../../public/products/serum.png";
+import sunscreenImage from "../../../public/products/sunscreen.png";
+import masksImage from "../../../public/products/masks.png";
+import faceCareImage from "../../../public/products/facecare.png";
 
 const CategoryBanner = () => {
     const searchParams = useSearchParams();

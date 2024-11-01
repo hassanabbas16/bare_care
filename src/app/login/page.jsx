@@ -4,8 +4,8 @@ import Image from 'next/image';
 import { Box, Button, TextField, Typography, Alert, IconButton, InputAdornment, MenuItem, Card, useTheme } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
-import BrightImage from '../../public/login/Bright.png';
-import DarkImage from '../../public/login/Dark.png';
+import BrightImage from '../../../public/login/Bright.png';
+import DarkImage from '../../../public/login/Dark.png';
 
 const AuthPage = () => {
     const theme = useTheme();

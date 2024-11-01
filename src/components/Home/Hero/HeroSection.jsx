@@ -4,8 +4,8 @@ import { Typography, Button, Box, styled, Card } from "@mui/material";
 import { gsap } from "gsap";
 import { useTheme } from "../../../contexts/themeContext";
 import Image from "next/image";
-import herobg from "../../../public/Home/herobg2.png";
-import dottedcircle from "../../../public/Home/dottedcircle.png";
+import herobg from "../../../../public/Home/herobg2.png";
+import dottedcircle from "../../../../public/Home/dottedcircle.png";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import HomeSocialsBox from "./HomeSocials";
 
