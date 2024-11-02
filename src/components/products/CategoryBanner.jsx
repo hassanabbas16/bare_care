@@ -1,3 +1,4 @@
+// components/products/CategoryBanner.jsx
 "use client";
 import { Box, Typography } from "@mui/material";
 import { useSearchParams } from "next/navigation";
@@ -9,10 +10,14 @@ import sunscreenImage from "../../../public/products/sunscreen.png";
 import masksImage from "../../../public/products/masks.png";
 import faceCareImage from "../../../public/products/facecare.png";
 
-const CategoryBanner = () => {
-    const searchParams = useSearchParams();
-    const category = searchParams.get("category") || "Products";
+// Import brand images
+import theOrdinaryImage from "../../../public/products/facecare.png";
+import ceraveImage from "../../../public/products/masks.png";
+import neutrogenaImage from "../../../public/products/sunscreen.png";
+import garnierImage from "../../../public/products/serum.png";
+import glamGlowImage from "../../../public/products/moisturizer.png";
 
+const CategoryBanner = ({ category, brand }) => {
     const categoryImages = {
         Products: productsImage,
         Cleanser: cleanserImage,
@@ -23,7 +28,21 @@ const CategoryBanner = () => {
         "Face Care": faceCareImage,
     };
 
-    const backgroundImage = categoryImages[category] || productsImage;
+    const brandImages = {
+        "The Ordinary": theOrdinaryImage,
+        CeraVe: ceraveImage,
+        Neutrogena: neutrogenaImage,
+        Garnier: garnierImage,
+        GlamGlow: glamGlowImage,
+    };
+
+    // Determine the background image
+    const backgroundImage = brand
+        ? brandImages[brand] || productsImage
+        : categoryImages[category] || productsImage;
+
+    // Determine the display text
+    const displayText = brand || category;
 
     return (
         <Box
@@ -56,10 +75,9 @@ const CategoryBanner = () => {
                         fontWeight: "bold",
                         textTransform: "capitalize",
                         fontSize: "4rem",
-                        top: "3rem"
                     }}
                 >
-                    {category}
+                    {displayText}
                 </Typography>
             </Box>
         </Box>

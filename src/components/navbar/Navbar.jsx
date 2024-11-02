@@ -32,6 +32,14 @@ const productsData = [
     { title: "Face Care", link: "/products?category=Face%20Care" },
 ];
 
+const brandsData = [
+    { title: "The Ordinary", link: "/products?brand=The%20Ordinary" },
+    { title: "CeraVe", link: "/products?brand=CeraVe" },
+    { title: "Neutrogena", link: "/products?brand=Neutrogena" },
+    { title: "Garnier", link: "/products?brand=Garnier" },
+    { title: "GlamGlow", link: "/products?brand=GlamGlow" },
+];
+
 // Styled components
 export const NavLinkDropDownContainer = styled(Box)(({ theme }) => ({
     position: "relative",
@@ -89,12 +97,13 @@ import { useRouter } from "next/navigation";
 const NavbarLarge = () => {
     const { toggleTheme, theme } = useTheme();
     const [isProductsOpen, setIsProductsOpen] = useState(false);
+    const [isBrandsOpen, setIsBrandsOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
         const checkSession = async () => {
-            const response = await fetch('/api/auth/session');
+            const response = await fetch("/api/auth/session");
             const result = await response.json();
             setIsLoggedIn(result.loggedIn);
         };
@@ -104,21 +113,33 @@ const NavbarLarge = () => {
 
     const handleProductsToggle = () => {
         setIsProductsOpen(!isProductsOpen);
+        setIsBrandsOpen(false); // Close brands dropdown if open
+    };
+
+    const handleBrandsToggle = () => {
+        setIsBrandsOpen(!isBrandsOpen);
+        setIsProductsOpen(false); // Close products dropdown if open
     };
 
     const handleCategoryClick = (link) => {
         router.push(link);
         setIsProductsOpen(false);
+        setIsBrandsOpen(false);
+    };
+
+    const handleBrandClick = (link) => {
+        router.push(link);
+        setIsProductsOpen(false);
+        setIsBrandsOpen(false);
     };
 
     const handleUserClick = () => {
         if (isLoggedIn) {
-            router.push('/dashboard');
+            router.push("/dashboard");
         } else {
-            router.push('/login');
+            router.push("/login");
         }
     };
-
     return (
         <NavbarContainer>
             <NavbarInnerContainer>
@@ -187,6 +208,28 @@ const NavbarLarge = () => {
                                         onClick={() => handleCategoryClick(product.link)}
                                     >
                                         {product.title}
+                                    </DropDownLink>
+                                ))}
+                            </DropdownBox>
+                        )}
+                    </NavLinkDropDownContainer>
+
+                    <NavLinkDropDownContainer>
+                        <NavLinkButton
+                            onClick={handleBrandsToggle}
+                            endIcon={<ArrowDropDownIcon sx={{ color: "#FFF" }} />}
+                        >
+                            Brands
+                        </NavLinkButton>
+
+                        {isBrandsOpen && (
+                            <DropdownBox>
+                                {brandsData.map((brand, index) => (
+                                    <DropDownLink
+                                        key={index}
+                                        onClick={() => handleBrandClick(brand.link)}
+                                    >
+                                        {brand.title}
                                     </DropDownLink>
                                 ))}
                             </DropdownBox>

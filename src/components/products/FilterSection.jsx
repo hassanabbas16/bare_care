@@ -1,3 +1,4 @@
+// components/products/FilterSection.jsx
 import React from "react";
 import {
     Box,
@@ -9,9 +10,30 @@ import {
     Slider,
 } from "@mui/material";
 
-const FilterSection = ({ minPrice, maxPrice, selectedBrands = [], selectedSkinTypes = [], authenticityFilter, ratingFilter, handleMinPriceChange, handleMaxPriceChange, handleBrandChange, handleSkinTypeChange, handleAuthenticityChange, handleRatingChange, brands }) => (
-
-    <Box sx={{ width: "25%", backgroundColor: "#f9f9f9", padding: "3rem", borderRadius: "10px" }}>
+const FilterSection = ({
+                           minPrice,
+                           maxPrice,
+                           selectedBrands = [],
+                           selectedSkinTypes = [],
+                           authenticityFilter,
+                           ratingFilter,
+                           handleMinPriceChange,
+                           handleMaxPriceChange,
+                           handleBrandChange,
+                           handleSkinTypeChange,
+                           handleAuthenticityChange,
+                           handleRatingChange,
+                           brands,
+                           hideBrandFilter = false, // New prop
+                       }) => (
+    <Box
+        sx={{
+            width: "25%",
+            backgroundColor: "#f9f9f9",
+            padding: "3rem",
+            borderRadius: "10px",
+        }}
+    >
         <Typography variant="h6" color="black">
             Filter by:
         </Typography>
@@ -20,14 +42,20 @@ const FilterSection = ({ minPrice, maxPrice, selectedBrands = [], selectedSkinTy
             <Typography variant="subtitle1" color="black">
                 Price Range
             </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "1rem",
+                }}
+            >
                 <TextField
                     label="Min Price"
                     variant="outlined"
                     value={minPrice}
                     onChange={handleMinPriceChange}
                     size="small"
-                    sx={{ width: '45%' }}
+                    sx={{ width: "45%" }}
                 />
                 <TextField
                     label="Max Price"
@@ -35,54 +63,60 @@ const FilterSection = ({ minPrice, maxPrice, selectedBrands = [], selectedSkinTy
                     value={maxPrice}
                     onChange={handleMaxPriceChange}
                     size="small"
-                    sx={{ width: '45%' }}
+                    sx={{ width: "45%" }}
                 />
             </Box>
 
             {/* Brands */}
-            <Typography variant="subtitle1" color="black">
-                Brands
-            </Typography>
-            <FormGroup sx={{ marginBottom: '1rem', pl: 1 }}>
-                {brands && brands.length > 0 ? (
-                    brands.slice(0, 5).map((brand) => (
-                        <FormControlLabel
-                            key={brand}
-                            control={
-                                <Checkbox
-                                    checked={selectedBrands.includes(brand)}
-                                    onChange={() => handleBrandChange(brand)}
-                                />
-                            }
-                            label={brand}
-                            sx={{ color: "black" }}
-                        />
-                    ))
-                ) : (
-                    <Typography variant="body2" color="textSecondary">
-                        No brands available.
+            {!hideBrandFilter && (
+                <>
+                    <Typography variant="subtitle1" color="black">
+                        Brands
                     </Typography>
-                )}
-            </FormGroup>
+                    <FormGroup sx={{ marginBottom: "1rem", pl: 1 }}>
+                        {brands && brands.length > 0 ? (
+                            brands.map((brand) => (
+                                <FormControlLabel
+                                    key={brand}
+                                    control={
+                                        <Checkbox
+                                            checked={selectedBrands.includes(brand)}
+                                            onChange={() => handleBrandChange(brand)}
+                                        />
+                                    }
+                                    label={brand}
+                                    sx={{ color: "black" }}
+                                />
+                            ))
+                        ) : (
+                            <Typography variant="body2" color="textSecondary">
+                                No brands available.
+                            </Typography>
+                        )}
+                    </FormGroup>
+                </>
+            )}
 
             {/* Skin Type */}
             <Typography variant="subtitle1" color="black">
                 Skin Type
             </Typography>
-            <FormGroup sx={{ marginBottom: '1rem', pl: 1 }}>
-                {['Oily', 'Dry', 'Combination', 'Sensitive', 'Normal'].map((skinType) => (
-                    <FormControlLabel
-                        key={skinType}
-                        control={
-                            <Checkbox
-                                checked={selectedSkinTypes.includes(skinType)}
-                                onChange={() => handleSkinTypeChange(skinType)}
-                            />
-                        }
-                        label={skinType}
-                        sx={{ color: "black" }}
-                    />
-                ))}
+            <FormGroup sx={{ marginBottom: "1rem", pl: 1 }}>
+                {["Oily", "Dry", "Combination", "Sensitive", "Normal"].map(
+                    (skinType) => (
+                        <FormControlLabel
+                            key={skinType}
+                            control={
+                                <Checkbox
+                                    checked={selectedSkinTypes.includes(skinType)}
+                                    onChange={() => handleSkinTypeChange(skinType)}
+                                />
+                            }
+                            label={skinType}
+                            sx={{ color: "black" }}
+                        />
+                    )
+                )}
             </FormGroup>
 
             {/* Rating Filter */}
@@ -97,7 +131,7 @@ const FilterSection = ({ minPrice, maxPrice, selectedBrands = [], selectedSkinTy
                 marks
                 min={1}
                 max={5}
-                sx={{ marginBottom: '1rem' }}
+                sx={{ marginBottom: "1rem" }}
             />
 
             {/* Authenticity Filter */}

@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../../components/products/ProductCard";
 import FilterSection from "../../components/products/FilterSection";
 import CategoryBanner from "../../components/products/CategoryBanner";
+import RelatedSection from "../../components/products/RelatedSection";
 
 const ProductsPage = () => {
     const router = useRouter();
@@ -18,6 +19,10 @@ const ProductsPage = () => {
     const [category, setCategory] = useState("Products");
     const [brands, setBrands] = useState([]);
     const [wishlistProductIds, setWishlistProductIds] = useState([]);
+
+    const [topBrands, setTopBrands] = useState([]);
+    const [filterBrands, setFilterBrands] = useState([]);
+    const [selectedBrandFromQuery, setSelectedBrandFromQuery] = useState("");
 
     // State variables for filters
     const [minPrice, setMinPrice] = useState("");
@@ -61,8 +66,23 @@ const ProductsPage = () => {
                 const data = await response.json();
                 setProducts(data);
 
-                const uniqueBrands = [...new Set(data.map((product) => product.brand))];
-                setBrands(uniqueBrands);
+                const brandCounts = data.reduce((acc, product) => {
+                    const brand = product.brand || "Unknown";
+                    acc[brand] = (acc[brand] || 0) + 1;
+                    return acc;
+                }, {});
+
+                const sortedBrands = Object.entries(brandCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([brand]) => brand);
+
+                const top10Brands = sortedBrands.slice(0, 10);
+                setTopBrands(top10Brands);
+
+                const top5Brands = sortedBrands.slice(0, 5);
+                setFilterBrands(top5Brands);
+
+                setBrands(sortedBrands);
             } catch (error) {
                 console.error("Error fetching products:", error);
             }
@@ -93,11 +113,13 @@ const ProductsPage = () => {
         fetchWishlist();
     }, []);
 
-    // Filter products based on search and category
+    // Fetch category and brand from query parameters
     useEffect(() => {
         const categoryFromQuery = searchParams.get("category") || "Products";
+        const brandFromQuery = searchParams.get("brand") || "";
         setCategory(categoryFromQuery);
-        filterProducts(categoryFromQuery);
+        setSelectedBrandFromQuery(brandFromQuery);
+        filterProducts(categoryFromQuery, brandFromQuery);
     }, [
         search,
         searchParams,
@@ -111,7 +133,7 @@ const ProductsPage = () => {
     ]);
 
     // Filter products helper function
-    const filterProducts = (categoryFromQuery) => {
+    const filterProducts = (categoryFromQuery, brandFromQuery) => {
         let filtered = products.filter((product) => {
             // Ensure properties are defined before accessing them
             const productName = product.product_name || "";
@@ -126,12 +148,9 @@ const ProductsPage = () => {
 
             // Convert price strings to numbers
             const regularPrice =
-                parseFloat(
-                    product.regular_price.replace(/[^0-9.-]+/g, "")
-                ) || 0;
+                parseFloat(product.regular_price.replace(/[^0-9.-]+/g, "")) || 0;
             const salePrice =
-                parseFloat(product.sale_price.replace(/[^0-9.-]+/g, "")) ||
-                0;
+                parseFloat(product.sale_price.replace(/[^0-9.-]+/g, "")) || 0;
             const productPrice =
                 salePrice > 0 ? salePrice : regularPrice; // Use sale price if available, otherwise regular price
 
@@ -142,9 +161,16 @@ const ProductsPage = () => {
                 categoryFromQuery === "Products" ||
                 productCategory.toLowerCase() ===
                 categoryFromQuery.toLowerCase();
+
+            // Brand matching logic
+            const matchesBrandFromQuery =
+                brandFromQuery === "" || productBrand === brandFromQuery;
+
             const matchesBrand =
-                selectedBrands.length === 0 ||
-                selectedBrands.includes(productBrand);
+                selectedBrands.length === 0 || selectedBrands.includes(productBrand);
+
+            const matchesBrandFinal =
+                brandFromQuery !== "" ? matchesBrandFromQuery : matchesBrand;
 
             // Adjusted skin type matching logic
             const matchesSkinType =
@@ -166,7 +192,7 @@ const ProductsPage = () => {
             return (
                 matchesSearch &&
                 matchesCategory &&
-                matchesBrand &&
+                matchesBrandFinal &&
                 matchesSkinType &&
                 matchesAuthenticity &&
                 matchesRating &&
@@ -180,8 +206,24 @@ const ProductsPage = () => {
 
     return (
         <Box>
-            <CategoryBanner category={category} />
-            <Box sx={{ padding: "2rem", backgroundColor: "white" }}>
+            <CategoryBanner category={category} brand={selectedBrandFromQuery} />
+            {(category !== "Products" && !selectedBrandFromQuery) && (
+                <RelatedSection
+                    type="category"
+                    category={category}
+                    products={products}
+                />
+            )}
+
+            {selectedBrandFromQuery && (
+                <RelatedSection
+                    type="brand"
+                    brand={selectedBrandFromQuery}
+                    brands={topBrands}
+                />
+            )}
+
+            <Box sx={{ padding: "2rem" }}>
                 <Box sx={{ display: "flex", gap: "2rem" }}>
                     <FilterSection
                         minPrice={minPrice}
@@ -196,7 +238,8 @@ const ProductsPage = () => {
                         handleSkinTypeChange={handleSkinTypeChange}
                         handleAuthenticityChange={handleAuthenticityChange}
                         handleRatingChange={handleRatingChange}
-                        brands={brands}
+                        brands={filterBrands}
+                        hideBrandFilter={selectedBrandFromQuery !== ""}
                     />
 
                     <Box
@@ -206,9 +249,7 @@ const ProductsPage = () => {
                             flexDirection: "column",
                         }}
                     >
-                        <Box
-                            sx={{ mb: 2, maxWidth: "400px", marginLeft: "2rem" }}
-                        >
+                        <Box sx={{ mb: 2, maxWidth: "400px", marginLeft: "2rem" }}>
                             <TextField
                                 label="Search Products"
                                 variant="outlined"
