@@ -31,6 +31,11 @@ const ProductCard = ({
     const [wishlist, setWishlist] = useState(isInWishlist);
     const router = useRouter();
 
+    useEffect(() => {
+        setWishlist(isInWishlist);
+    }, [isInWishlist]);
+
+
     const handleWishlistToggle = async () => {
         // Check if the user is logged in
         try {
