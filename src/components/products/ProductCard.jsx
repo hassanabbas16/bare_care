@@ -22,7 +22,6 @@ import { useRouter } from "next/navigation";
 
 const ProductCard = ({
                          product,
-                         hideReviewsButton = false,
                          hideWishlistButton = false,
                          showRemoveButton = false,
                          onRemove = null,
@@ -35,9 +34,8 @@ const ProductCard = ({
         setWishlist(isInWishlist);
     }, [isInWishlist]);
 
-
-    const handleWishlistToggle = async () => {
-        // Check if the user is logged in
+    const handleWishlistToggle = async (e) => {
+        e.stopPropagation(); // Prevent card click when clicking on the wishlist button
         try {
             const res = await fetch("/api/auth/session");
             const data = await res.json();
@@ -84,7 +82,8 @@ const ProductCard = ({
         }
     };
 
-    const handleBuyNowClick = () => {
+    const handleBuyNowClick = (e) => {
+        e.stopPropagation(); // Prevent card click when clicking on the Buy Now button
         if (product.product_link) {
             window.open(product.product_link, "_blank");
         } else {
@@ -92,15 +91,8 @@ const ProductCard = ({
         }
     };
 
-    const handleOpenReviewModal = () => {
-        // Preserve existing query parameters and add 'product'
-        const params = new URLSearchParams(window.location.search);
-        params.set("product", product.id);
-
-        const newQueryString = params.toString();
-        const newUrl = newQueryString ? `/products?${newQueryString}` : "/products";
-
-        router.push(newUrl, { shallow: true });
+    const handleCardClick = () => {
+        router.push(`/products/${product.id}`);
     };
 
     const salePrice = product.sale_price
@@ -146,214 +138,205 @@ const ProductCard = ({
     };
 
     return (
-        <>
-            <Card
+        <Card
+            onClick={handleCardClick}
+            sx={{
+                cursor: "pointer",
+                borderRadius: "20px",
+                boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.1)",
+                overflow: "hidden",
+                position: "relative",
+                transition: "transform 0.3s ease-in-out",
+                "&:hover": { transform: "translateY(-5px)" },
+                width: "100%",
+                maxWidth: "250px",
+                margin: "auto",
+                backgroundColor: "white",
+            }}
+        >
+            {!hideWishlistButton && !showRemoveButton && (
+                <IconButton
+                    onClick={handleWishlistToggle}
+                    sx={{
+                        position: "absolute",
+                        top: "15px",
+                        right: "15px",
+                        zIndex: 10,
+                        color: wishlist ? "red" : "#000",
+                        border: !wishlist ? "0.5px solid black" : "none",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.9)" },
+                    }}
+                >
+                    {wishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                </IconButton>
+            )}
+            {showRemoveButton && (
+                <IconButton
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (onRemove) {
+                            onRemove();
+                        }
+                    }}
+                    sx={{
+                        position: "absolute",
+                        top: "15px",
+                        right: "15px",
+                        zIndex: 10,
+                        color: "red",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.9)" },
+                    }}
+                >
+                    <DeleteIcon />
+                </IconButton>
+            )}
+
+            <Box
                 sx={{
-                    borderRadius: "20px",
-                    boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.1)",
-                    overflow: "hidden",
                     position: "relative",
-                    transition: "transform 0.3s ease-in-out",
-                    "&:hover": { transform: "translateY(-5px)" },
+                    height: 200,
                     width: "100%",
-                    maxWidth: "250px",
-                    margin: "auto",
-                    backgroundColor: "white",
+                    "&::after": {
+                        content: '""',
+                        position: "absolute",
+                        bottom: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100px",
+                        backgroundImage:
+                            "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))",
+                        zIndex: 1,
+                    },
                 }}
             >
-                {!hideWishlistButton && !showRemoveButton && (
-                    <IconButton
-                        onClick={handleWishlistToggle}
+                <CardMedia
+                    component="div"
+                    sx={{ height: 200, position: "relative" }}
+                >
+                    <Image
+                        src={productImageUrl}
+                        alt={product.product_name || "Product Image"}
+                        fill
+                        style={{ objectFit: "contain" }}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                </CardMedia>
+            </Box>
+
+            <CardContent
+                sx={{
+                    backgroundColor: "#fff",
+                    padding: "1.5rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                }}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginBottom: "1rem",
+                    }}
+                >
+                    <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        color="black"
                         sx={{
-                            position: "absolute",
-                            top: "15px",
-                            right: "15px",
-                            zIndex: 10,
-                            color: wishlist ? "red" : "#000",
-                            border: !wishlist ? "0.5px solid black" : "none",
-                            backgroundColor: "rgba(255, 255, 255, 0.7)",
-                            "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.9)" },
+                            maxHeight: "48px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            width: "70%",
                         }}
                     >
-                        {wishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                    </IconButton>
-                )}
-                {showRemoveButton && (
-                    <IconButton
-                        onClick={onRemove}
-                        sx={{
-                            position: "absolute",
-                            top: "15px",
-                            right: "15px",
-                            zIndex: 10,
-                            color: "red",
-                            backgroundColor: "rgba(255, 255, 255, 0.7)",
-                            "&:hover": { backgroundColor: "rgba(255, 255, 255, 0.9)" },
-                        }}
+                        {product.product_name || "No product name available"}
+                    </Typography>
+
+                    <Typography
+                        variant="body2"
+                        color="black"
+                        sx={{ width: "30%", textAlign: "right", whiteSpace: "nowrap" }}
                     >
-                        <DeleteIcon />
-                    </IconButton>
-                )}
+                        {product.brand || "No brand"}
+                    </Typography>
+                </Box>
+
+                <Box sx={{ marginBottom: "1rem" }}>
+                    {renderStarRating(product.rating || 0)}
+                </Box>
 
                 <Box
                     sx={{
-                        position: "relative",
-                        height: 200,
-                        width: "100%",
-                        "&::after": {
-                            content: '""',
-                            position: "absolute",
-                            bottom: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100px",
-                            backgroundImage:
-                                "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1))",
-                            zIndex: 1,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                    }}
+                >
+                    <Box>
+                        <Typography variant="h6" fontWeight="bold" color="black">
+                            Rs. {displayPrice}
+                        </Typography>
+                        {displayRegularPrice && (
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    textDecoration: "line-through",
+                                    color: "#FF6961",
+                                }}
+                            >
+                                Rs. {displayRegularPrice}
+                            </Typography>
+                        )}
+                    </Box>
+
+                    {product.authenticity && (
+                        <Chip
+                            icon={<VerifiedIcon sx={{ color: "#66bb6a" }} />}
+                            label="100% Authentic"
+                            sx={{
+                                backgroundColor: "#66bb6a",
+                                color: "white",
+                                fontSize: "0.8rem",
+                                padding: "0.1rem 0.3rem",
+                                maxWidth: "12rem",
+                            }}
+                        />
+                    )}
+                </Box>
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: "1rem",
+                        justifyContent: "center",
+                        mt: 2,
+                        flexDirection: {
+                            xs: "column",
+                            sm: "row",
                         },
                     }}
                 >
-                    <CardMedia
-                        component="div"
-                        sx={{ height: 200, position: "relative" }}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                            padding: "0.7rem 2.6rem",
+                            fontWeight: "bold",
+                            width: "100%",
+                        }}
+                        onClick={handleBuyNowClick}
                     >
-                        <Image
-                            src={productImageUrl}
-                            alt={product.product_name || "Product Image"}
-                            fill
-                            style={{ objectFit: "contain" }}
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        />
-                    </CardMedia>
+                        Buy Now
+                    </Button>
                 </Box>
-
-                <CardContent
-                    sx={{
-                        backgroundColor: "#fff",
-                        padding: "1.5rem",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginBottom: "1rem",
-                        }}
-                    >
-                        <Typography
-                            variant="h6"
-                            fontWeight="bold"
-                            color="black"
-                            sx={{
-                                maxHeight: "48px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                display: "-webkit-box",
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: "vertical",
-                                width: "70%",
-                            }}
-                        >
-                            {product.product_name || "No product name available"}
-                        </Typography>
-
-                        <Typography
-                            variant="body2"
-                            color="black"
-                            sx={{ width: "30%", textAlign: "right", whiteSpace: "nowrap" }}
-                        >
-                            {product.brand || "No brand"}
-                        </Typography>
-                    </Box>
-
-                    <Box sx={{ marginBottom: "1rem" }}>
-                        {renderStarRating(product.rating || 0)}
-                    </Box>
-
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                        }}
-                    >
-                        <Box>
-                            <Typography variant="h6" fontWeight="bold" color="black">
-                                Rs. {displayPrice}
-                            </Typography>
-                            {displayRegularPrice && (
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        textDecoration: "line-through",
-                                        color: "#FF6961",
-                                    }}
-                                >
-                                    Rs. {displayRegularPrice}
-                                </Typography>
-                            )}
-                        </Box>
-
-                        {product.authenticity && (
-                            <Chip
-                                icon={<VerifiedIcon sx={{ color: "#66bb6a" }} />}
-                                label="100% Authentic"
-                                sx={{
-                                    backgroundColor: "#66bb6a",
-                                    color: "white",
-                                    fontSize: "0.8rem",
-                                    padding: "0.1rem 0.3rem",
-                                    maxWidth: "12rem",
-                                }}
-                            />
-                        )}
-                    </Box>
-
-                    <Box
-                        sx={{
-                            display: "flex",
-                            gap: "1rem",
-                            justifyContent: "center",
-                            mt: 2,
-                            flexDirection: {
-                                xs: "column",
-                                sm: "row",
-                            },
-                        }}
-                    >
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            sx={{
-                                padding: "0.7rem 2.6rem",
-                                fontWeight: "bold",
-                                width: "100%",
-                            }}
-                            onClick={handleBuyNowClick}
-                        >
-                            Buy Now
-                        </Button>
-                        {!hideReviewsButton && (
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                sx={{
-                                    padding: "0.7rem 2.6rem",
-                                    fontWeight: "bold",
-                                    width: "100%",
-                                }}
-                                onClick={handleOpenReviewModal}
-                            >
-                                Reviews
-                            </Button>
-                        )}
-                    </Box>
-                </CardContent>
-            </Card>
-        </>
+            </CardContent>
+        </Card>
     );
 };
 

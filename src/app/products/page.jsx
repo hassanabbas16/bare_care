@@ -8,13 +8,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../../components/products/ProductCard";
 import FilterSection from "../../components/products/FilterSection";
 import CategoryBanner from "../../components/products/CategoryBanner";
-import ProductModal from "../../components/products/ProductModal";
 
 const ProductsPage = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [openProductModal, setOpenProductModal] = useState(false);
-    const [selectedProduct, setSelectedProduct] = useState(null);
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [search, setSearch] = useState("");
@@ -112,20 +109,6 @@ const ProductsPage = () => {
         authenticityFilter,
         ratingFilter,
     ]);
-
-    // Open modal if 'product' query parameter exists
-    useEffect(() => {
-        const productIdFromQuery = searchParams.get("product");
-        if (productIdFromQuery && products.length > 0) {
-            const product = products.find(
-                (p) => p.id === parseInt(productIdFromQuery)
-            );
-            if (product) {
-                setSelectedProduct(product);
-                setOpenProductModal(true);
-            }
-        }
-    }, [searchParams, products]);
 
     // Filter products helper function
     const filterProducts = (categoryFromQuery) => {
@@ -272,27 +255,6 @@ const ProductsPage = () => {
                     </Box>
                 </Box>
             </Box>
-
-            {selectedProduct && (
-                <ProductModal
-                    open={openProductModal}
-                    onClose={() => {
-                        setOpenProductModal(false);
-                        setSelectedProduct(null);
-
-                        const params = new URLSearchParams(window.location.search);
-                        params.delete("product");
-
-                        const newQueryString = params.toString();
-                        const newUrl = newQueryString
-                            ? `/products?${newQueryString}`
-                            : "/products";
-
-                        router.push(newUrl, { shallow: true });
-                    }}
-                    product={selectedProduct}
-                />
-            )}
         </Box>
     );
 };
