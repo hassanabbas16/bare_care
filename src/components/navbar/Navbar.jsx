@@ -236,11 +236,11 @@ const NavbarLarge = () => {
                         )}
                     </NavLinkDropDownContainer>
 
+                    <Link href="/discounts" passHref>
+                        <NavLink component="a">Discounts</NavLink>
+                    </Link>
                     <Link href="/blog" passHref>
                         <NavLink component="a">Blog</NavLink>
-                    </Link>
-                    <Link href="/" passHref>
-                        <NavLink component="a">Contact Us</NavLink>
                     </Link>
                 </Box>
 

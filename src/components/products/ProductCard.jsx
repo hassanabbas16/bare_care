@@ -154,6 +154,26 @@ const ProductCard = ({
                 backgroundColor: "white",
             }}
         >
+            {product.discount && product.discount !== "" && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: "15px",
+                        left: "-45px",
+                        backgroundColor: "#FF6961",
+                        color: "#fff",
+                        padding: "5px 35px",
+                        transform: "rotate(-45deg)",
+                        fontSize: "0.9rem",
+                        fontWeight: "bold",
+                        zIndex: 10,
+                        width: "150px",
+                        textAlign: "center",
+                    }}
+                >
+                    {product.discount}
+                </Box>
+            )}
             {!hideWishlistButton && !showRemoveButton && (
                 <IconButton
                     onClick={handleWishlistToggle}
