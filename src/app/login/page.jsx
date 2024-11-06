@@ -92,6 +92,7 @@ const AuthPage = () => {
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
+            {/* Background Image */}
             <Box
                 sx={{
                     position: 'absolute',
@@ -99,7 +100,6 @@ const AuthPage = () => {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    overflow: 'hidden',
                     backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.7)',
                     zIndex: -1,
                 }}
@@ -112,29 +112,27 @@ const AuthPage = () => {
                     quality={100}
                     style={{ filter: 'blur(4px)', opacity: 0.5 }}
                 />
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'rgba(255,255,255,0.2)',
-                        fontSize: '4rem',
-                        fontWeight: 'bold',
-                        letterSpacing: '1rem',
-                        textAlign: 'center',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)',
-                    }}
-                >
-                    <Box>
-                        BARECARE BARECARE BARECARE BARECARE
-                    </Box>
+            </Box>
+
+            {/* Infinite Scrolling Text Borders */}
+            <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: '5rem', backgroundColor: 'black', display: 'flex', alignItems: 'center', color: 'white', fontSize: '1rem', fontWeight: 'bold', overflow: 'hidden' }}>
+                <Box sx={{ whiteSpace: 'nowrap', animation: 'scrollTextHorizontal 1500s linear infinite' }}>
+                    {Array(2000).fill('Bare Care. ').join('')}
+                </Box>
+            </Box>
+            <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '5rem', backgroundColor: 'black', display: 'flex', alignItems: 'center', color: 'white', fontSize: '1rem', fontWeight: 'bold', overflow: 'hidden' }}>
+                <Box sx={{ whiteSpace: 'nowrap', animation: 'scrollTextHorizontal 1500s linear infinite' }}>
+                    {Array(2000).fill('Bare Care. ').join('')}
+                </Box>
+            </Box>
+            <Box sx={{ position: 'absolute', top: 0, bottom: 0, left: 0, width: '5rem', backgroundColor: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1rem', fontWeight: 'bold', overflow: 'hidden', writingMode: 'vertical-rl', textOrientation: 'upright' }}>
+                <Box sx={{ whiteSpace: 'nowrap', animation: 'scrollTextVerticalLeft 2000s linear infinite' }}>
+                    {Array(2000).fill('Bare Care. ').join('')}
+                </Box>
+            </Box>
+            <Box sx={{ position: 'absolute', top: 0, bottom: 0, right: 0, width: '5rem', backgroundColor: 'black', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '1rem', fontWeight: 'bold', overflow: 'hidden', writingMode: 'vertical-rl', textOrientation: 'upright' }}>
+                <Box sx={{ whiteSpace: 'nowrap', animation: 'scrollTextVerticalRight 2000s linear infinite' }}>
+                    {Array(2000).fill('Bare Care. ').join('')}
                 </Box>
             </Box>
 
@@ -251,6 +249,22 @@ const AuthPage = () => {
                     {isSignup ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
                 </Button>
             </Card>
+
+            {/* Animation for scrolling and rotating text */}
+            <style jsx global>{`
+                @keyframes scrollTextHorizontal {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-100%); }
+                }
+                @keyframes scrollTextVerticalLeft {
+                    0% { transform: translateY(0); }
+                    100% { transform: translateY(-100%); }
+                }
+                @keyframes scrollTextVerticalRight {
+                    0% { transform: translateY(0); }
+                    100% { transform: translateY(-100%); }
+                }
+            `}</style>
         </Box>
     );
 };
