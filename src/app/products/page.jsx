@@ -1,8 +1,9 @@
 // pages/products/page.jsx
 "use client";
 import dynamic from "next/dynamic";
-import React, { useState, useEffect } from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import { ComparisonContext } from "../../contexts/ComparisonContext";
+import {Box, Button, TextField, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../../components/products/ProductCard";
@@ -30,7 +31,25 @@ const ProductsPage = () => {
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [selectedSkinTypes, setSelectedSkinTypes] = useState([]);
     const [authenticityFilter, setAuthenticityFilter] = useState(false);
-    const [ratingFilter, setRatingFilter] = useState([1, 5]); // Assuming a range
+    const [ratingFilter, setRatingFilter] = useState([1, 5]);
+
+    const {
+        comparedProducts,
+        addProductToCompare,
+        removeProductFromCompare,
+    } = useContext(ComparisonContext);
+
+    const handleCompareChange = (product, isChecked) => {
+        if (isChecked) {
+            if (comparedProducts.length < 2) {
+                addProductToCompare(product);
+            } else {
+                alert("You can only compare up to 2 products at a time.");
+            }
+        } else {
+            removeProductFromCompare(product.id);
+        }
+    };
 
     // Handler functions
     const handleMinPriceChange = (e) => setMinPrice(e.target.value);
@@ -242,6 +261,17 @@ const ProductsPage = () => {
                         hideBrandFilter={selectedBrandFromQuery !== ""}
                     />
 
+                    {comparedProducts.length >= 2 && (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 1000 }}
+                            onClick={() => router.push("/compare")}
+                        >
+                            Compare Now ({comparedProducts.length})
+                        </Button>
+                    )}
+
                     <Box
                         sx={{
                             width: "75%",
@@ -277,6 +307,8 @@ const ProductsPage = () => {
                                     >
                                         <ProductCard
                                             product={product}
+                                            isCompared={comparedProducts.some((p) => p.id === product.id)}
+                                            onCompareChange={handleCompareChange}
                                             isInWishlist={wishlistProductIds.includes(
                                                 product.id
                                             )}

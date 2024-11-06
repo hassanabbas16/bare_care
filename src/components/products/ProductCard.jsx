@@ -10,6 +10,7 @@ import {
     IconButton,
     Button,
     Chip,
+    FormControlLabel, Checkbox,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -22,6 +23,8 @@ import { useRouter } from "next/navigation";
 
 const ProductCard = ({
                          product,
+                         onCompareChange,
+                         isCompared = false,
                          hideWishlistButton = false,
                          showRemoveButton = false,
                          onRemove = null,
@@ -135,6 +138,11 @@ const ProductCard = ({
                 ))}
             </Box>
         );
+    };
+
+    const handleCompareChange = (event) => {
+        event.stopPropagation();
+        onCompareChange(product, event.target.checked);
     };
 
     return (
@@ -330,12 +338,32 @@ const ProductCard = ({
                     )}
                 </Box>
 
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={isCompared}
+                            onChange={handleCompareChange}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    }
+                    label="Compare"
+                    sx={{
+                        position: "absolute",
+                        bottom: "10px",
+                        left: "10px",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        borderRadius: "5px",
+                        padding: "0 5px",
+                    }}
+                />
+
                 <Box
                     sx={{
                         display: "flex",
                         gap: "1rem",
                         justifyContent: "center",
                         mt: 2,
+                        maxWidth: "50%",
                         flexDirection: {
                             xs: "column",
                             sm: "row",
