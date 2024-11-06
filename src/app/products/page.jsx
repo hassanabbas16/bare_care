@@ -1,6 +1,6 @@
 // pages/products/page.jsx
 "use client";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import React, { useState, useEffect } from "react";
 import { Box, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
@@ -20,10 +20,11 @@ const ProductsPage = () => {
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("Products");
     const [brands, setBrands] = useState([]);
+    const [wishlistProductIds, setWishlistProductIds] = useState([]);
 
     // State variables for filters
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [selectedSkinTypes, setSelectedSkinTypes] = useState([]);
     const [authenticityFilter, setAuthenticityFilter] = useState(false);
@@ -41,7 +42,9 @@ const ProductsPage = () => {
 
     const handleSkinTypeChange = (skinType) => {
         setSelectedSkinTypes((prev) =>
-            prev.includes(skinType) ? prev.filter((s) => s !== skinType) : [...prev, skinType]
+            prev.includes(skinType)
+                ? prev.filter((s) => s !== skinType)
+                : [...prev, skinType]
         );
     };
 
@@ -57,7 +60,7 @@ const ProductsPage = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('/api/products');
+                const response = await fetch("/api/products");
                 const data = await response.json();
                 setProducts(data);
 
@@ -68,6 +71,29 @@ const ProductsPage = () => {
             }
         };
         fetchProducts();
+    }, []);
+
+    // Fetch wishlist product IDs
+    useEffect(() => {
+        const fetchWishlist = async () => {
+            try {
+                const res = await fetch("/api/wishlist");
+                if (res.ok) {
+                    const data = await res.json();
+                    const productIds = data.wishlistItems.map(
+                        (item) => item.product_id
+                    );
+                    setWishlistProductIds(productIds);
+                } else {
+                    // User is not logged in or other error
+                    setWishlistProductIds([]);
+                }
+            } catch (error) {
+                console.error("Error fetching wishlist:", error);
+                setWishlistProductIds([]);
+            }
+        };
+        fetchWishlist();
     }, []);
 
     // Filter products based on search and category
@@ -91,7 +117,9 @@ const ProductsPage = () => {
     useEffect(() => {
         const productIdFromQuery = searchParams.get("product");
         if (productIdFromQuery && products.length > 0) {
-            const product = products.find(p => p.id === parseInt(productIdFromQuery));
+            const product = products.find(
+                (p) => p.id === parseInt(productIdFromQuery)
+            );
             if (product) {
                 setSelectedProduct(product);
                 setOpenProductModal(true);
@@ -103,23 +131,37 @@ const ProductsPage = () => {
     const filterProducts = (categoryFromQuery) => {
         let filtered = products.filter((product) => {
             // Ensure properties are defined before accessing them
-            const productName = product.product_name || '';
-            const productCategory = product.category || '';
-            const productBrand = product.brand || '';
-            const productRating = product.rating !== undefined ? product.rating : 0;
-            const productAuthenticity = product.authenticity !== undefined ? product.authenticity : true; // Assuming authentic by default
+            const productName = product.product_name || "";
+            const productCategory = product.category || "";
+            const productBrand = product.brand || "";
+            const productRating =
+                product.rating !== undefined ? product.rating : 0;
+            const productAuthenticity =
+                product.authenticity !== undefined
+                    ? product.authenticity
+                    : true; // Assuming authentic by default
 
             // Convert price strings to numbers
-            const regularPrice = parseFloat(product.regular_price.replace(/[^0-9.-]+/g, '')) || 0;
-            const salePrice = parseFloat(product.sale_price.replace(/[^0-9.-]+/g, '')) || 0;
-            const productPrice = salePrice > 0 ? salePrice : regularPrice; // Use sale price if available, otherwise regular price
+            const regularPrice =
+                parseFloat(
+                    product.regular_price.replace(/[^0-9.-]+/g, "")
+                ) || 0;
+            const salePrice =
+                parseFloat(product.sale_price.replace(/[^0-9.-]+/g, "")) ||
+                0;
+            const productPrice =
+                salePrice > 0 ? salePrice : regularPrice; // Use sale price if available, otherwise regular price
 
-            const matchesSearch = productName.toLowerCase().includes(search.toLowerCase());
+            const matchesSearch = productName
+                .toLowerCase()
+                .includes(search.toLowerCase());
             const matchesCategory =
-                categoryFromQuery === 'Products' ||
-                productCategory.toLowerCase() === categoryFromQuery.toLowerCase();
+                categoryFromQuery === "Products" ||
+                productCategory.toLowerCase() ===
+                categoryFromQuery.toLowerCase();
             const matchesBrand =
-                selectedBrands.length === 0 || selectedBrands.includes(productBrand);
+                selectedBrands.length === 0 ||
+                selectedBrands.includes(productBrand);
 
             // Adjusted skin type matching logic
             const matchesSkinType =
@@ -131,11 +173,12 @@ const ProductsPage = () => {
             const matchesAuthenticity =
                 !authenticityFilter || productAuthenticity === true;
             const matchesRating =
-                productRating >= ratingFilter[0] && productRating <= ratingFilter[1];
+                productRating >= ratingFilter[0] &&
+                productRating <= ratingFilter[1];
             const matchesMinPrice =
-                minPrice === '' || productPrice >= parseFloat(minPrice);
+                minPrice === "" || productPrice >= parseFloat(minPrice);
             const matchesMaxPrice =
-                maxPrice === '' || productPrice <= parseFloat(maxPrice);
+                maxPrice === "" || productPrice <= parseFloat(maxPrice);
 
             return (
                 matchesSearch &&
@@ -173,8 +216,16 @@ const ProductsPage = () => {
                         brands={brands}
                     />
 
-                    <Box sx={{ width: "75%", display: "flex", flexDirection: "column" }}>
-                        <Box sx={{ mb: 2, maxWidth: "400px", marginLeft: "2rem" }}>
+                    <Box
+                        sx={{
+                            width: "75%",
+                            display: "flex",
+                            flexDirection: "column",
+                        }}
+                    >
+                        <Box
+                            sx={{ mb: 2, maxWidth: "400px", marginLeft: "2rem" }}
+                        >
                             <TextField
                                 label="Search Products"
                                 variant="outlined"
@@ -186,15 +237,35 @@ const ProductsPage = () => {
                         </Box>
 
                         {filteredProducts.length > 0 ? (
-                            <Grid container spacing={2} sx={{ padding: "0 2rem", justifyContent: "flex-start" }}>
+                            <Grid
+                                container
+                                spacing={2}
+                                sx={{ padding: "0 2rem", justifyContent: "flex-start" }}
+                            >
                                 {filteredProducts.map((product) => (
-                                    <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-                                        <ProductCard product={product} />
+                                    <Grid
+                                        item
+                                        xs={12}
+                                        sm={6}
+                                        md={4}
+                                        lg={3}
+                                        key={product.id}
+                                    >
+                                        <ProductCard
+                                            product={product}
+                                            isInWishlist={wishlistProductIds.includes(
+                                                product.id
+                                            )}
+                                        />
                                     </Grid>
                                 ))}
                             </Grid>
                         ) : (
-                            <Typography variant="h6" color="textSecondary" sx={{ marginLeft: "2rem" }}>
+                            <Typography
+                                variant="h6"
+                                color="textSecondary"
+                                sx={{ marginLeft: "2rem" }}
+                            >
                                 No products match your filters.
                             </Typography>
                         )}
@@ -210,10 +281,12 @@ const ProductsPage = () => {
                         setSelectedProduct(null);
 
                         const params = new URLSearchParams(window.location.search);
-                        params.delete('product');
+                        params.delete("product");
 
                         const newQueryString = params.toString();
-                        const newUrl = newQueryString ? `/products?${newQueryString}` : '/products';
+                        const newUrl = newQueryString
+                            ? `/products?${newQueryString}`
+                            : "/products";
 
                         router.push(newUrl, { shallow: true });
                     }}
@@ -224,4 +297,6 @@ const ProductsPage = () => {
     );
 };
 
-export default dynamic(() => Promise.resolve(ProductsPage), { ssr: false });
+export default dynamic(() => Promise.resolve(ProductsPage), {
+    ssr: false,
+});

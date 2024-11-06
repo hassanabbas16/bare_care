@@ -31,7 +31,9 @@ const ProductModal = ({ open, onClose, product }) => {
 
             const pendingReview = localStorage.getItem("pendingReview");
             if (pendingReview) {
-                const { productId, comment, rating } = JSON.parse(pendingReview);
+                const { productId, comment, rating } = JSON.parse(
+                    pendingReview
+                );
                 if (productId === product.id) {
                     setNewComment(comment);
                     setNewRating(rating);
@@ -169,7 +171,11 @@ const ProductModal = ({ open, onClose, product }) => {
                     }}
                 >
                     <Box sx={{ flex: 1, display: "flex", alignItems: "center" }}>
-                        <ProductCard product={product} hideReviewsButton={true} />
+                        <ProductCard
+                            product={product}
+                            hideReviewsButton={true}
+                            hideWishlistButton={true}
+                        />
                     </Box>
 
                     <Box sx={{ flex: 2 }}>
@@ -260,7 +266,10 @@ const ProductModal = ({ open, onClose, product }) => {
                                             >
                                                 <ThumbUpIcon fontSize="small" />
                                             </IconButton>
-                                            <Typography variant="caption" sx={{ color: "black", fontSize: "1rem" }}>
+                                            <Typography
+                                                variant="caption"
+                                                sx={{ color: "black", fontSize: "1rem" }}
+                                            >
                                                 {review.likes || 0} Likes
                                             </Typography>
                                         </Box>
