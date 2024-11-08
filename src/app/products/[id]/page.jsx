@@ -11,7 +11,7 @@ import {
     Rating,
     Avatar,
     TextField,
-    IconButton,
+    IconButton, Grid, Card, CardMedia, CardContent,
 } from "@mui/material";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import PersonIcon from "@mui/icons-material/Person";
@@ -29,25 +29,42 @@ const ProductPage = () => {
     const [newComment, setNewComment] = useState("");
     const [newRating, setNewRating] = useState(0);
     const [relatedProducts, setRelatedProducts] = useState([]);
+    const [otherVendors, setOtherVendors] = useState([]);
 
     // Fetch product data
     useEffect(() => {
-        const fetchProduct = async () => {
+        const fetchProductAndVendors = async () => {
             try {
+                // Fetch the current product
                 const res = await fetch(`/api/products/${id}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setProduct(data);
-                } else {
+                if (!res.ok) {
                     console.error("Error fetching product:", res.statusText);
+                    return;
                 }
+                const data = await res.json();
+                setProduct(data);
+
+                // Fetch other vendors offering the same product
+                const normalizedName = data.normalized_name;
+                const resVendors = await fetch(
+                    `/api/products/normalised-name/${encodeURIComponent(normalizedName)}`
+                );
+                if (!resVendors.ok) {
+                    console.error("Error fetching other vendors:", resVendors.statusText);
+                    return;
+                }
+                const vendorsData = await resVendors.json();
+
+                // Exclude the current product
+                const filteredVendors = vendorsData.filter((item) => item.id !== data.id);
+                setOtherVendors(filteredVendors);
             } catch (error) {
-                console.error("Error fetching product:", error);
+                console.error("Error fetching product and vendors:", error);
             }
         };
 
         if (id) {
-            fetchProduct();
+            fetchProductAndVendors();
         }
     }, [id]);
 
@@ -110,6 +127,10 @@ const ProductPage = () => {
         };
         checkSession();
     }, []);
+
+    if (!product) {
+        return <Typography>Loading...</Typography>;
+    }
 
     const handleBuyNowClick = () => {
         if (product.product_link) {
@@ -267,13 +288,59 @@ const ProductPage = () => {
                     >
                         Buy Now
                     </Button>
-
-                    {/* Additional Product Details */}
-                    <Typography variant="body1" gutterBottom>
-                        {product.description}
-                    </Typography>
                 </Box>
             </Box>
+            {otherVendors.length > 0 && (
+                <Box sx={{ marginBottom: "2rem" }}>
+                    <Typography variant="h5" gutterBottom>
+                        Available from other vendors:
+                    </Typography>
+                    <Grid container spacing={2}>
+                        {otherVendors.map((vendorProduct) => (
+                            <Grid item xs={12} sm={6} md={4} key={vendorProduct.id}>
+                                <Card>
+                                    {vendorProduct.image_url && (
+                                        <CardMedia
+                                            sx={{ position: "relative", height: "200px" }}
+                                        >
+                                            <Image
+                                                src={
+                                                    vendorProduct.image_url.startsWith("//")
+                                                        ? `https:${vendorProduct.image_url}`
+                                                        : vendorProduct.image_url
+                                                }
+                                                alt={vendorProduct.product_name}
+                                                fill
+                                                style={{ objectFit: "contain" }}
+                                            />
+                                        </CardMedia>
+                                    )}
+                                    <CardContent>
+                                        <Typography variant="h6">
+                                            {vendorProduct.vendor_name}
+                                        </Typography>
+                                        <Typography variant="body1">
+                                            Price: Rs.{" "}
+                                            {parseFloat(
+                                                vendorProduct.sale_price || vendorProduct.regular_price || 0
+                                            ).toFixed(2)}
+                                        </Typography>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() =>
+                                                window.open(vendorProduct.product_link, "_blank")
+                                            }
+                                            sx={{ marginTop: "1rem" }}
+                                        >
+                                            Buy Now
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+            )}
 
             {/* Reviews Section */}
             <Box sx={{ marginBottom: "2rem" }}>
