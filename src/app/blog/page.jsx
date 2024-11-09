@@ -58,6 +58,7 @@ function BlogForm({ onSubmit, onCancel }) {
 }
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
+import {supabase} from "@/lib/supabaseClient";
 
 export default function BlogPage() {
     const [blogs, setBlogs] = useState([]);
@@ -115,18 +116,12 @@ export default function BlogPage() {
 
     const handleDeleteBlog = async (blogId) => {
         try {
-            const response = await fetch('/api/auth/session');
-            const sessionData = await response.json();
-
-            if (!sessionData.loggedIn) {
-                router.push('/login?redirect=/blog');
-                return;
-            }
-
+            const { data: { session } } = await supabase.auth.getSession();
             const deleteResponse = await fetch(`/api/blog/${blogId}`, {
                 method: 'DELETE',
                 headers: {
-                    Authorization: `Bearer ${sessionData.user.access_token}`,
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.access_token}`,
                 },
             });
 

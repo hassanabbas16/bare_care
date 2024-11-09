@@ -7,11 +7,11 @@ import {
     TextField,
 } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { supabase } from '../../../lib/supabaseClient';
 
 export default function CreateOrEditBlogPage() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [image_url, setImageUrl] = useState('');
     const [user, setUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const router = useRouter();
@@ -20,18 +20,14 @@ export default function CreateOrEditBlogPage() {
 
     useEffect(() => {
         async function fetchSession() {
-            try {
-                const response = await fetch('/api/auth/session');
-                const data = await response.json();
-
-                if (!data.loggedIn) {
-                    // Redirect to login if not logged in
-                    router.push(`/login?redirect=/blog/create${blogId ? `?id=${blogId}` : ''}`);
-                } else {
-                    setUser(data.user);
-                }
-            } catch (error) {
-                console.error('Error fetching session:', error);
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+            if (!session) {
+                // Redirect to login if not logged in
+                router.push(`/login?redirect=/blog/create${blogId ? `?id=${blogId}` : ''}`);
+            } else {
+                setUser(session.user);
             }
         }
         fetchSession();
@@ -51,7 +47,6 @@ export default function CreateOrEditBlogPage() {
                     } else {
                         setTitle(data.title);
                         setContent(data.content);
-                        setImageUrl(data.image_url);
                     }
                 } catch (error) {
                     console.error('Error fetching blog:', error);
@@ -69,23 +64,27 @@ export default function CreateOrEditBlogPage() {
             const blogData = {
                 title,
                 content,
-                image_url,
             };
 
             const url = isEditing ? `/api/blog/${blogId}` : '/api/blog';
             const method = isEditing ? 'PUT' : 'POST';
 
+            const { data: { session } } = await supabase.auth.getSession();
+
             const response = await fetch(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session.access_token}`,
                 },
                 body: JSON.stringify(blogData),
             });
             if (response.ok) {
                 router.push('/blog');
             } else {
-                console.error('Failed to save blog');
+                const errorData = await response.json();
+                console.error('Failed to save blog:', errorData.error);
+                // Optionally, display the error to the user
             }
         } catch (error) {
             console.error('Error saving blog:', error);
@@ -104,13 +103,6 @@ export default function CreateOrEditBlogPage() {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    fullWidth
-                    label="Image URL"
-                    value={image_url}
-                    onChange={(e) => setImageUrl(e.target.value)}
                     sx={{ mb: 2 }}
                 />
                 <TextField
