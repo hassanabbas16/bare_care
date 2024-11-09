@@ -10,6 +10,7 @@ import {
     IconButton,
     Button,
     Chip,
+    FormControlLabel, Checkbox,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
@@ -22,6 +23,8 @@ import { useRouter } from "next/navigation";
 
 const ProductCard = ({
                          product,
+                         onCompareChange,
+                         isCompared = false,
                          hideWishlistButton = false,
                          showRemoveButton = false,
                          onRemove = null,
@@ -35,12 +38,11 @@ const ProductCard = ({
     }, [isInWishlist]);
 
     const handleWishlistToggle = async (e) => {
-        e.stopPropagation(); // Prevent card click when clicking on the wishlist button
+        e.stopPropagation();
         try {
             const res = await fetch("/api/auth/session");
             const data = await res.json();
             if (!data.user) {
-                // Redirect to login page
                 const params = new URLSearchParams(window.location.search);
                 params.set("product", product.id);
 
@@ -49,33 +51,22 @@ const ProductCard = ({
                 return;
             }
 
-            // Proceed with toggling wishlist
             if (wishlist) {
-                // Remove from wishlist
                 const res = await fetch("/api/wishlist/remove", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ product_id: product.id }),
                 });
-                if (res.ok) {
-                    setWishlist(false);
-                } else {
-                    const errorData = await res.json();
-                    console.error("Error removing from wishlist:", errorData.error);
-                }
+                if (res.ok) setWishlist(false);
+                else console.error("Error removing from wishlist:", await res.json());
             } else {
-                // Add to wishlist
                 const res = await fetch("/api/wishlist/add", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ product_id: product.id }),
                 });
-                if (res.ok) {
-                    setWishlist(true);
-                } else {
-                    const errorData = await res.json();
-                    console.error("Error adding to wishlist:", errorData.error);
-                }
+                if (res.ok) setWishlist(true);
+                else console.error("Error adding to wishlist:", await res.json());
             }
         } catch (error) {
             console.error("Error toggling wishlist:", error);
@@ -83,7 +74,7 @@ const ProductCard = ({
     };
 
     const handleBuyNowClick = (e) => {
-        e.stopPropagation(); // Prevent card click when clicking on the Buy Now button
+        e.stopPropagation();
         if (product.product_link) {
             window.open(product.product_link, "_blank");
         } else {
@@ -103,9 +94,7 @@ const ProductCard = ({
         : null;
 
     const displayPrice =
-        salePrice !== null && !isNaN(salePrice)
-            ? salePrice.toFixed(2)
-            : "No price available";
+        salePrice !== null && !isNaN(salePrice) ? salePrice.toFixed(2) : "No price available";
     const displayRegularPrice =
         regularPrice !== null &&
         !isNaN(regularPrice) &&
@@ -117,7 +106,6 @@ const ProductCard = ({
         ? `https:${product.image_url}`
         : product.image_url;
 
-    // Function to render star rating
     const renderStarRating = (rating) => {
         const maxStars = 5;
         return (
@@ -137,6 +125,11 @@ const ProductCard = ({
         );
     };
 
+    const handleCompareChange = (event) => {
+        event.stopPropagation();
+        onCompareChange(product, event.target.checked);
+    };
+
     return (
         <Card
             onClick={handleCardClick}
@@ -151,10 +144,11 @@ const ProductCard = ({
                 width: "100%",
                 maxWidth: "250px",
                 margin: "auto",
+                height: "410px",
                 backgroundColor: "white",
             }}
         >
-            {product.discount && product.discount !== "" && (
+            {product.discount && product.discount !== "No discount" && (
                 <Box
                     sx={{
                         position: "absolute",
@@ -330,16 +324,29 @@ const ProductCard = ({
                     )}
                 </Box>
 
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={isCompared}
+                            onChange={handleCompareChange}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    }
+                    label="Compare"
+                    sx={{
+                        marginTop: "0.6rem",
+                        backgroundColor: "rgba(255, 255, 255, 0.7)",
+                        borderRadius: "5px",
+                        padding: "0 5px",
+                    }}
+                />
+
                 <Box
                     sx={{
                         display: "flex",
-                        gap: "1rem",
                         justifyContent: "center",
-                        mt: 2,
-                        flexDirection: {
-                            xs: "column",
-                            sm: "row",
-                        },
+                        marginTop: "0.5rem",
+                        maxWidth: "100%",
                     }}
                 >
                     <Button

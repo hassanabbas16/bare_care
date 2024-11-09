@@ -56,40 +56,88 @@ function BlogForm({ onSubmit, onCancel }) {
         </Card>
     );
 }
+import { format } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 export default function BlogPage() {
-    const [blogs, setBlogs] = useState([
-        { id: 1, title: "5 Tips for Glowing Skin", content: "Discover these top skincare tips to keep your skin radiant...", author: "Sarah Ali" },
-        { id: 2, title: "Understanding Your Skin Type", content: "A guide to help you determine your skin type and choose the right products...", author: "Omar Raza" },
-        { id: 3, title: "The Benefits of Vitamin C", content: "Vitamin C is a powerful antioxidant that can brighten your skin...", author: "Mariam Zaidi" },
-        { id: 4, title: "Winter Skincare Essentials", content: "Keep your skin hydrated and protected during the colder months...", author: "Ayesha Khan" },
-        { id: 5, title: "The Truth About Sunscreen", content: "Why you should wear sunscreen daily, even indoors...", author: "Bilal Mustafa" }
-    ]);
-    const [showBlogForm, setShowBlogForm] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [blogs, setBlogs] = useState([]);
+    const [userBlogs, setUserBlogs] = useState([]);
+    const [user, setUser] = useState(null);
+    const router = useRouter();
 
-    const handleAddBlogClick = () => setShowBlogForm(true);
-    const handleCancelBlogForm = () => setShowBlogForm(false);
+    // Fetch user session
+    useEffect(() => {
+        async function fetchSession() {
+            try {
+                const response = await fetch('/api/auth/session');
+                const data = await response.json();
 
-    const handleSubmitBlogForm = async (newBlog) => {
+                if (data.loggedIn) {
+                    setUser(data.user);
+                }
+            } catch (error) {
+                console.error('Error fetching session:', error);
+            }
+        }
+        fetchSession();
+    }, []);
+
+    // Fetch all blogs
+    useEffect(() => {
+        async function fetchBlogs() {
+            try {
+                const response = await fetch('/api/blog');
+                const data = await response.json();
+                setBlogs(data);
+            } catch (error) {
+                console.error('Error fetching blogs:', error);
+            }
+        }
+        fetchBlogs();
+    }, []);
+
+    // Filter user's own blogs
+    useEffect(() => {
+        if (user) {
+            const userId = user.id;
+            const userOwnedBlogs = blogs.filter((blog) => blog.user_id === userId);
+            setUserBlogs(userOwnedBlogs);
+        }
+    }, [user, blogs]);
+
+    const handleCreateBlog = () => {
+        if (user) {
+            router.push('/blog/create');
+        } else {
+            router.push('/login?redirect=/blog/create');
+        }
+    };
+
+    const handleDeleteBlog = async (blogId) => {
         try {
-            const response = await fetch('/api/posts', {
-                method: 'POST',
+            const response = await fetch('/api/auth/session');
+            const sessionData = await response.json();
+
+            if (!sessionData.loggedIn) {
+                router.push('/login?redirect=/blog');
+                return;
+            }
+
+            const deleteResponse = await fetch(`/api/blog/${blogId}`, {
+                method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${sessionData.user.access_token}`,
                 },
-                body: JSON.stringify(newBlog),
             });
 
-            if (response.ok) {
-                const addedBlog = await response.json();
-                setBlogs([...blogs, addedBlog]); // Update blog list with new one
-                setShowBlogForm(false); // Close the form
+            if (deleteResponse.ok) {
+                setBlogs(blogs.filter((blog) => blog.id !== blogId));
+                setUserBlogs(userBlogs.filter((blog) => blog.id !== blogId));
             } else {
-                console.error('Failed to add blog');
+                console.error('Failed to delete blog');
             }
         } catch (error) {
-            console.error('Error submitting blog:', error);
+            console.error('Error deleting blog:', error);
         }
     };
 
@@ -148,8 +196,7 @@ export default function BlogPage() {
             <Typography variant="h4" gutterBottom>
                 Skincare Blogs
             </Typography>
-
-            <Button variant="outlined" onClick={handleAddBlogClick}>
+            <Button variant="outlined" onClick={handleCreateBlog}>
                 Write a New Blog Post
             </Button>
 
@@ -158,6 +205,77 @@ export default function BlogPage() {
             )}
 
             {/* Blog Section with List of Filtered Blogs */}
+            {/* User's Blogs Section */}
+            {user && userBlogs.length > 0 && (
+                <Box sx={{ mt: 4 }}>
+                    <Typography variant="h5" gutterBottom>
+                        Your Blogs
+                    </Typography>
+                    <Grid container spacing={4}>
+                        {userBlogs.map((blog) => (
+                            <Grid item xs={12} sm={6} md={4} key={blog.id}>
+                                <Card
+                                    sx={{
+                                        height: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                    }}
+                                >
+                                    {blog.image_url && (
+                                        <CardMedia
+                                            component="img"
+                                            image={blog.image_url}
+                                            alt={blog.title}
+                                            height="200"
+                                        />
+                                    )}
+                                    <CardContent>
+                                        <Typography variant="h5" component="div" gutterBottom>
+                                            {blog.title}
+                                        </Typography>
+                                        <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                            paragraph
+                                        >
+                                            {blog.content.substring(0, 100)}...
+                                        </Typography>
+                                        <Typography variant="caption" color="text.secondary">
+                                            By {blog.author_name || 'You'} on{' '}
+                                            {format(new Date(blog.created_at), 'MMMM dd, yyyy')}
+                                        </Typography>
+                                        <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={() =>
+                                                    router.push(`/blog/create?id=${blog.id}`)
+                                                }
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                variant="outlined"
+                                                color="error"
+                                                onClick={() => handleDeleteBlog(blog.id)}
+                                            >
+                                                Delete
+                                            </Button>
+                                        </Box>
+                                        <Link href={`/blog/${blog.id}`}>
+                                            <Button sx={{ mt: 2 }} variant="text">
+                                                Read More
+                                            </Button>
+                                        </Link>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Box>
+            )}
+
+            {/* All Blogs Section */}
             <Box sx={{ mt: 4 }}>
                 {filteredBlogs.length > 0 ? (
                     filteredBlogs.map((blog) => (
