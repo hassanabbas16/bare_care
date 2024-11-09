@@ -1,12 +1,14 @@
+// src/app/page.jsx
 "use client";
 import { useTheme } from "../contexts/themeContext";
 import Typography from "@mui/material/Typography";
 import Footer from "../components/footer/Footer";
 import Navbar from "../components/navbar/Navbar";
 import HeroSection from "../components/Home/Hero/HeroSection";
+import PollModal from "../components/Home/Polls/PollModal";
 
 export default function Home() {
-    const { toggleTheme, theme } = useTheme();
+    const { theme } = useTheme();
 
     return (
         <div
@@ -21,30 +23,7 @@ export default function Home() {
         >
             <Navbar />
             <HeroSection />
-            <div
-                style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexGrow: 1,  // Push footer to the bottom
-                }}
-            >
-                <Typography variant="h6">
-                    Welcome to the theme test page. Modify the theme context to see changes.
-                </Typography>
-                <button
-                    onClick={toggleTheme}
-                    style={{
-                        backgroundColor: theme.palette.primary.main,
-                        color: theme.palette.primary.contrastText,
-                    }}
-                    className="rounded-full px-6 py-2 transition-colors"
-                >
-                    Toggle Theme
-                </button>
-            </div>
-
+            <PollModal />
             <Footer />
         </div>
     );
