@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from 'react';
 import { Box, Toolbar, Typography } from '@mui/material';
 import Navbar from '../../components/Customer/Navbar';
@@ -7,6 +8,7 @@ import SkinQuiz from '../../components/Customer/SkinQuiz';
 import Recommendations from '../../components/Customer/Recommendations';
 import Tips from '../../components/Customer/Tips';
 import Wishlist from '../../components/Customer/Wishlist';
+import CustomerBlogs from '../../components/Customer/CustomerBlogs'; // Import the new component
 import { supabase } from '../../lib/supabaseClient';
 
 const CustomerDashboard = () => {
@@ -54,7 +56,6 @@ const CustomerDashboard = () => {
         fetchUser();
     }, []);
 
-
     const toggleDrawer = () => setDrawerOpen((prev) => !prev);
 
     const handleTabChange = (tab) => setSelectedTab(tab);
@@ -69,6 +70,8 @@ const CustomerDashboard = () => {
                 return <Tips />;
             case 'Wishlist':
                 return <Wishlist />;
+            case 'Blogs': // New Blogs Tab
+                return <CustomerBlogs />;
             default:
                 return <SkinQuiz />;
         }

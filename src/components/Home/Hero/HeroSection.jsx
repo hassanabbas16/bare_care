@@ -1,13 +1,14 @@
+// HeroSection.js
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Typography, Button, Box, styled, Card } from "@mui/material";
+import { Typography, Button, Box, styled } from "@mui/material";
 import { gsap } from "gsap";
 import { useTheme } from "../../../contexts/themeContext";
 import Image from "next/image";
 import herobg from "../../../../public/Home/herobg2.png";
-import dottedcircle from "../../../../public/Home/dottedcircle.png";
-import VerifiedIcon from "@mui/icons-material/Verified";
 import HomeSocialsBox from "./HomeSocials";
+import FloatingCard from "../../common/FloatingCard";
+import FloatingCircle from "../../common/FloatingCircle";
 
 const HeroSection = () => {
     const { theme } = useTheme();
@@ -36,7 +37,7 @@ const HeroSection = () => {
 
         tlRef.current = gsap.timeline({ repeat: -1 });
 
-        lines.forEach((line, index) => {
+        lines.forEach((line) => {
             tlRef.current
                 .to(container, {
                     opacity: 0,
@@ -199,7 +200,7 @@ const HeroSection = () => {
                 title="Trusted by Thousands"
                 description="Join thousands of satisfied customers who trust us to provide the best beauty products for their skincare routines."
             />
-            <FloatingCircle size="500px" top="-15%" left="-10%" />
+            <FloatingCircle size="500px" top="-15%" left="-10%" dark />
             <FloatingCircle size="400px" bottom="-5%" right="30%" />
         </HomeHeroContainer>
     );
@@ -215,79 +216,3 @@ export const HomeHeroContainer = styled(Box)(({ theme }) => ({
     alignItems: "center",
     justifyContent: "center",
 }));
-
-export const FloatingCard = ({ icon, title, description, top, left, right }) => {
-    return (
-        <Card
-            sx={{
-                position: "absolute",
-                top: top || "50%",
-                left: left || "auto",
-                right: right || "auto",
-                transform: "translateY(-50%)",
-                padding: "1.5rem",
-                borderRadius: "20px",
-                boxShadow: "0px 6px 20px rgba(0, 0, 0, 0.1)",
-                backgroundColor: (theme) => theme.palette.background.default,
-                maxWidth: "320px",
-                textAlign: "center",
-                zIndex: "10",
-            }}
-        >
-            <Box
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: "1rem",
-                }}
-            >
-                {icon ? (
-                    icon
-                ) : (
-                    <VerifiedIcon sx={{ fontSize: "3rem", color: (theme) => theme.palette.primary.main }} />
-                )}
-            </Box>
-            <Typography
-                variant="h6"
-                sx={{
-                    fontWeight: 500,
-                    fontSize: "1.2rem",
-                    color: (theme) => theme.palette.primary.main,
-                    marginBottom: "0.5rem",
-                }}
-            >
-                {title || "Authenticity Guaranteed"}
-            </Typography>
-            <Typography variant="body2" sx={{ color: "#777" }}>
-                {description ||
-                    "All our products are 100% authentic and backed by our satisfaction guarantee."}
-            </Typography>
-        </Card>
-    );
-};
-
-export const FloatingCircle = ({ size = "100px", top, left, right, bottom }) => {
-    return (
-        <Box
-            sx={{
-                position: "absolute",
-                top: top || "auto",
-                left: left || "auto",
-                right: right || "auto",
-                bottom: bottom || "auto",
-                width: size,
-                height: size,
-                opacity: 0.1,
-                zIndex: 0,
-            }}
-        >
-            <Image
-                src={dottedcircle}
-                alt="Dotted Circle"
-                layout="fill"
-                objectFit="contain"
-            />
-        </Box>
-    );
-};

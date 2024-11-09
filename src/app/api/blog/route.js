@@ -41,7 +41,7 @@ export async function POST(req) {
         const { title, content, image_url } = await req.json();
         const { data, error } = await supabase
             .from('blogs')
-            .insert([{ title, content, image_url, user_id: user.id }])
+            .insert([{ title, content, user_id: user.id }])
             .select('id, title, content, created_at, user_id');
         if (error) throw error;
         return new Response(JSON.stringify(data[0]), { status: 201 });

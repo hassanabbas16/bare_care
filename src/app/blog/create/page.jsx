@@ -5,9 +5,12 @@ import {
     Typography,
     Button,
     TextField,
+    Card,
+    Box,
 } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../../lib/supabaseClient';
+import FloatingCircle from "../../../components/common/FloatingCircle";
 
 export default function CreateOrEditBlogPage() {
     const [title, setTitle] = useState('');
@@ -24,7 +27,6 @@ export default function CreateOrEditBlogPage() {
                 data: { session },
             } = await supabase.auth.getSession();
             if (!session) {
-                // Redirect to login if not logged in
                 router.push(`/login?redirect=/blog/create${blogId ? `?id=${blogId}` : ''}`);
             } else {
                 setUser(session.user);
@@ -36,13 +38,11 @@ export default function CreateOrEditBlogPage() {
     useEffect(() => {
         if (blogId) {
             setIsEditing(true);
-            // Fetch the blog details for editing
             async function fetchBlog() {
                 try {
                     const response = await fetch(`/api/blog/${blogId}`);
                     const data = await response.json();
                     if (data.user_id !== user.id) {
-                        // Redirect if the user is not the author
                         router.push('/blog');
                     } else {
                         setTitle(data.title);
@@ -84,7 +84,6 @@ export default function CreateOrEditBlogPage() {
             } else {
                 const errorData = await response.json();
                 console.error('Failed to save blog:', errorData.error);
-                // Optionally, display the error to the user
             }
         } catch (error) {
             console.error('Error saving blog:', error);
@@ -92,33 +91,84 @@ export default function CreateOrEditBlogPage() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 4 }}>
-            <Typography variant="h4" gutterBottom>
+        <Container maxWidth="md" sx={{ mt: 15, position: 'relative', alignItems: "center", justifyContent: "center" }}>
+            <FloatingCircle size="400px" top="-45%" left="-70%" dark />
+            <FloatingCircle size="500px" top="50%" right="-50%" />
+            <Typography
+                align="center"
+                sx={{
+                    fontWeight: 'bold',
+                    mb: 3,
+                    fontSize: "4rem",
+                    color: theme => theme.palette.mode === 'dark' ? '#FFF' : '#000'
+                }}
+            >
                 {isEditing ? 'Edit Blog Post' : 'Create a New Blog Post'}
             </Typography>
-            <form onSubmit={handleSubmit}>
-                <TextField
-                    fullWidth
-                    label="Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    fullWidth
-                    label="Content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    multiline
-                    rows={10}
-                    required
-                    sx={{ mb: 2 }}
-                />
-                <Button variant="contained" color="primary" type="submit">
-                    {isEditing ? 'Update' : 'Publish'}
-                </Button>
-            </form>
+
+            <Card sx={{
+                padding: 4,
+                borderRadius: "16px",
+                boxShadow: theme => theme.palette.mode === 'light'
+                    ? "0px 8px 24px rgba(0, 0, 0, 0.1)"
+                    : "0px 8px 24px rgba(255, 255, 255, 0.1)",
+                backgroundColor: theme => theme.palette.mode === 'light' ? '#fff' : '#1a1a1a',
+            }}>
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        fullWidth
+                        label="Blog Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        required
+                        sx={{
+                            mb: 3,
+                            borderRadius: '8px',
+                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '8px',
+                            },
+                        }}
+                    />
+                    <TextField
+                        fullWidth
+                        label="Content"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        multiline
+                        rows={10}
+                        required
+                        sx={{
+                            mb: 3,
+                            borderRadius: '8px',
+                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: '8px',
+                            },
+                        }}
+                    />
+                    <Box sx={{ textAlign: 'center' }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            sx={{
+                                padding: '0.8rem 2.5rem',
+                                fontSize: '1.1rem',
+                                fontWeight: 'bold',
+                                borderRadius: '8px',
+                                backgroundColor: theme => theme.palette.primary.main,
+                                color: '#FFF',
+                                '&:hover': {
+                                    backgroundColor: theme => theme.palette.primary.dark,
+                                },
+                            }}
+                        >
+                            {isEditing ? 'Update' : 'Publish'}
+                        </Button>
+                    </Box>
+                </form>
+            </Card>
         </Container>
     );
 }

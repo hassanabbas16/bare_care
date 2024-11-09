@@ -3,6 +3,7 @@ import QuizIcon from "@mui/icons-material/Quiz";
 import SpaIcon from "@mui/icons-material/Spa";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import ArticleIcon from "@mui/icons-material/Article"; // Icon for Blogs
 
 const Sidebar = ({ drawerOpen, toggleDrawer, handleTabChange }) => {
     const tabs = [
@@ -10,6 +11,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer, handleTabChange }) => {
         { text: "Recommendations", icon: <SpaIcon /> },
         { text: "Tips", icon: <LightbulbIcon /> },
         { text: "Wishlist", icon: <FavoriteIcon /> },
+        { text: "Blogs", icon: <ArticleIcon /> }, // New Blogs Tab
     ];
 
     return (
