@@ -42,7 +42,7 @@ export async function POST(req) {
         const { data, error } = await supabase
             .from('blogs')
             .insert([{ title, content, image_url, user_id: user.id }])
-            .select('id, title, content, image_url, created_at, user_id');
+            .select('id, title, content, created_at, user_id');
         if (error) throw error;
         return new Response(JSON.stringify(data[0]), { status: 201 });
     } catch (error) {
