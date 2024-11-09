@@ -1,4 +1,3 @@
-// app/blog/create/page.jsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import {
@@ -8,7 +7,6 @@ import {
     TextField,
 } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { supabase } from '../../../lib/supabaseClient';
 
 export default function CreateOrEditBlogPage() {
     const [title, setTitle] = useState('');
@@ -22,14 +20,18 @@ export default function CreateOrEditBlogPage() {
 
     useEffect(() => {
         async function fetchSession() {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            if (!session) {
-                // Redirect to login if not logged in
-                router.push(`/login?redirect=/blog/create${blogId ? `?id=${blogId}` : ''}`);
-            } else {
-                setUser(session.user);
+            try {
+                const response = await fetch('/api/auth/session');
+                const data = await response.json();
+
+                if (!data.loggedIn) {
+                    // Redirect to login if not logged in
+                    router.push(`/login?redirect=/blog/create${blogId ? `?id=${blogId}` : ''}`);
+                } else {
+                    setUser(data.user);
+                }
+            } catch (error) {
+                console.error('Error fetching session:', error);
             }
         }
         fetchSession();
@@ -73,13 +75,10 @@ export default function CreateOrEditBlogPage() {
             const url = isEditing ? `/api/blog/${blogId}` : '/api/blog';
             const method = isEditing ? 'PUT' : 'POST';
 
-            const { data: { session } } = await supabase.auth.getSession();
-
             const response = await fetch(url, {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${session.access_token}`, // Include the access token
                 },
                 body: JSON.stringify(blogData),
             });
