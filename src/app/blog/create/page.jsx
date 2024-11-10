@@ -80,7 +80,7 @@ export default function CreateOrEditBlogPage() {
                 body: JSON.stringify(blogData),
             });
             if (response.ok) {
-                router.push('/blog');
+                router.push(isEditing ? '/dashboard' : '/blog');
             } else {
                 const errorData = await response.json();
                 console.error('Failed to save blog:', errorData.error);

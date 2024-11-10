@@ -10,10 +10,11 @@ import {
     TextField,
     InputAdornment,
 } from '@mui/material';
-import Link from 'next/link';
-import SearchIcon from '@mui/icons-material/Search';
-import { format } from 'date-fns';
+import Grid from "@mui/material/Grid2";
 import { useRouter } from 'next/navigation';
+import SearchIcon from '@mui/icons-material/Search';
+import Link from 'next/link';
+import { format } from 'date-fns';
 
 export default function CustomerBlogs() {
     const [blogs, setBlogs] = useState([]);
@@ -26,13 +27,10 @@ export default function CustomerBlogs() {
             try {
                 const response = await fetch('/api/blog', {
                     method: 'GET',
-                    credentials: 'include', // Ensure cookies are sent
+                    credentials: 'include',
                 });
                 const data = await response.json();
-
-                // Filter blogs that belong to the user
-                const userBlogs = data.filter(blog => blog.user_id === data.user?.id);
-                setBlogs(userBlogs);
+                setBlogs(data);
             } catch (error) {
                 console.error('Error fetching user blogs:', error);
             }
@@ -44,7 +42,7 @@ export default function CustomerBlogs() {
         try {
             const deleteResponse = await fetch(`/api/blog/${blogId}`, {
                 method: 'DELETE',
-                credentials: 'include', // Ensure cookies are sent
+                credentials: 'include',
             });
 
             if (deleteResponse.ok) {
@@ -52,14 +50,12 @@ export default function CustomerBlogs() {
             } else {
                 const errorData = await deleteResponse.json();
                 console.error('Failed to delete blog:', errorData.error);
-                // Optionally, display error to the user (e.g., via a toast notification)
             }
         } catch (error) {
             console.error('Error deleting blog:', error);
         }
     };
 
-    // Filter blogs based on search query
     const filteredBlogs = blogs.filter(blog =>
         blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         blog.content.toLowerCase().includes(searchQuery.toLowerCase())
@@ -67,80 +63,105 @@ export default function CustomerBlogs() {
 
     return (
         <Box sx={{ mt: 4 }}>
-            {/* Blogs Header and Create Button */}
+            <Typography sx={{ fontWeight: 'bold', fontSize: '2.4rem', mb: 2, color: "black" }}>
+                Your Blogs
+            </Typography>
+
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h5">
-                    Your Blogs
-                </Typography>
-                <Button variant="outlined" onClick={() => router.push('/blog/create')}>
+                <TextField
+                    label="Search your blogs..."
+                    variant="outlined"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <SearchIcon />
+                            </InputAdornment>
+                        ),
+                    }}
+                    sx={{ flex: 1, mr: 2 }}
+                />
+                <Button
+                    variant="outlined"
+                    onClick={() => router.push('/blog/create')}
+                    sx={{ padding: '0.8rem 1.5rem', fontSize: '1rem', fontWeight: 'bold' }}
+                >
                     Write a New Blog Post
                 </Button>
             </Box>
 
-            {/* Search Bar */}
-            <TextField
-                label="Search your blogs..."
-                fullWidth
-                margin="normal"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <SearchIcon />
-                        </InputAdornment>
-                    ),
-                }}
-            />
+            <Grid container spacing={3} sx={{ mt: 2, maxWidth: "100%", mx: "auto" }}>
+                {filteredBlogs.length > 0 ? (
+                    filteredBlogs.map((blog) => (
+                        <Grid item xs={12} sm={6} md={4} key={blog.id}>
+                            <Card
+                                sx={{
+                                    maxHeight: '400px',
+                                    minHeight: '300px',
+                                    maxWidth: "300px",
+                                    borderRadius: "24px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    padding: "3rem",
+                                    backgroundColor: '#fff',
+                                    color: '#212121',
+                                    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                                }}
+                            >
+                                <CardContent>
+                                    <Typography variant="h5" component="div" gutterBottom>
+                                        {blog.title}
+                                    </Typography>
+                                    <Typography
+                                        variant="body1"
+                                        color="text.secondary"
+                                        paragraph
+                                        sx={{
+                                            display: '-webkit-box',
+                                            WebkitBoxOrient: 'vertical',
+                                            overflow: 'hidden',
+                                            WebkitLineClamp: 4,
+                                        }}
+                                    >
+                                        {blog.content}
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary">
+                                        By {blog.author_name || 'You'} on {format(new Date(blog.created_at), 'MMMM dd, yyyy')}
+                                    </Typography>
+                                </CardContent>
 
-            {/* Blogs List */}
-            {filteredBlogs.length > 0 ? (
-                filteredBlogs.map((blog) => (
-                    <Card key={blog.id} sx={{ mb: 3 }}>
-                        <CardContent>
-                            <Typography variant="h5" component="div" gutterBottom>
-                                {blog.title}
-                            </Typography>
-                            <Typography variant="body1" color="text.secondary" paragraph>
-                                {blog.content}
-                            </Typography>
-                            <Typography variant="caption" color="text.secondary">
-                                By {blog.author_name || 'You'} on{' '}
-                                {format(new Date(blog.created_at), 'MMMM dd, yyyy')}
-                            </Typography>
-                            <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center', gap: 2 }}>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() =>
-                                        router.push(`/blog/create?id=${blog.id}`)
-                                    }
-                                >
-                                    Edit
-                                </Button>
-                                <Button
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => handleDeleteBlog(blog.id)}
-                                >
-                                    Delete
-                                </Button>
-                            </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                                <Link href={`/blog/${blog.id}`} passHref>
-                                    <Button variant="text" color="primary">
-                                        Read More
-                                    </Button>
-                                </Link>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                ))
-            ) : (
-                <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-                    You have not created any blogs yet.
-                </Typography>
-            )}
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                                    <Link href={`/blog/${blog.id}`} passHref>
+                                        <Button variant="text" color="primary">Read More</Button>
+                                    </Link>
+                                    <Box sx={{ display: 'flex', gap: 1 }}>
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={() => router.push(`/blog/create?id=${blog.id}`)}
+                                        >
+                                            Edit
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            color="error"
+                                            onClick={() => handleDeleteBlog(blog.id)}
+                                        >
+                                            Delete
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Card>
+                        </Grid>
+                    ))
+                ) : (
+                    <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+                        You have not created any blogs yet.
+                    </Typography>
+                )}
+            </Grid>
         </Box>
     );
 }

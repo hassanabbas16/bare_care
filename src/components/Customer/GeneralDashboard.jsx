@@ -53,7 +53,6 @@ const GeneralDashboard = ({ onQuizClick }) => {
                     ))}
                 </Grid>
 
-                {/* Take the Skin Quiz Section */}
                 <Box sx={{ mt: 4, p: 3, backgroundColor: '#E0F7FA', borderRadius: 2, textAlign: 'center', padding: "2rem" }}>
                     <Typography sx={{ fontWeight: 'bold', mb: 1, fontSize: "2.4rem", color: "black" }}>
                         Take the Skin Quiz Now!
