@@ -24,7 +24,9 @@ const AuthPage = () => {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const redirect = params.get('redirect');
-        if (redirect) {
+        if (redirect === 'modal') {
+            setRedirectUrl('/?openPoll=true');
+        } else if (redirect) {
             setRedirectUrl(redirect);
         }
     }, []);
