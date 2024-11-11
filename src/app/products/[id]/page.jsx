@@ -11,7 +11,6 @@ import {
     Rating,
     Avatar,
     TextField,
-    IconButton,
     Grid,
     Card,
     CardContent,
@@ -22,6 +21,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import { useTheme } from "../../../contexts/themeContext";
 import ProductCard from "../../../components/products/ProductCard";
 import Image from "next/image";
+import FloatingCircle from '../../../components/common/FloatingCircle';
 
 const ProductPage = () => {
     const { theme } = useTheme();
@@ -36,6 +36,7 @@ const ProductPage = () => {
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [otherVendors, setOtherVendors] = useState([]);
 
+    // Fetch product and vendors
     useEffect(() => {
         const fetchProductAndVendors = async () => {
             try {
@@ -60,22 +61,25 @@ const ProductPage = () => {
         if (id) fetchProductAndVendors();
     }, [id]);
 
-    useEffect(() => {
-        const fetchReviews = async () => {
-            try {
-                const res = await fetch(`/api/reviews?product_id=${id}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setReviews(data);
-                }
-            } catch (error) {
-                console.error("Error fetching reviews:", error);
+    // Define fetchReviews as a standalone function so it can be reused
+    const fetchReviews = async () => {
+        try {
+            const res = await fetch(`/api/reviews?product_id=${id}`);
+            if (res.ok) {
+                const data = await res.json();
+                setReviews(data);
             }
-        };
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
+        }
+    };
 
+    // Fetch reviews on component mount
+    useEffect(() => {
         if (id) fetchReviews();
     }, [id]);
 
+    // Fetch related products
     useEffect(() => {
         const fetchRelatedProducts = async () => {
             try {
@@ -92,6 +96,7 @@ const ProductPage = () => {
         if (id) fetchRelatedProducts();
     }, [id]);
 
+    // Check user session
     useEffect(() => {
         const checkSession = async () => {
             try {
@@ -113,21 +118,65 @@ const ProductPage = () => {
         }
     };
 
+    const handleSubmitReview = async () => {
+        if (!session) {
+            localStorage.setItem(
+                "pendingReview",
+                JSON.stringify({
+                    productId: product.id,
+                    comment: newComment,
+                    rating: newRating,
+                })
+            );
+
+            const redirectUrl = `/products/${product.id}`;
+            router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/reviews", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    product_id: product.id,
+                    rating: newRating,
+                    comment: newComment,
+                }),
+            });
+            if (res.ok) {
+                setNewComment("");
+                setNewRating(0);
+                fetchReviews(); // Refetch reviews after submitting
+            } else {
+                const errorData = await res.json();
+                console.error("Error submitting review:", errorData.error);
+            }
+        } catch (error) {
+            console.error("Error submitting review:", error);
+        }
+    };
+
     const productImageUrl = product.image_url.startsWith("//")
         ? `https:${product.image_url}`
         : product.image_url;
 
     return (
         <Box sx={{ paddingTop: "15rem", alignItems: "center", justifyContent: "center", paddingBottom: "10rem", display: "flex", flexDirection: "column" }}>
+            <FloatingCircle size="400px" top="10%" left="0%" dark />
+            <FloatingCircle size="500px" top="40%" right="0" />
+            <FloatingCircle size="600px" bottom="-50%" left="-10%" />
             <Card
                 sx={{
                     minHeight: '300px',
                     maxWidth: "80%",
+                    minWidth: "80%",
                     borderRadius: "24px",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
                     padding: "3rem",
+                    zIndex: 1,
                     backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
                     color: theme.palette.mode === "light" ? '#212121' : '#fff',
                     boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
@@ -139,7 +188,6 @@ const ProductPage = () => {
                 </Typography>
 
                 <Grid container spacing={3}>
-                    {/* Product Image */}
                     <Grid item xs={12} md={5}>
                         <Box sx={{ position: "relative", width: "100%", height: "400px" }}>
                             <Image
@@ -151,7 +199,6 @@ const ProductPage = () => {
                         </Box>
                     </Grid>
 
-                    {/* Product Details */}
                     <Grid item xs={12} md={7}>
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                             <Typography color="textSecondary" sx={{fontSize: "1.6rem"}}>
@@ -171,7 +218,7 @@ const ProductPage = () => {
                                     sx={{
                                         textDecoration: "line-through",
                                         color: "#FF6961",
-                                        fontSize: "1.4ren",
+                                        fontSize: "1.4rem",
                                     }}
                                 >
                                     Rs. {parseFloat(product.regular_price).toFixed(2)}
@@ -200,24 +247,8 @@ const ProductPage = () => {
                         </Box>
                     </Grid>
                 </Grid>
-            </Card>
 
-            {/* Reviews Section */}
-            <Card sx={{
-                minHeight: '300px',
-                maxWidth: "80%",
-                borderRadius: "24px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-                padding: "3rem",
-                backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
-                color: theme.palette.mode === "light" ? '#212121' : '#fff',
-                boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
-                marginBottom: "8rem",
-            }}
-            >
-                <Typography gutterBottom sx={{fontSize: "2.8rem"}}>
+                <Typography gutterBottom sx={{fontSize: "2.8rem", mt: 3}}>
                     Reviews
                 </Typography>
 
@@ -242,7 +273,7 @@ const ProductPage = () => {
                     />
                     <Button
                         variant="contained"
-                        onClick={() => {}}
+                        onClick={handleSubmitReview}
                         disabled={!newComment || newRating === 0}
                         sx={{fontSize: "1.6rem"}}
                     >
@@ -306,10 +337,11 @@ const ProductPage = () => {
                 </Box>
             </Card>
 
-            {/* Related Products Section */}
             <Card sx={{
                 minHeight: '300px',
                 maxWidth: "80%",
+                zIndex: 1,
+                minWidth: "80%",
                 borderRadius: "24px",
                 display: "flex",
                 flexDirection: "column",
@@ -320,7 +352,7 @@ const ProductPage = () => {
                 boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
                 marginBottom: "8rem",
             }}>
-                <Typography gutterBottom sx={{fontSize: "2.8rem"}}>
+                <Typography gutterBottom sx={{fontSize: "2.8rem", mb: 3}}>
                     Related Products
                 </Typography>
                 <Box
@@ -328,11 +360,11 @@ const ProductPage = () => {
                         display: "flex",
                         flexWrap: "wrap",
                         gap: "1rem",
-                        justifyContent: "flex-start",
+                        justifyContent: "center",
                     }}
                 >
                     {relatedProducts.map((relatedProduct) => (
-                        <Box key={relatedProduct.id} sx={{ width: "200px" }}>
+                        <Box key={relatedProduct.id}>
                             <ProductCard product={relatedProduct} />
                         </Box>
                     ))}
