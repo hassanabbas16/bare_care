@@ -2,14 +2,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Box, Typography } from "@mui/material";
-import Grid from "@mui/material/Grid2";
+import { Box, Typography, Grid, Card, CardContent, CardMedia } from "@mui/material";
 import ProductCard from "../../components/products/ProductCard";
 import ExpandingCards from "../../components/discount/ExpandableCards";
 import { useRouter } from "next/navigation";
 import heroBg2 from "../../../public/Home/herobg2.png";
+import { useTheme } from "../../contexts/themeContext";
 
 const DiscountsPage = () => {
+    const { theme } = useTheme();
     const [allDiscountedProducts, setAllDiscountedProducts] = useState([]);
     const [exclusiveProducts, setExclusiveProducts] = useState([]);
     const [bundles, setBundles] = useState({});
@@ -28,12 +29,9 @@ const DiscountsPage = () => {
                 );
 
                 setAllDiscountedProducts(discountedProducts);
-
-                // Initialize exclusive products
                 setExclusiveProducts(getRandomProducts(discountedProducts, 5));
 
-                // Get bundles for main categories
-                const mainCategories = ["Cleansers", "Toners", "Serums", "Moisturizers", "Sunscreens"]; // Replace with your actual categories
+                const mainCategories = ["Cleansers", "Toners", "Serums", "Moisturizers", "Sunscreens"];
                 const categoryBundles = {};
                 mainCategories.forEach((category) => {
                     categoryBundles[category] = discountedProducts.filter(
@@ -69,8 +67,8 @@ const DiscountsPage = () => {
             {/* Hero Section */}
             <Box
                 sx={{
-                    height: "60vh",
-                    backgroundImage: `url(${heroBg2})`,
+                    height: "70vh",
+                    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${heroBg2})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     display: "flex",
@@ -78,19 +76,21 @@ const DiscountsPage = () => {
                     justifyContent: "center",
                     color: "#fff",
                     textAlign: "center",
+                    padding: "0 2rem",
+                    boxShadow: theme.palette.mode === "light" ? "0px 10px 20px rgba(0, 0, 0, 0.2)" : "0px 10px 20px rgba(255, 255, 255, 0.1)",
                 }}
             >
-                <Typography variant="h2" sx={{ fontWeight: "bold", textShadow: "2px 2px 8px rgba(0,0,0,0.7)" }}>
+                <Typography variant="h2" sx={{ fontWeight: "bold", textShadow: "3px 3px 12px rgba(0,0,0,0.7)", fontSize: { xs: "2.4rem", md: "4rem" } }}>
                     Exclusive Discounts on Skincare Essentials!
                 </Typography>
             </Box>
 
             {/* Exclusive Products Section */}
-            <Box sx={{ padding: "2rem" }}>
-                <Typography variant="h4" sx={{ marginBottom: "2rem", textAlign: "center", fontWeight: "bold" }}>
+            <Box sx={{ padding: "4rem 2rem", backgroundColor: theme.palette.mode === "light" ? "#f7f9fc" : "#121212" }}>
+                <Typography variant="h4" sx={{ marginBottom: "3rem", textAlign: "center", fontWeight: "bold", fontSize: "2.8rem", color: theme.palette.mode === "light" ? "#333" : "#fff" }}>
                     Exclusive Offers
                 </Typography>
-                <Grid container spacing={2}>
+                <Grid container spacing={4}>
                     {exclusiveProducts.map((product) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                             <ProductCard product={product} />
@@ -99,16 +99,18 @@ const DiscountsPage = () => {
                 </Grid>
             </Box>
 
-            {/* Banner or Special Component */}
-            <ExpandingCards />
+            {/* Special Banner Section */}
+            <Box sx={{ padding: "3rem 0", background: "linear-gradient(45deg, #ff9a9e, #fad0c4)", margin: "4rem 0" }}>
+                <ExpandingCards />
+            </Box>
 
             {/* Bundles Section */}
             {Object.keys(bundles).map((category) => (
-                <Box key={category} sx={{ padding: "2rem" }}>
-                    <Typography variant="h4" sx={{ marginBottom: "2rem", fontWeight: "bold" }}>
+                <Box key={category} sx={{ padding: "4rem 2rem", backgroundColor: theme.palette.mode === "light" ? "#f2f4f8" : "#1c1c1c" }}>
+                    <Typography variant="h4" sx={{ marginBottom: "3rem", fontWeight: "bold", fontSize: "2.8rem", color: theme.palette.mode === "light" ? "#333" : "#fff" }}>
                         {category} Deals
                     </Typography>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={4}>
                         {bundles[category].slice(0, 5).map((product) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                                 <ProductCard product={product} />
@@ -117,9 +119,6 @@ const DiscountsPage = () => {
                     </Grid>
                 </Box>
             ))}
-
-            {/* Additional Banners or Components if needed */}
-            {/* ... */}
         </Box>
     );
 };

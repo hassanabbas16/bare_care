@@ -253,7 +253,7 @@ const ProductPage = () => {
                 </Typography>
 
                 <Box sx={{ marginBottom: "2rem" }}>
-                    <Typography color="black" mb={1} sx={{fontSize: "2rem"}}>
+                    <Typography mb={1} sx={{fontSize: "2rem"}}>
                         Write a Review
                     </Typography>
                     <Rating
@@ -305,7 +305,6 @@ const ProductPage = () => {
                                         <Typography
                                             variant="h6"
                                             fontWeight="bold"
-                                            color="black"
                                         >
                                             {review.profiles
                                                 ? `${review.profiles.first_name} ${review.profiles.last_name}`
@@ -318,19 +317,19 @@ const ProductPage = () => {
                                         />
                                     </Box>
                                 </Box>
-                                <Typography variant="body2" color="black">
+                                <Typography variant="body2">
                                     {review.comment}
                                 </Typography>
                                 <Typography
                                     variant="caption"
-                                    sx={{ color: "gray", display: "block", mt: 1 }}
+                                    sx={{ color: theme.palette.mode === 'light' ? 'grey' : 'white', display: "block", mt: 1 }}
                                 >
                                     {new Date(review.created_at).toLocaleDateString()}
                                 </Typography>
                             </Box>
                         ))
                     ) : (
-                        <Typography variant="body2" color="black">
+                        <Typography variant="body2">
                             No reviews yet.
                         </Typography>
                     )}
