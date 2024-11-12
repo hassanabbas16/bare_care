@@ -5,15 +5,16 @@ import dynamic from "next/dynamic";
 import { Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import ProductCard from "../../components/products/ProductCard";
-import ExpandingCards from "../../components/discount/ExpandableCards";
 import { useRouter } from "next/navigation";
-import heroBg2 from "../../../public/Home/herobg2.png";
+import discountBanner2 from "../../../public/discountBanner2.png";
+import cerave from "../../../public/cerave.png";
+import neutrogena from "../../../public/neutrogena.png";
+import garnier from "../../../public/garnier.png";
 
 const DiscountsPage = () => {
     const [allDiscountedProducts, setAllDiscountedProducts] = useState([]);
     const [exclusiveProducts, setExclusiveProducts] = useState([]);
     const [bundles, setBundles] = useState({});
-    const [timer, setTimer] = useState(0);
     const router = useRouter();
 
     useEffect(() => {
@@ -33,7 +34,7 @@ const DiscountsPage = () => {
                 setExclusiveProducts(getRandomProducts(discountedProducts, 5));
 
                 // Get bundles for main categories
-                const mainCategories = ["Cleansers", "Toners", "Serums", "Moisturizers", "Sunscreens"]; // Replace with your actual categories
+                const mainCategories = ["Cleansers", "Toners", "Serums", "Moisturizers", "Sunscreens"];
                 const categoryBundles = {};
                 mainCategories.forEach((category) => {
                     categoryBundles[category] = discountedProducts.filter(
@@ -49,16 +50,6 @@ const DiscountsPage = () => {
         fetchDiscountedProducts();
     }, []);
 
-    // Update exclusive products every 5 seconds
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setExclusiveProducts(getRandomProducts(allDiscountedProducts, 5));
-            setTimer((prev) => prev + 1);
-        }, 5000);
-
-        return () => clearInterval(interval);
-    }, [allDiscountedProducts]);
-
     const getRandomProducts = (productsArray, count) => {
         const shuffled = [...productsArray].sort(() => 0.5 - Math.random());
         return shuffled.slice(0, count);
@@ -66,11 +57,11 @@ const DiscountsPage = () => {
 
     return (
         <Box>
-            {/* Hero Section */}
+            {/* Hero Banner */}
             <Box
                 sx={{
-                    height: "60vh",
-                    backgroundImage: `url(${heroBg2})`,
+                    height: "100vh",
+                    backgroundImage: `url(${discountBanner2.src})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     display: "flex",
@@ -80,17 +71,60 @@ const DiscountsPage = () => {
                     textAlign: "center",
                 }}
             >
-                <Typography variant="h2" sx={{ fontWeight: "bold", textShadow: "2px 2px 8px rgba(0,0,0,0.7)" }}>
-                    Exclusive Discounts on Skincare Essentials!
+            </Box>
+
+            {/* Featured Products Section */}
+            <Box sx={{ mt: 4, mb: 4, textAlign: "center" }}>
+                <Typography variant="h1" sx={{ fontSize: "4rem", fontWeight: "bold", mb: 4, textAlign: "center" }}>
+                    Featured Discounts
                 </Typography>
+                <Grid container spacing={4} justifyContent="center">
+                    {[{ img: cerave, label: "Up to 40% OFF", name: "Cerave" },
+                        { img: neutrogena, label: "Up to 20% OFF", name: "Neutrogena" },
+                        { img: garnier, label: "Up to 50% OFF", name: "Garnier" },]
+                        .map((product, index) => (
+                            <Grid item xs={12} sm={6} md={3} key={index}>
+                                <Box
+                                    sx={{
+                                        width: "300px",
+                                        height: "300px",
+                                        border: "1px solid #ddd",
+                                        borderRadius: "8px",
+                                        overflow: "hidden",
+                                        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        transition: "transform 0.3s ease",
+                                        "&:hover": {
+                                            transform: "scale(1.05)",
+                                            boxShadow: "0 8px 16px rgba(0,0,0,0.2)"
+                                        }
+                                    }}
+                                >
+                                    <img
+                                        src={product.img.src}
+                                        alt={product.name}
+                                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                                    />
+                                </Box>
+                                <Typography variant="h6" sx={{ mt: 1, fontWeight: "bold", color: "#d32f2f" }}>
+                                    {product.label}
+                                </Typography>
+                                <Typography variant="subtitle1" sx={{ color: "#333" }}>
+                                    {product.name}
+                                </Typography>
+                            </Grid>
+                        ))}
+                </Grid>
             </Box>
 
             {/* Exclusive Products Section */}
             <Box sx={{ padding: "2rem" }}>
-                <Typography variant="h4" sx={{ marginBottom: "2rem", textAlign: "center", fontWeight: "bold" }}>
+                <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold" }}>
                     Exclusive Offers
                 </Typography>
-                <Grid container spacing={2}>
+                <Grid container spacing={2} justifyContent="center">
                     {exclusiveProducts.map((product) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                             <ProductCard product={product} />
@@ -99,16 +133,13 @@ const DiscountsPage = () => {
                 </Grid>
             </Box>
 
-            {/* Banner or Special Component */}
-            <ExpandingCards />
-
             {/* Bundles Section */}
             {Object.keys(bundles).map((category) => (
-                <Box key={category} sx={{ padding: "2rem" }}>
-                    <Typography variant="h4" sx={{ marginBottom: "2rem", fontWeight: "bold" }}>
+                <Box key={category} sx={{ padding: "2rem", textAlign: "center" }}>
+                    <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", fontWeight: "bold" }}>
                         {category} Deals
                     </Typography>
-                    <Grid container spacing={2}>
+                    <Grid container spacing={2} justifyContent="center">
                         {bundles[category].slice(0, 5).map((product) => (
                             <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                                 <ProductCard product={product} />
@@ -117,9 +148,6 @@ const DiscountsPage = () => {
                     </Grid>
                 </Box>
             ))}
-
-            {/* Additional Banners or Components if needed */}
-            {/* ... */}
         </Box>
     );
 };
