@@ -10,8 +10,11 @@ import ProductCard from "../../components/products/ProductCard";
 import FilterSection from "../../components/products/FilterSection";
 import CategoryBanner from "../../components/products/CategoryBanner";
 import RelatedSection from "../../components/products/RelatedSection";
+import { useTheme } from "../../contexts/themeContext";
+import FloatingCircle from '../../components/common/FloatingCircle';
 
 const ProductsPage = () => {
+    const { theme } = useTheme();
     const router = useRouter();
     const searchParams = useSearchParams();
     const [products, setProducts] = useState([]);
@@ -164,6 +167,7 @@ const ProductsPage = () => {
                 product.authenticity !== undefined
                     ? product.authenticity
                     : true; // Assuming authentic by default
+            const productSkinType = product.skin_type?.toLowerCase() || "";
 
             // Convert price strings to numbers
             const regularPrice =
@@ -191,12 +195,7 @@ const ProductsPage = () => {
             const matchesBrandFinal =
                 brandFromQuery !== "" ? matchesBrandFromQuery : matchesBrand;
 
-            // Adjusted skin type matching logic
-            const matchesSkinType =
-                selectedSkinTypes.length === 0 ||
-                selectedSkinTypes.some((type) =>
-                    productName.toLowerCase().includes(type.toLowerCase())
-                );
+            const matchesSkinType = selectedSkinTypes.length === 0 || selectedSkinTypes.some((type) => productSkinType.includes(type.toLowerCase()));
 
             const matchesAuthenticity =
                 !authenticityFilter || productAuthenticity === true;
@@ -225,6 +224,9 @@ const ProductsPage = () => {
 
     return (
         <Box>
+            <FloatingCircle size="400px" top="50%" left="10%" dark />
+            <FloatingCircle size="500px" top="70%" right="5%" />
+            <FloatingCircle size="600px" bottom="-80%" left="-10%" />
             <CategoryBanner category={category} brand={selectedBrandFromQuery} />
             {(category !== "Products" && !selectedBrandFromQuery) && (
                 <RelatedSection
@@ -242,11 +244,14 @@ const ProductsPage = () => {
                 />
             )}
 
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Typography sx={{ fontSize: "3rem", fontWeight: "600", marginBottom: "2rem", color: theme.palette.mode === 'light' ? '#000' : '#fff' }}>
+                    {selectedBrandFromQuery ? `${selectedBrandFromQuery} Products` : `${category} Products`}
+                </Typography>
+            </Box>
+
             <Box sx={{ padding: "2rem", alignItems: "center", justifyContent: "center", display: "flex" }}>
                 <Box sx={{ display: "flex", gap: "2rem", maxWidth: "90%"}}>
-                    <Typography sx={{ fontSize: "4rem", fontWeight: "600", marginBottom: "2rem" }}>
-                        {selectedBrandFromQuery ? `${selectedBrandFromQuery} Products` : `${category} Products`}
-                    </Typography>
                     <FilterSection
                         minPrice={minPrice}
                         maxPrice={maxPrice}

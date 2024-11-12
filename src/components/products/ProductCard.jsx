@@ -20,16 +20,10 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useTheme } from "../../contexts/themeContext";
 
-const ProductCard = ({
-                         product,
-                         onCompareChange,
-                         isCompared = false,
-                         hideWishlistButton = false,
-                         showRemoveButton = false,
-                         onRemove = null,
-                         isInWishlist = false,
-                     }) => {
+const ProductCard = ({ product, onCompareChange, isCompared = false, hideWishlistButton = false, showRemoveButton = false, onRemove = null, isInWishlist = false,}) => {
+    const { theme } = useTheme();
     const [wishlist, setWishlist] = useState(isInWishlist);
     const router = useRouter();
 
@@ -145,7 +139,7 @@ const ProductCard = ({
                 maxWidth: "250px",
                 margin: "auto",
                 height: "410px",
-                backgroundColor: "white",
+                backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
             }}
         >
             {product.discount && product.discount !== "No discount" && (
