@@ -25,7 +25,7 @@ const recommendations = [
 const Recommendations = () => {
     return (
         <Box sx={{ mt: 2 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#38b593' }}>Personalized Recommendations</Typography>
+            <Typography sx={{ fontWeight: 'bold', color: 'black', fontSize: "2.4rem" }}>Personalized Recommendations</Typography>
             <Grid container spacing={2} sx={{ mt: 1 }}>
                 {recommendations.map((product) => (
                     <Grid item xs={12} sm={6} md={4} key={product.id}>

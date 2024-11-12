@@ -21,16 +21,29 @@ export default function CustomerBlogs() {
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
 
-    // Fetch user's blogs
     useEffect(() => {
         async function fetchUserBlogs() {
             try {
+                // Get the current user session
+                const sessionResponse = await fetch('/api/auth/session', {
+                    method: 'GET',
+                    credentials: 'include',
+                });
+                const sessionData = await sessionResponse.json();
+
+                if (!sessionData || !sessionData.user) {
+                    console.error('User not logged in');
+                    return;
+                }
+
                 const response = await fetch('/api/blog', {
                     method: 'GET',
                     credentials: 'include',
                 });
                 const data = await response.json();
-                setBlogs(data);
+
+                const userBlogs = data.filter(blog => blog.user_id === sessionData.user.id);
+                setBlogs(userBlogs);
             } catch (error) {
                 console.error('Error fetching user blogs:', error);
             }
@@ -91,7 +104,7 @@ export default function CustomerBlogs() {
                 </Button>
             </Box>
 
-            <Grid container spacing={3} sx={{ mt: 2, maxWidth: "100%", mx: "auto" }}>
+            <Grid container spacing={3} sx={{ mt: 2, maxWidth: "100%", mx: "auto", display: "flex", justifyContent: "center", alignItems: "center" }}>
                 {filteredBlogs.length > 0 ? (
                     filteredBlogs.map((blog) => (
                         <Grid item xs={12} sm={6} md={4} key={blog.id}>
@@ -157,7 +170,7 @@ export default function CustomerBlogs() {
                         </Grid>
                     ))
                 ) : (
-                    <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+                    <Typography color="text.secondary" sx={{ mt: 2, fontSize: "3rem" }}>
                         You have not created any blogs yet.
                     </Typography>
                 )}

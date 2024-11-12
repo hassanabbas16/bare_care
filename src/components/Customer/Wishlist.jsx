@@ -67,7 +67,7 @@ const Wishlist = () => {
 
     return (
         <Box sx={{ mt: 2 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#38b593' }}>
+            <Typography sx={{ fontWeight: 'bold', color: 'black', fontSize: "2.4rem" }}>
                 Your Wishlist
             </Typography>
             {wishlist.length > 0 ? (
@@ -92,7 +92,7 @@ const Wishlist = () => {
             {/* You Might Like Section */}
             {relatedProducts.length > 0 && (
                 <Box sx={{ mt: 5 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: '#38b593' }}>
+                    <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'black', fontSize: "2.4rem" }}>
                         You Might Like
                     </Typography>
                     <Grid container spacing={2} sx={{ mt: 1 }}>
