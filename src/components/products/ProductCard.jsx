@@ -138,7 +138,7 @@ const ProductCard = ({ product, onCompareChange, isCompared = false, hideWishlis
                 width: "100%",
                 maxWidth: "250px",
                 margin: "auto",
-                height: "410px",
+                height: "380px",
                 backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
             }}
         >
@@ -318,28 +318,11 @@ const ProductCard = ({ product, onCompareChange, isCompared = false, hideWishlis
                     )}
                 </Box>
 
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={isCompared}
-                            onChange={handleCompareChange}
-                            onClick={(e) => e.stopPropagation()}
-                        />
-                    }
-                    label="Compare"
-                    sx={{
-                        marginTop: "0.6rem",
-                        backgroundColor: "rgba(255, 255, 255, 0.7)",
-                        borderRadius: "5px",
-                        padding: "0 5px",
-                    }}
-                />
-
                 <Box
                     sx={{
                         display: "flex",
                         justifyContent: "center",
-                        marginTop: "0.5rem",
+                        marginTop: "1.5rem",
                         maxWidth: "100%",
                     }}
                 >
