@@ -242,8 +242,11 @@ const ProductsPage = () => {
                 />
             )}
 
-            <Box sx={{ padding: "2rem" }}>
-                <Box sx={{ display: "flex", gap: "2rem" }}>
+            <Box sx={{ padding: "2rem", alignItems: "center", justifyContent: "center", display: "flex" }}>
+                <Box sx={{ display: "flex", gap: "2rem", maxWidth: "90%"}}>
+                    <Typography sx={{ fontSize: "4rem", fontWeight: "600", marginBottom: "2rem" }}>
+                        {selectedBrandFromQuery ? `${selectedBrandFromQuery} Products` : `${category} Products`}
+                    </Typography>
                     <FilterSection
                         minPrice={minPrice}
                         maxPrice={maxPrice}
@@ -261,17 +264,6 @@ const ProductsPage = () => {
                         hideBrandFilter={selectedBrandFromQuery !== ""}
                     />
 
-                    {comparedProducts.length >= 2 && (
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            sx={{ position: "fixed", bottom: "20px", right: "20px", zIndex: 1000 }}
-                            onClick={() => router.push("/compare")}
-                        >
-                            Compare Now ({comparedProducts.length})
-                        </Button>
-                    )}
-
                     <Box
                         sx={{
                             width: "75%",
@@ -279,22 +271,30 @@ const ProductsPage = () => {
                             flexDirection: "column",
                         }}
                     >
-                        <Box sx={{ mb: 2, maxWidth: "400px", marginLeft: "2rem" }}>
+                        <Box sx={{ display: "flex", gap: "1rem", width: "100%", marginBottom: "2rem", marginLeft: "2rem" }}>
                             <TextField
                                 label="Search Products"
                                 variant="outlined"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                sx={{ width: "100%", marginBottom: "1.5rem" }}
+                                sx={{ flexGrow: 1 }}
                                 InputProps={{ style: { color: "black" } }}
                             />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{ height: "100%", whiteSpace: "nowrap", padding: "0 2rem" }}
+                            >
+                                Search
+                            </Button>
                         </Box>
+
 
                         {filteredProducts.length > 0 ? (
                             <Grid
                                 container
                                 spacing={2}
-                                sx={{ padding: "0 2rem", justifyContent: "flex-start" }}
+                                sx={{ padding: "0 2rem", justifyContent: "center" }}
                             >
                                 {filteredProducts.map((product) => (
                                     <Grid

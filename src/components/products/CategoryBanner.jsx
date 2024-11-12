@@ -74,7 +74,7 @@ const CategoryBanner = ({ category, brand }) => {
                         color: "#fff",
                         fontWeight: "bold",
                         textTransform: "capitalize",
-                        fontSize: "4rem",
+                        fontSize: "4.4rem",
                     }}
                 >
                     {displayText}

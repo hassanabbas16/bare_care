@@ -183,7 +183,7 @@ const ProductPage = () => {
                     marginBottom: "8rem",
                 }}
             >
-                <Typography fontWeight="bold" gutterBottom sx={{fontSize: "3.6rem"}}>
+                <Typography fontWeight="bold" gutterBottom sx={{fontSize: "4rem"}}>
                     {product.product_name}
                 </Typography>
 
@@ -200,17 +200,31 @@ const ProductPage = () => {
                     </Grid>
 
                     <Grid item xs={12} md={7}>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            <Typography color="textSecondary" sx={{fontSize: "1.6rem"}}>
-                                Brand: {product.brand}
-                            </Typography>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "space-between" }}>
+                                <Typography color="textSecondary" sx={{ fontSize: "2rem" }}>
+                                    Brand: {product.brand}
+                                </Typography>
+                                {product.authenticity && (
+                                    <Chip
+                                        icon={<VerifiedIcon sx={{ color: "#66bb6a" }} />}
+                                        label="100% Authentic"
+                                        sx={{
+                                            backgroundColor: "#66bb6a",
+                                            color: "white",
+                                            fontSize: "1.2rem",
+                                            padding: "0.1rem 0.4rem",
+                                        }}
+                                    />
+                                )}
+                            </Box>
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                 <Rating value={product.rating || 0} readOnly precision={0.5} />
-                                <Typography sx={{fontSize: "1.2rem"}}>
+                                <Typography sx={{ fontSize: "1.6rem" }}>
                                     ({product.rating_count || 0} reviews)
                                 </Typography>
                             </Box>
-                            <Typography fontWeight="bold" color="primary" sx={{fontSize: "1.6rem"}}>
+                            <Typography fontWeight="bold" color="primary" sx={{ fontSize: "2.4rem" }}>
                                 Rs. {parseFloat(product.sale_price).toFixed(2)}
                             </Typography>
                             {product.regular_price && (
@@ -218,29 +232,22 @@ const ProductPage = () => {
                                     sx={{
                                         textDecoration: "line-through",
                                         color: "#FF6961",
-                                        fontSize: "1.4rem",
+                                        fontSize: "1.8rem",
                                     }}
                                 >
                                     Rs. {parseFloat(product.regular_price).toFixed(2)}
                                 </Typography>
                             )}
-                            {product.authenticity && (
-                                <Chip
-                                    icon={<VerifiedIcon sx={{ color: "#66bb6a" }} />}
-                                    label="100% Authentic"
-                                    sx={{
-                                        backgroundColor: "#66bb6a",
-                                        color: "white",
-                                        fontSize: "0.8rem",
-                                        padding: "0.1rem 0.3rem",
-                                    }}
-                                />
-                            )}
                             <Button
                                 variant="contained"
                                 color="primary"
                                 onClick={handleBuyNowClick}
-                                sx={{ fontWeight: "bold", marginTop: "1rem" }}
+                                sx={{
+                                    fontWeight: "bold",
+                                    marginTop: "1rem",
+                                    maxWidth: "40%",
+                                    fontSize: "1.8rem"
+                                }}
                             >
                                 Buy Now
                             </Button>
