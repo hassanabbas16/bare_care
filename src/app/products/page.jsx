@@ -12,6 +12,7 @@ import CategoryBanner from "../../components/products/CategoryBanner";
 import RelatedSection from "../../components/products/RelatedSection";
 import { useTheme } from "../../contexts/themeContext";
 import FloatingCircle from '../../components/common/FloatingCircle';
+import CallToActionBox from "../../components/common/CallToActionBox";
 
 const ProductsPage = () => {
     const { theme } = useTheme();
@@ -333,6 +334,7 @@ const ProductsPage = () => {
                     </Box>
                 </Box>
             </Box>
+            <CallToActionBox />
         </Box>
     );
 };

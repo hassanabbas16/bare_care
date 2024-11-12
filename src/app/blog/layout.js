@@ -25,7 +25,7 @@ export default function RootLayout({ children }) {
             }}
         >
             <Navbar />
-            <MarqueeSwiper texts={marqueeTexts} speed={30_000} />
+            <MarqueeSwiper texts={marqueeTexts} speed={20_000} />
             <div style={{ flex: "1" }}>{children}</div>
             <Footer />
         </div>

@@ -81,7 +81,7 @@ export const DropdownBox = styled(Box)(({ theme }) => ({
     position: "absolute",
     top: "100%",
     left: "-2rem",
-    zIndex: 2,
+    zIndex: 99,
     backgroundColor: "rgba(0, 0, 0, 1)",
     padding: theme.spacing(4),
     borderRadius: "8px",

@@ -20,7 +20,7 @@ const MarqueeSwiper = ({ texts = [], speed = 30000 }) => {
                 whiteSpace: "nowrap",
                 textAlign: "center",
                 top: "7.5rem",
-                zIndex: 100,
+                zIndex: 98,
                 marginBottom: "24px",
             }}
         >
