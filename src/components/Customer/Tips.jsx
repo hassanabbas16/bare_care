@@ -2,9 +2,21 @@ import React, { useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from "swiper/modules";
 import { Typography, Box, Card, CardContent, CardMedia, Tabs, Tab } from '@mui/material';
-import { styled } from '@mui/system';
+import { styled, keyframes } from '@mui/system';
 import 'swiper/css';
 import 'swiper/css/autoplay';
+
+// Animation for cards
+const fadeInUp = keyframes`
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
 
 // Swiper Component
 const MarqueeSwiper = ({ texts = ["Hello, radiant souls! Let’s dive into a sea of skincare knowledge and surf our way to glowing skin!"], speed = 30000 }) => {
@@ -201,6 +213,7 @@ const CardWrapper = styled(Box)({
     perspective: '1000px',
     width: '300px',
     height: '350px',
+    animation: `${fadeInUp} 0.6s ease-out both`,
 });
 
 const FlipCard = styled(Box)({
