@@ -1,4 +1,3 @@
-// components/PollModal.jsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -27,7 +26,13 @@ const PollModal = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    // Fetch poll data
+    // Helper function to check if the user has voted today
+    const hasVotedToday = (pollId, displayDate) => {
+        const votedPolls = JSON.parse(localStorage.getItem('votedPolls') || '[]');
+        return votedPolls.some((entry) => entry.pollId === pollId && entry.date === displayDate);
+    };
+
+    // Fetch today's poll data
     const fetchPoll = async () => {
         try {
             setLoading(true);
@@ -48,11 +53,10 @@ const PollModal = () => {
             if (data.poll) {
                 setPoll(data.poll);
                 setOptions(data.options);
-                // Check if user has voted using localStorage
-                const votedPolls = JSON.parse(localStorage.getItem('votedPolls') || '[]');
-                if (votedPolls.includes(data.poll.id)) {
-                    setVoted(true);
-                }
+
+                const displayDate = data.poll.display_date;
+                const userVotedToday = hasVotedToday(data.poll.id, displayDate);
+                setVoted(userVotedToday);
             }
         } catch (error) {
             console.error(error);
@@ -64,7 +68,6 @@ const PollModal = () => {
 
     useEffect(() => {
         fetchPoll();
-        // Open the modal when the component mounts
         setOpen(true);
     }, []);
 
@@ -88,7 +91,6 @@ const PollModal = () => {
             const data = await response.json();
 
             if (response.ok && data.message) {
-                // Update local state
                 const updatedOptions = options.map((option) =>
                     option.id === selectedOption
                         ? { ...option, votes: option.votes + 1 }
@@ -96,9 +98,10 @@ const PollModal = () => {
                 );
                 setOptions(updatedOptions);
                 setVoted(true);
-                // Store in localStorage
+
+                // Store the vote in localStorage
                 const votedPolls = JSON.parse(localStorage.getItem('votedPolls') || '[]');
-                votedPolls.push(poll.id);
+                votedPolls.push({ pollId: poll.id, date: poll.display_date });
                 localStorage.setItem('votedPolls', JSON.stringify(votedPolls));
             } else {
                 throw new Error(data.error || 'Failed to record vote.');
@@ -113,7 +116,6 @@ const PollModal = () => {
 
     return (
         <>
-            {/* Floating Icon Button */}
             <IconButton
                 onClick={handleOpen}
                 sx={{
@@ -133,7 +135,6 @@ const PollModal = () => {
                 <PollIcon sx={{ fontSize: '2.5rem' }} />
             </IconButton>
 
-            {/* Dynamic Modal */}
             <Modal open={open} onClose={handleClose} aria-labelledby="poll-modal-title" aria-describedby="poll-modal-description">
                 <Box
                     sx={{
@@ -249,7 +250,6 @@ const PollModal = () => {
             </Modal>
         </>
     );
-
 };
 
 export default PollModal;

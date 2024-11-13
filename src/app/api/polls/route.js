@@ -3,12 +3,13 @@ import { supabase } from '../../../lib/supabaseClient';
 
 export async function GET(request) {
     try {
-        // Fetch the latest poll
+        // Fetch today's poll
+        const today = new Date().toISOString().split('T')[0];
+
         const { data: poll, error: pollError } = await supabase
             .from('polls')
             .select('*')
-            .order('created_at', { ascending: false })
-            .limit(1)
+            .eq('display_date', today)
             .single();
 
         if (pollError) {
