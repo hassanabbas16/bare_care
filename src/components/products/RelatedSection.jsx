@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid2";
 import ProductCard from './ProductCard';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useTheme } from "../../contexts/themeContext"; // Import theme context
+import { useTheme } from "../../contexts/themeContext";
 
 const RelatedSection = ({ type, category, brand, products, brands }) => {
     const { theme } = useTheme();
@@ -117,7 +117,7 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
                             color: theme.palette.mode === 'light' ? '#000' : '#fff',
                         }}
                     >
-                        Other Brands
+                        Brands
                     </Typography>
                     <Grid container spacing={3} justifyContent="center">
                         {displayedBrands.map((brandName) => (

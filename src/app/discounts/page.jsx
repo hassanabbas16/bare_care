@@ -66,7 +66,6 @@ const DiscountsPage = () => {
             <FloatingCircle size="500px" top="70%" right="5%" />
             <FloatingCircle size="600px" bottom="-120%" left="-10%" />
             <FloatingCircle size="700px" bottom="-200%" right="5%" />
-            <FloatingCircle size="600px" bottom="-250%" left="-10%" />
             <Box
                 sx={{
                     height: "100vh",
@@ -81,7 +80,7 @@ const DiscountsPage = () => {
                 }}
             />
 
-            <Box sx={{ marginTop: "6rem", marginBottom: "10rem", textAlign: "center" }}>
+            <Box sx={{ marginTop: "6rem", marginBottom: "6rem", textAlign: "center" }}>
                 <Typography variant="h1" sx={{ fontSize: "4rem", fontWeight: "bold", mb: 4, color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Flash Sale!
                 </Typography>
@@ -127,7 +126,7 @@ const DiscountsPage = () => {
                 </Grid>
             </Box>
 
-            <Box sx={{ padding: "2rem", marginBottom: "10rem" }}>
+            <Box sx={{ padding: "2rem" }}>
                 <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Exclusive Offers
                 </Typography>
