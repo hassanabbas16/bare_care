@@ -11,7 +11,7 @@ import TipsWithTabs from '../../components/Customer/Tips';
 import Wishlist from '../../components/Customer/Wishlist';
 import CustomerBlogs from '../../components/Customer/CustomerBlogs';
 import GeneralDashboard from '../../components/Customer/GeneralDashboard';
-import MarqueeSwiper from '../../components/common/MarqueeSwiper';
+import FloatingCircle from '../../components/common/FloatingCircle';
 
 const CustomerDashboard = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -101,6 +101,9 @@ const CustomerDashboard = () => {
                 zIndex: 1,
             }}
         >
+            <FloatingCircle size="400px" top="-10%" left="-40%" dark />
+            <FloatingCircle size="500px" top="40%" right="-20%" />
+            <FloatingCircle size="600px" bottom="0" left="-10%" />
             <Navbar toggleDrawer={toggleDrawer} drawerOpen={drawerOpen} user={user} />
             <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} handleTabChange={handleTabChange} />
 

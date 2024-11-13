@@ -15,7 +15,7 @@ export async function POST(req) {
             fragrance_free,
             budget_preference,
             age_range,
-            allergyDetails
+            concerns
         } = body;
 
         // Validate budget_preference against allowed values
@@ -30,13 +30,14 @@ export async function POST(req) {
                     skin_type,
                     sensitivity_level,
                     breakout_frequency,
-                    allergies: allergyDetails || allergies,
+                    allergies: allergies,
                     time_spent,
                     product_preferences: product_preferences.join(', '),
                     natural_importance,
                     fragrance_free,
                     budget_preference: budgetPref,
-                    age_range
+                    age_range,
+                    concerns
                 }
             ]);
 
@@ -95,7 +96,7 @@ export async function PUT(req) {
             fragrance_free,
             budget_preference,
             age_range,
-            allergyDetails
+            concerns
         } = body;
 
         // Ensure product_preferences is an array before joining it into a string
@@ -107,13 +108,14 @@ export async function PUT(req) {
             skin_type,
             sensitivity_level,
             breakout_frequency,
-            allergies: allergyDetails || allergies,
+            allergies: allergies,
             time_spent,
             product_preferences: formattedPreferences,
             natural_importance,
             fragrance_free,
             budget_preference,
-            age_range
+            age_range,
+            concerns
         };
 
         // Perform update query
