@@ -7,7 +7,7 @@ import { Typography, Box } from '@mui/material';
 import 'swiper/css';
 import 'swiper/css/autoplay';
 
-const MarqueeSwiper = ({ texts = [], speed = 30000 }) => {
+const MarqueeSwiper = ({ texts = [], speed = 30000, dashboard = false }) => {
     return (
         <div
             style={{
@@ -19,7 +19,7 @@ const MarqueeSwiper = ({ texts = [], speed = 30000 }) => {
                 width: "100%",
                 whiteSpace: "nowrap",
                 textAlign: "center",
-                top: "7.5rem",
+                top: dashboard ? "1rem" : "7.5rem",
                 zIndex: 98,
                 marginBottom: "24px",
             }}

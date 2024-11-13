@@ -66,7 +66,7 @@ const Wishlist = () => {
     };
 
     return (
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 4, padding: "3rem" }}>
             <Typography sx={{ fontWeight: 'bold', color: 'black', fontSize: "2.4rem" }}>
                 Your Wishlist
             </Typography>

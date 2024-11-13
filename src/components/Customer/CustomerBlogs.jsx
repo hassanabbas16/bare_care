@@ -24,7 +24,6 @@ export default function CustomerBlogs() {
     useEffect(() => {
         async function fetchUserBlogs() {
             try {
-                // Get the current user session
                 const sessionResponse = await fetch('/api/auth/session', {
                     method: 'GET',
                     credentials: 'include',
@@ -75,7 +74,7 @@ export default function CustomerBlogs() {
     );
 
     return (
-        <Box sx={{ mt: 4 }}>
+        <Box sx={{ mt: 4, padding: "3rem" }}>
             <Typography sx={{ fontWeight: 'bold', fontSize: '2.4rem', mb: 2, color: "black" }}>
                 Your Blogs
             </Typography>

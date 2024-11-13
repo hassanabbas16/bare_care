@@ -1,4 +1,3 @@
-// components/Customer/GeneralDashboard.js
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -8,24 +7,28 @@ import Recommendations from './Recommendations';
 import Wishlist from './Wishlist';
 import TipsCard from './TipsCard';
 
-const GeneralDashboard = ({ onQuizClick }) => {
+const GeneralDashboard = ({ onQuizClick, category = 'general' }) => {
     const [tips, setTips] = useState([]);
 
     useEffect(() => {
         const fetchTips = async () => {
             try {
-                const response = await fetch('/api/tips');
+                // Fetch tips based on the selected category
+                const response = await fetch(`/api/tips?category=${category}`);
                 if (!response.ok) throw new Error('Failed to fetch tips');
 
                 const data = await response.json();
-                setTips(data);
+
+                // Ensure we are working with an array and take only the first 3 tips
+                setTips(Array.isArray(data.tips) ? data.tips.slice(0, 3) : []);
             } catch (error) {
                 console.error('Error fetching tips:', error);
+                setTips([]); // Set tips to an empty array in case of error
             }
         };
 
         fetchTips();
-    }, []);
+    }, [category]); // Re-fetch tips if the category changes
 
     const tipBackgrounds = ['#FFDEE9', '#C6F7E2', '#E3D0FF'];
 
@@ -57,7 +60,7 @@ const GeneralDashboard = ({ onQuizClick }) => {
                     <Typography sx={{ fontWeight: 'bold', mb: 1, fontSize: "2.4rem", color: "black" }}>
                         Take the Skin Quiz Now!
                     </Typography>
-                    <Typography  sx={{ color: '#004D40', mb: 2, fontSize: "1.6rem" }}>
+                    <Typography sx={{ color: '#004D40', mb: 2, fontSize: "1.6rem" }}>
                         Discover your skin type and get personalized recommendations tailored just for you.
                     </Typography>
                     <Button

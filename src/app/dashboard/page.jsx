@@ -7,16 +7,26 @@ import Navbar from '../../components/Customer/Navbar';
 import Sidebar from '../../components/Customer/Sidebar';
 import SkinQuiz from '../../components/Customer/SkinQuiz';
 import Recommendations from '../../components/Customer/Recommendations';
-import Tips from '../../components/Customer/Tips';
+import TipsWithTabs from '../../components/Customer/Tips';
 import Wishlist from '../../components/Customer/Wishlist';
 import CustomerBlogs from '../../components/Customer/CustomerBlogs';
 import GeneralDashboard from '../../components/Customer/GeneralDashboard';
+import MarqueeSwiper from '../../components/common/MarqueeSwiper';
 
 const CustomerDashboard = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedTab, setSelectedTab] = useState('Dashboard');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const marqueeTexts = {
+        Dashboard: ["Welcome! Let's get that glow up!", "Ready to slay today? 💅", "Your skin journey starts here! 🌟"],
+        'Skin Quiz': ["What's your skin vibe? Take the quiz to find out! 🎯", "Get to know your skin like a pro!", "Let’s find your skin’s BFFs! 🌈"],
+        Recommendations: ["We’ve got your beauty essentials covered! 💄", "Curated for you, because you’re special! 💖", "Peep these recs, they're fire 🔥"],
+        Tips: ["Glow-up tips just for you 💅", "Skincare secrets unlocked! 🔐", "Your daily dose of beauty wisdom ✨"],
+        Wishlist: ["Manifesting those skincare goals 🌟", "Wishlisted and ready to cop 🛍️", "Dream products waiting for you 💖"],
+        Blogs: ["Latest tea on skincare and beauty 🍵", "Stay woke with skincare trends 👀", "Your beauty inspo, all in one place ✨"]
+    };
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -54,7 +64,7 @@ const CustomerDashboard = () => {
             case 'Recommendations':
                 return <Recommendations />;
             case 'Tips':
-                return <Tips />;
+                return <TipsWithTabs />;
             case 'Wishlist':
                 return <Wishlist />;
             case 'Blogs':
@@ -93,7 +103,8 @@ const CustomerDashboard = () => {
         >
             <Navbar toggleDrawer={toggleDrawer} drawerOpen={drawerOpen} user={user} />
             <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} handleTabChange={handleTabChange} />
-            <Box component="main" sx={{ flexGrow: 1, p: 3, overflowY: 'auto', position: 'relative', zIndex: 1 }}>
+
+            <Box component="main" sx={{ flexGrow: 1, overflowY: 'auto', position: 'relative', zIndex: 1 }}>
                 <Toolbar />
                 {renderTabContent()}
             </Box>

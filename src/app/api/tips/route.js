@@ -1,17 +1,35 @@
-// app/api/tips/random/route.js
+// app/api/tips/route.js
 import { supabase } from '../../../lib/supabaseClient';
-import { NextResponse } from 'next/server';
 
-export async function GET() {
-    const { data, error } = await supabase
-        .from('skincare_tips')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(3); // Fetch 3 random tips (adjust to shuffle if needed)
+export async function GET(request) {
+    const { searchParams } = new URL(request.url);
+    const category = searchParams.get("category") || "general";
 
-    if (error) {
-        return NextResponse.json({ error: 'Failed to fetch tips' }, { status: 500 });
+    try {
+        const { data, error } = await supabase
+            .from('skincare_tips')
+            .select('*')
+            .ilike('category', category)
+            .order('created_at', { ascending: true });
+
+        if (error) {
+            console.error('Supabase error:', error);
+            throw error;
+        }
+
+        // Log data for debugging
+        console.log(`Data for category "${category}":`, data);
+
+        // Return response with data or an empty array if no data is found
+        return new Response(JSON.stringify({ tips: data || [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    } catch (error) {
+        console.error('Error fetching tips:', error);
+        return new Response(JSON.stringify({ error: error.message, tips: [] }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+        });
     }
-
-    return NextResponse.json(data, { status: 200 });
 }
