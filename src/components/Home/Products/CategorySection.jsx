@@ -38,7 +38,7 @@ const CategorySection = () => {
                     color: theme.palette.mode === 'light' ? '#000' : '#fff',
                 }}
             >
-                Explore Categories
+                Categories
             </Typography>
             <Grid container spacing={3} justifyContent="center">
                 {productsData.map((category) => (
