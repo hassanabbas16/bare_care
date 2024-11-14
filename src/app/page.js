@@ -3,7 +3,7 @@
 import { useTheme } from "../contexts/themeContext";
 import Footer from "../components/footer/Footer";
 import Navbar from "../components/navbar/Navbar";
-import HeroSection from "../components/Home/Hero/HeroSection";
+import HeroSection from "../components/Home/Hero/heroSection2";
 import PollModal from "../components/Home/Polls/PollModal";
 import RelatedSection from "../components/products/RelatedSection";
 import CategorySection from "../components/Home/Products/CategorySection";
@@ -72,6 +72,14 @@ export default function Home() {
         >
             <Navbar />
             <HeroSection />
+
+            {/* Categories Section */}
+            <CategorySection />
+
+            {/* Brands Section */}
+            <RelatedSection type="brand" brands={topBrands} />
+
+            {/* Exclusive Offers Section */}
             <Box sx={{ padding: "2rem" }}>
                 <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Exclusive Offers
@@ -84,8 +92,7 @@ export default function Home() {
                     ))}
                 </Grid>
             </Box>
-            <CategorySection />
-            <RelatedSection type="brand" brands={topBrands} />
+
             <PollModal />
             <Footer />
         </div>
