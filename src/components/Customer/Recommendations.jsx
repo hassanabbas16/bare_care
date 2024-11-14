@@ -1,12 +1,11 @@
 // /app/recommendations/page.jsx
 "use client";
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import { ComparisonContext } from '../../contexts/ComparisonContext';
 import ProductCard from '../../components/products/ProductCard';
 import { useTheme } from '../../contexts/themeContext';
-import FloatingCircle from '../../components/common/FloatingCircle';
 
 const RecommendationsPage = () => {
     const { theme } = useTheme();
@@ -43,7 +42,6 @@ const RecommendationsPage = () => {
                 }
                 const user_id = sessionData.user.id;
 
-                // Update recommendations
                 const res = await fetch('/api/recommendations', {
                     method: 'POST',
                     headers: {
@@ -59,7 +57,6 @@ const RecommendationsPage = () => {
                 const data = await res.json();
                 const productIds = data.product_ids;
 
-                // Fetch recommendations with recommendation_type
                 const recsRes = await fetch(`/api/recommendations/with-types`, {
                     method: 'POST',
                     headers: {
@@ -75,13 +72,11 @@ const RecommendationsPage = () => {
                 const recsData = await recsRes.json();
                 const recommendationsWithType = recsData.recommendations;
 
-                // Create a mapping from product ID to recommendation_type
                 const recommendationTypeMap = {};
                 recommendationsWithType.forEach(rec => {
                     recommendationTypeMap[rec.product_id] = rec.recommendation_type;
                 });
 
-                // Fetch product details
                 const productsRes = await fetch('/api/products/by-ids', {
                     method: 'POST',
                     headers: {
@@ -97,13 +92,11 @@ const RecommendationsPage = () => {
                 const productsData = await productsRes.json();
                 const products = productsData.products;
 
-                // Map products with their recommendation_type
                 const productsWithType = products.map(product => ({
                     ...product,
                     recommendation_type: recommendationTypeMap[product.id],
                 }));
 
-                // Separate recommendations based on recommendation_type
                 const instant = productsWithType.filter(p => p.recommendation_type === 'instant');
                 const alsoSuited = productsWithType.filter(p => p.recommendation_type === 'also_suited');
 
@@ -127,7 +120,6 @@ const RecommendationsPage = () => {
                     );
                     setWishlistProductIds(productIds);
                 } else {
-                    // User is not logged in or other error
                     setWishlistProductIds([]);
                 }
             } catch (error) {
@@ -151,80 +143,64 @@ const RecommendationsPage = () => {
                 Instant Recommendations
             </Typography>
 
-            {instantRecommendations.length > 0 ? (
-                <Grid
-                    container
-                    spacing={2}
-                    sx={{ padding: "0 2rem", justifyContent: "center" }}
-                >
-                    {instantRecommendations.map((product) => (
-                        <Grid
-                            item
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            lg={4}
-                            key={product.id}
-                        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    overflowX: 'auto',
+                    gap: 2,
+                    padding: "0 2rem",
+                    '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar for a cleaner look
+                }}
+            >
+                {instantRecommendations.length > 0 ? (
+                    instantRecommendations.map((product) => (
+                        <Box key={product.id} sx={{ minWidth: "300px" }}>
                             <ProductCard
                                 product={product}
                                 isCompared={comparedProducts.some((p) => p.id === product.id)}
                                 onCompareChange={handleCompareChange}
-                                isInWishlist={wishlistProductIds.includes(
-                                    product.id
-                                )}
+                                isInWishlist={wishlistProductIds.includes(product.id)}
                             />
-                        </Grid>
-                    ))}
-                </Grid>
-            ) : (
-                <Typography
-                    variant="h6"
-                    color="textSecondary"
-                    sx={{ marginLeft: "2rem" }}
-                >
-                    No instant recommendations available at the moment.
-                </Typography>
-            )}
+                        </Box>
+                    ))
+                ) : (
+                    <Typography variant="h6" color="textSecondary">
+                        No instant recommendations available at the moment.
+                    </Typography>
+                )}
+            </Box>
+
+            {/* Also Suited For You Section */}
             <Typography sx={{ marginLeft: "2rem", marginTop: "2rem", marginBottom: "1rem", color: "black", fontSize: "2rem" }}>
                 Also Suited For You
             </Typography>
 
-            {alsoSuitedRecommendations.length > 0 ? (
-                <Grid
-                    container
-                    spacing={2}
-                    sx={{ padding: "0 2rem", justifyContent: "center" }}
-                >
-                    {alsoSuitedRecommendations.map((product) => (
-                        <Grid
-                            item
-                            xs={12}
-                            sm={6}
-                            md={4}
-                            lg={4}
-                            key={product.id}
-                        >
+            <Box
+                sx={{
+                    display: 'flex',
+                    overflowX: 'auto',
+                    gap: 2,
+                    padding: "0 2rem",
+                    '&::-webkit-scrollbar': { display: 'none' }, // Hide scrollbar for a cleaner look
+                }}
+            >
+                {alsoSuitedRecommendations.length > 0 ? (
+                    alsoSuitedRecommendations.map((product) => (
+                        <Box key={product.id} sx={{ minWidth: "300px" }}>
                             <ProductCard
                                 product={product}
                                 isCompared={comparedProducts.some((p) => p.id === product.id)}
                                 onCompareChange={handleCompareChange}
-                                isInWishlist={wishlistProductIds.includes(
-                                    product.id
-                                )}
+                                isInWishlist={wishlistProductIds.includes(product.id)}
                             />
-                        </Grid>
-                    ))}
-                </Grid>
-            ) : (
-                <Typography
-                    variant="h6"
-                    color="textSecondary"
-                    sx={{ marginLeft: "2rem" }}
-                >
-                    No additional recommendations available at the moment.
-                </Typography>
-            )}
+                        </Box>
+                    ))
+                ) : (
+                    <Typography variant="h6" color="textSecondary">
+                        No additional recommendations available at the moment.
+                    </Typography>
+                )}
+            </Box>
         </Box>
     );
 };
