@@ -75,18 +75,28 @@ const AuthPage = () => {
             }
 
             if (isSignup) {
+                // For sign-up, show a success message and switch to the login form
                 setFeedback({ type: 'success', message: 'Signup successful! Please log in.' });
                 setIsSignup(false);
             } else {
-                setFeedback({ type: 'success', message: 'Login successful! Redirecting...' });
-                setTimeout(() => {
-                    router.push(redirectUrl);
-                }, 2000);
+                // For login, check the role and redirect accordingly
+                if (result.role === 'admin') {
+                    setFeedback({ type: 'success', message: 'Admin login successful! Redirecting...' });
+                    setTimeout(() => {
+                        router.push('/admin');
+                    }, 2000);
+                } else {
+                    setFeedback({ type: 'success', message: 'Login successful! Redirecting...' });
+                    setTimeout(() => {
+                        router.push(redirectUrl);
+                    }, 2000);
+                }
             }
         } catch (error) {
             setFeedback({ type: 'error', message: 'An error occurred, please try again.' });
         }
     };
+
 
     return (
         <Box sx={{
