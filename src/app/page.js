@@ -11,24 +11,23 @@ import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import ProductCard from "@/components/products/ProductCard";
+import CallToActionBox from "../components/common/CallToActionBox";
+import HowItWorks from "../components/Home/about/HowItWorks";
 
 export default function Home() {
     const { theme } = useTheme();
     const [exclusiveProducts, setExclusiveProducts] = useState([]);
 
     useEffect(() => {
-        // Fetch exclusive offers from the API
         const fetchExclusiveProducts = async () => {
             try {
                 const response = await fetch("/api/products");
                 const data = await response.json();
 
-                // Filter out products with "No discount" in the discount field
                 const discountedProducts = data.filter(
                     (product) => product.discount && product.discount.toLowerCase() !== "no discount"
                 );
 
-                // Select a subset of discounted products as exclusive offers
                 const selectedExclusiveProducts = getRandomProducts(discountedProducts, 5);
                 setExclusiveProducts(selectedExclusiveProducts);
             } catch (error) {
@@ -39,13 +38,11 @@ export default function Home() {
         fetchExclusiveProducts();
     }, []);
 
-    // Helper function to get random products
     const getRandomProducts = (productsArray, count) => {
         const shuffled = [...productsArray].sort(() => 0.5 - Math.random());
         return shuffled.slice(0, count);
     };
 
-    // Example list of top brands to pass to RelatedSection
     const topBrands = [
         "CeraVe",
         "DIOR",
@@ -72,14 +69,8 @@ export default function Home() {
         >
             <Navbar />
             <HeroSection />
-
-            {/* Categories Section */}
             <CategorySection />
-
-            {/* Brands Section */}
             <RelatedSection type="brand" brands={topBrands} />
-
-            {/* Exclusive Offers Section */}
             <Box sx={{ padding: "2rem" }}>
                 <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Exclusive Offers
@@ -92,7 +83,8 @@ export default function Home() {
                     ))}
                 </Grid>
             </Box>
-
+            <HowItWorks />
+            <CallToActionBox />
             <PollModal />
             <Footer />
         </div>

@@ -229,14 +229,6 @@ const ProductsPage = () => {
             <FloatingCircle size="500px" top="70%" right="5%" />
             <FloatingCircle size="600px" bottom="-80%" left="-10%" />
             <CategoryBanner category={category} brand={selectedBrandFromQuery} />
-            {(category !== "Products" && !selectedBrandFromQuery) && (
-                <RelatedSection
-                    type="category"
-                    category={category}
-                    products={products}
-                />
-            )}
-
             {selectedBrandFromQuery && (
                 <RelatedSection
                     type="brand"
@@ -334,6 +326,13 @@ const ProductsPage = () => {
                     </Box>
                 </Box>
             </Box>
+            {(category !== "Products" && !selectedBrandFromQuery) && (
+                <RelatedSection
+                    type="category"
+                    category={category}
+                    products={products}
+                />
+            )}
             <CallToActionBox />
         </Box>
     );
