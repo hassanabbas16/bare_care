@@ -15,9 +15,7 @@ export default function RootLayout({ children }) {
                 backgroundColor: theme.palette.background.default,
             }}
         >
-            <Navbar />
             <div style={{ flex: "1" }}>{children}</div>
-            <Footer />
         </div>
     );
 }

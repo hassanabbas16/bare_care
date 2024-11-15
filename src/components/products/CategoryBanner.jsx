@@ -11,11 +11,11 @@ import masksImage from "../../../public/products/masks.png";
 import faceCareImage from "../../../public/products/facecare.png";
 
 // Import brand images
-import theOrdinaryImage from "../../../public/products/facecare.png";
-import ceraveImage from "../../../public/products/masks.png";
-import neutrogenaImage from "../../../public/products/sunscreen.png";
-import garnierImage from "../../../public/products/serum.png";
-import glamGlowImage from "../../../public/products/moisturizer.png";
+import theOrdinaryImage from "../../../public/products/ordinarybrand.png";
+import ceraveImage from "../../../public/products/ceravebrand.png";
+import neutrogenaImage from "../../../public/products/neutrogenabrand.png";
+import garnierImage from "../../../public/products/garneirbrand.png";
+import glamGlowImage from "../../../public/products/glamglowbrand.png";
 
 const CategoryBanner = ({ category, brand }) => {
     const categoryImages = {
@@ -74,7 +74,7 @@ const CategoryBanner = ({ category, brand }) => {
                         color: "#fff",
                         fontWeight: "bold",
                         textTransform: "capitalize",
-                        fontSize: "4rem",
+                        fontSize: "4.4rem",
                     }}
                 >
                     {displayText}

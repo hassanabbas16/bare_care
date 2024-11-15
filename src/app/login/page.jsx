@@ -1,13 +1,9 @@
-// pages/login/page.jsx
 "use client";
+
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { Box, Button, TextField, Typography, Alert, IconButton, InputAdornment, MenuItem, Card, useTheme } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-
-import BrightImage from '../../../public/login/Bright.png';
-import DarkImage from '../../../public/login/Dark.png';
 
 const AuthPage = () => {
     const theme = useTheme();
@@ -28,7 +24,9 @@ const AuthPage = () => {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const redirect = params.get('redirect');
-        if (redirect) {
+        if (redirect === 'modal') {
+            setRedirectUrl('/?openPoll=true');
+        } else if (redirect) {
             setRedirectUrl(redirect);
         }
     }, []);
@@ -77,64 +75,117 @@ const AuthPage = () => {
             }
 
             if (isSignup) {
+                // For sign-up, show a success message and switch to the login form
                 setFeedback({ type: 'success', message: 'Signup successful! Please log in.' });
                 setIsSignup(false);
             } else {
-                setFeedback({ type: 'success', message: 'Login successful! Redirecting...' });
-                setTimeout(() => {
-                    router.push(redirectUrl);
-                }, 2000);
+                // For login, check the role and redirect accordingly
+                if (result.role === 'admin') {
+                    setFeedback({ type: 'success', message: 'Admin login successful! Redirecting...' });
+                    setTimeout(() => {
+                        router.push('/admin');
+                    }, 2000);
+                } else {
+                    setFeedback({ type: 'success', message: 'Login successful! Redirecting...' });
+                    setTimeout(() => {
+                        router.push(redirectUrl);
+                    }, 2000);
+                }
             }
         } catch (error) {
             setFeedback({ type: 'error', message: 'An error occurred, please try again.' });
         }
     };
 
+
     return (
-        <Box sx={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center' }}>
+        <Box sx={{
+            display: 'flex',
+            minHeight: '100vh',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'hidden',
+            position: 'relative'
+        }}>
+            {/* Background Grid with BARE CARE text */}
             <Box
                 sx={{
-                    position: 'absolute',
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
                     top: 0,
                     left: 0,
-                    width: '100%',
-                    height: '100%',
-                    overflow: 'hidden',
-                    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.7)',
-                    zIndex: -1,
+                    zIndex: 0,
+                    display: "grid",
+                    gridTemplateColumns: "repeat(4, 1fr)",
+                    gridTemplateRows: "repeat(10, 1fr)",
+                    justifyItems: "center",
+                    alignItems: "center",
+                    gap: "1rem",
                 }}
             >
-                <Image
-                    src={theme.palette.mode === 'dark' ? DarkImage : BrightImage}
-                    alt="Background Image"
-                    layout="fill"
-                    objectFit="cover"
-                    quality={100}
-                    style={{ filter: 'blur(4px)', opacity: 0.5 }}
-                />
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'rgba(255,255,255,0.2)',
-                        fontSize: '4rem',
-                        fontWeight: 'bold',
-                        letterSpacing: '1rem',
-                        textAlign: 'center',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        backgroundColor: theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.3)',
-                    }}
-                >
-                    <Box>
-                        BARECARE BARECARE BARECARE BARECARE
-                    </Box>
+                {[...Array(40)].map((_, index) => (
+                    <Typography
+                        key={index}
+                        variant="h1"
+                        sx={{
+                            fontSize: {
+                                xs: '3rem',
+                                sm: '4rem',
+                                md: '5rem',
+                                lg: '6rem',
+                            },
+                            fontWeight: 'bold',
+                            color: theme.palette.mode === 'dark' ? '#FFF' : '#000',
+                            opacity: 0.05,
+                        }}
+                    >
+                        BARE CARE.
+                    </Typography>
+                ))}
+            </Box>
+
+            {/* Vertical Scrolling Text Borders */}
+            <Box sx={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                width: '5rem',
+                backgroundColor: 'black',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                overflow: 'hidden',
+                writingMode: 'vertical-rl',
+                textOrientation: 'upright'
+            }}>
+                <Box sx={{whiteSpace: 'nowrap', animation: 'scrollTextVerticalLeft 2000s linear infinite'}}>
+                    {Array(2000).fill('Bare Care. ').join('')}
+                </Box>
+            </Box>
+            <Box sx={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                right: 0,
+                width: '5rem',
+                backgroundColor: 'black',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                overflow: 'hidden',
+                writingMode: 'vertical-rl',
+                textOrientation: 'upright'
+            }}>
+                <Box sx={{whiteSpace: 'nowrap', animation: 'scrollTextVerticalRight 2000s linear infinite'}}>
+                    {Array(2000).fill('Bare Care. ').join('')}
                 </Box>
             </Box>
 
@@ -143,7 +194,7 @@ const AuthPage = () => {
                 sx={{
                     position: 'relative',
                     zIndex: 1,
-                    width: '80%',
+                    width: '90%',
                     maxWidth: 400,
                     padding: 4,
                     transition: 'opacity 0.5s ease',
@@ -155,7 +206,7 @@ const AuthPage = () => {
                 </Typography>
 
                 {feedback.message && (
-                    <Alert severity={feedback.type} sx={{ mb: 2 }}>
+                    <Alert severity={feedback.type} sx={{mb: 2}}>
                         {feedback.message}
                     </Alert>
                 )}
@@ -233,24 +284,52 @@ const AuthPage = () => {
                                     onClick={handlePasswordToggle}
                                     edge="end"
                                 >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    {showPassword ? <VisibilityOff/> : <Visibility/>}
                                 </IconButton>
                             </InputAdornment>
                         ),
                     }}
                 />
-                <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleSubmit}>
+                <Button type="submit" variant="contained" fullWidth sx={{mt: 2}} onClick={handleSubmit}>
                     {isSignup ? 'Sign Up' : 'Login'}
                 </Button>
                 <Button
                     onClick={toggleForm}
                     variant="text"
                     fullWidth
-                    sx={{ mt: 1 }}
+                    sx={{mt: 1}}
                 >
                     {isSignup ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
                 </Button>
             </Card>
+            <style jsx global>{`
+                @keyframes scrollTextHorizontal {
+                    0% {
+                        transform: translateX(0);
+                    }
+                    100% {
+                        transform: translateX(-100%);
+                    }
+                }
+
+                @keyframes scrollTextVerticalLeft {
+                    0% {
+                        transform: translateY(0);
+                    }
+                    100% {
+                        transform: translateY(-100%);
+                    }
+                }
+
+                @keyframes scrollTextVerticalRight {
+                    0% {
+                        transform: translateY(0);
+                    }
+                    100% {
+                        transform: translateY(-100%);
+                    }
+                }
+            `}</style>
         </Box>
     );
 };

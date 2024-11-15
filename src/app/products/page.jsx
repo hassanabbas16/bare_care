@@ -1,16 +1,21 @@
 // pages/products/page.jsx
 "use client";
 import dynamic from "next/dynamic";
-import React, { useState, useEffect } from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import React, { useState, useEffect, useContext } from "react";
+import { ComparisonContext } from "../../contexts/ComparisonContext";
+import {Box, Button, TextField, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../../components/products/ProductCard";
 import FilterSection from "../../components/products/FilterSection";
 import CategoryBanner from "../../components/products/CategoryBanner";
 import RelatedSection from "../../components/products/RelatedSection";
+import { useTheme } from "../../contexts/themeContext";
+import FloatingCircle from '../../components/common/FloatingCircle';
+import CallToActionBox from "../../components/common/CallToActionBox";
 
 const ProductsPage = () => {
+    const { theme } = useTheme();
     const router = useRouter();
     const searchParams = useSearchParams();
     const [products, setProducts] = useState([]);
@@ -30,7 +35,25 @@ const ProductsPage = () => {
     const [selectedBrands, setSelectedBrands] = useState([]);
     const [selectedSkinTypes, setSelectedSkinTypes] = useState([]);
     const [authenticityFilter, setAuthenticityFilter] = useState(false);
-    const [ratingFilter, setRatingFilter] = useState([1, 5]); // Assuming a range
+    const [ratingFilter, setRatingFilter] = useState([1, 5]);
+
+    const {
+        comparedProducts,
+        addProductToCompare,
+        removeProductFromCompare,
+    } = useContext(ComparisonContext);
+
+    const handleCompareChange = (product, isChecked) => {
+        if (isChecked) {
+            if (comparedProducts.length < 2) {
+                addProductToCompare(product);
+            } else {
+                alert("You can only compare up to 2 products at a time.");
+            }
+        } else {
+            removeProductFromCompare(product.id);
+        }
+    };
 
     // Handler functions
     const handleMinPriceChange = (e) => setMinPrice(e.target.value);
@@ -145,6 +168,7 @@ const ProductsPage = () => {
                 product.authenticity !== undefined
                     ? product.authenticity
                     : true; // Assuming authentic by default
+            const productSkinType = product.skin_type?.toLowerCase() || "";
 
             // Convert price strings to numbers
             const regularPrice =
@@ -172,12 +196,7 @@ const ProductsPage = () => {
             const matchesBrandFinal =
                 brandFromQuery !== "" ? matchesBrandFromQuery : matchesBrand;
 
-            // Adjusted skin type matching logic
-            const matchesSkinType =
-                selectedSkinTypes.length === 0 ||
-                selectedSkinTypes.some((type) =>
-                    productName.toLowerCase().includes(type.toLowerCase())
-                );
+            const matchesSkinType = selectedSkinTypes.length === 0 || selectedSkinTypes.some((type) => productSkinType.includes(type.toLowerCase()));
 
             const matchesAuthenticity =
                 !authenticityFilter || productAuthenticity === true;
@@ -206,15 +225,10 @@ const ProductsPage = () => {
 
     return (
         <Box>
+            <FloatingCircle size="400px" top="50%" left="10%" dark />
+            <FloatingCircle size="500px" top="70%" right="5%" />
+            <FloatingCircle size="600px" bottom="-80%" left="-10%" />
             <CategoryBanner category={category} brand={selectedBrandFromQuery} />
-            {(category !== "Products" && !selectedBrandFromQuery) && (
-                <RelatedSection
-                    type="category"
-                    category={category}
-                    products={products}
-                />
-            )}
-
             {selectedBrandFromQuery && (
                 <RelatedSection
                     type="brand"
@@ -223,8 +237,14 @@ const ProductsPage = () => {
                 />
             )}
 
-            <Box sx={{ padding: "2rem" }}>
-                <Box sx={{ display: "flex", gap: "2rem" }}>
+            <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                <Typography sx={{ fontSize: "3rem", fontWeight: "600", marginBottom: "2rem", color: theme.palette.mode === 'light' ? '#000' : '#fff' }}>
+                    {selectedBrandFromQuery ? `${selectedBrandFromQuery} Products` : `${category} Products`}
+                </Typography>
+            </Box>
+
+            <Box sx={{ padding: "2rem", alignItems: "center", justifyContent: "center", display: "flex" }}>
+                <Box sx={{ display: "flex", gap: "2rem", maxWidth: "90%"}}>
                     <FilterSection
                         minPrice={minPrice}
                         maxPrice={maxPrice}
@@ -249,22 +269,30 @@ const ProductsPage = () => {
                             flexDirection: "column",
                         }}
                     >
-                        <Box sx={{ mb: 2, maxWidth: "400px", marginLeft: "2rem" }}>
+                        <Box sx={{ display: "flex", gap: "1rem", width: "100%", marginBottom: "2rem", marginLeft: "2rem" }}>
                             <TextField
                                 label="Search Products"
                                 variant="outlined"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                sx={{ width: "100%", marginBottom: "1.5rem" }}
+                                sx={{ flexGrow: 1 }}
                                 InputProps={{ style: { color: "black" } }}
                             />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{ height: "100%", whiteSpace: "nowrap", padding: "0 2rem" }}
+                            >
+                                Search
+                            </Button>
                         </Box>
+
 
                         {filteredProducts.length > 0 ? (
                             <Grid
                                 container
                                 spacing={2}
-                                sx={{ padding: "0 2rem", justifyContent: "flex-start" }}
+                                sx={{ padding: "0 2rem", justifyContent: "center" }}
                             >
                                 {filteredProducts.map((product) => (
                                     <Grid
@@ -277,6 +305,8 @@ const ProductsPage = () => {
                                     >
                                         <ProductCard
                                             product={product}
+                                            isCompared={comparedProducts.some((p) => p.id === product.id)}
+                                            onCompareChange={handleCompareChange}
                                             isInWishlist={wishlistProductIds.includes(
                                                 product.id
                                             )}
@@ -296,6 +326,14 @@ const ProductsPage = () => {
                     </Box>
                 </Box>
             </Box>
+            {(category !== "Products" && !selectedBrandFromQuery) && (
+                <RelatedSection
+                    type="category"
+                    category={category}
+                    products={products}
+                />
+            )}
+            <CallToActionBox />
         </Box>
     );
 };

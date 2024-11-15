@@ -11,17 +11,22 @@ import {
     Rating,
     Avatar,
     TextField,
-    IconButton,
+    Grid,
+    Card,
+    CardContent,
+    CardMedia,
 } from "@mui/material";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import PersonIcon from "@mui/icons-material/Person";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { useTheme } from "../../../contexts/themeContext";
 import ProductCard from "../../../components/products/ProductCard";
 import Image from "next/image";
+import FloatingCircle from '../../../components/common/FloatingCircle';
 
 const ProductPage = () => {
+    const { theme } = useTheme();
     const router = useRouter();
-    const params = useParams(); // Get the product ID from the URL
+    const params = useParams();
     const { id } = params;
     const [product, setProduct] = useState(null);
     const [reviews, setReviews] = useState([]);
@@ -29,47 +34,49 @@ const ProductPage = () => {
     const [newComment, setNewComment] = useState("");
     const [newRating, setNewRating] = useState(0);
     const [relatedProducts, setRelatedProducts] = useState([]);
+    const [otherVendors, setOtherVendors] = useState([]);
 
-    // Fetch product data
+    // Fetch product and vendors
     useEffect(() => {
-        const fetchProduct = async () => {
+        const fetchProductAndVendors = async () => {
             try {
                 const res = await fetch(`/api/products/${id}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setProduct(data);
-                } else {
-                    console.error("Error fetching product:", res.statusText);
-                }
+                if (!res.ok) return;
+                const data = await res.json();
+                setProduct(data);
+
+                const normalizedName = data.normalized_name;
+                const resVendors = await fetch(
+                    `/api/products/normalised-name/${encodeURIComponent(normalizedName)}`
+                );
+                if (!resVendors.ok) return;
+                const vendorsData = await resVendors.json();
+                const filteredVendors = vendorsData.filter((item) => item.id !== data.id);
+                setOtherVendors(filteredVendors);
             } catch (error) {
-                console.error("Error fetching product:", error);
+                console.error("Error fetching product and vendors:", error);
             }
         };
 
-        if (id) {
-            fetchProduct();
-        }
+        if (id) fetchProductAndVendors();
     }, [id]);
 
-    // Fetch reviews
-    useEffect(() => {
-        const fetchReviews = async () => {
-            try {
-                const res = await fetch(`/api/reviews?product_id=${id}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setReviews(data);
-                } else {
-                    console.error("Error fetching reviews:", res.statusText);
-                }
-            } catch (error) {
-                console.error("Error fetching reviews:", error);
+    // Define fetchReviews as a standalone function so it can be reused
+    const fetchReviews = async () => {
+        try {
+            const res = await fetch(`/api/reviews?product_id=${id}`);
+            if (res.ok) {
+                const data = await res.json();
+                setReviews(data);
             }
-        };
-
-        if (id) {
-            fetchReviews();
+        } catch (error) {
+            console.error("Error fetching reviews:", error);
         }
+    };
+
+    // Fetch reviews on component mount
+    useEffect(() => {
+        if (id) fetchReviews();
     }, [id]);
 
     // Fetch related products
@@ -80,17 +87,13 @@ const ProductPage = () => {
                 if (res.ok) {
                     const data = await res.json();
                     setRelatedProducts(data);
-                } else {
-                    console.error("Error fetching related products:", res.statusText);
                 }
             } catch (error) {
                 console.error("Error fetching related products:", error);
             }
         };
 
-        if (id) {
-            fetchRelatedProducts();
-        }
+        if (id) fetchRelatedProducts();
     }, [id]);
 
     // Check user session
@@ -99,11 +102,7 @@ const ProductPage = () => {
             try {
                 const res = await fetch("/api/auth/session");
                 const data = await res.json();
-                if (data.user) {
-                    setSession(data.user);
-                } else {
-                    setSession(null);
-                }
+                if (data.user) setSession(data.user);
             } catch (error) {
                 console.error("Error checking session:", error);
             }
@@ -111,11 +110,11 @@ const ProductPage = () => {
         checkSession();
     }, []);
 
+    if (!product) return <Typography>Loading...</Typography>;
+
     const handleBuyNowClick = () => {
         if (product.product_link) {
             window.open(product.product_link, "_blank");
-        } else {
-            console.error("No product link available");
         }
     };
 
@@ -148,8 +147,7 @@ const ProductPage = () => {
             if (res.ok) {
                 setNewComment("");
                 setNewRating(0);
-                // Refetch reviews after submitting
-                fetchReviews();
+                fetchReviews(); // Refetch reviews after submitting
             } else {
                 const errorData = await res.json();
                 console.error("Error submitting review:", errorData.error);
@@ -159,130 +157,110 @@ const ProductPage = () => {
         }
     };
 
-    const handleLike = async (review_id) => {
-        try {
-            const res = await fetch("/api/reviews/like", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ review_id }),
-            });
-            if (res.ok) {
-                // Refetch reviews after liking
-                fetchReviews();
-            } else {
-                const errorData = await res.json();
-                console.error("Error liking review:", errorData.error);
-            }
-        } catch (error) {
-            console.error("Error liking review:", error);
-        }
-    };
-
-    if (!product) {
-        return <Typography>Loading...</Typography>;
-    }
-
     const productImageUrl = product.image_url.startsWith("//")
         ? `https:${product.image_url}`
         : product.image_url;
 
     return (
-        <Box sx={{ padding: "2rem" }}>
-            {/* Product Details */}
-            <Box
+        <Box sx={{ paddingTop: "15rem", alignItems: "center", justifyContent: "center", paddingBottom: "10rem", display: "flex", flexDirection: "column" }}>
+            <FloatingCircle size="400px" top="10%" left="0%" dark />
+            <FloatingCircle size="500px" top="40%" right="0" />
+            <FloatingCircle size="600px" bottom="-50%" left="-10%" />
+            <Card
                 sx={{
+                    minHeight: '300px',
+                    maxWidth: "80%",
+                    minWidth: "80%",
+                    borderRadius: "24px",
                     display: "flex",
-                    flexDirection: { xs: "column", md: "row" },
-                    gap: "2rem",
-                    marginBottom: "2rem",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    padding: "3rem",
+                    zIndex: 1,
+                    backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
+                    color: theme.palette.mode === "light" ? '#212121' : '#fff',
+                    boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
+                    marginBottom: "8rem",
                 }}
             >
-                {/* Product Image */}
-                <Box
-                    sx={{
-                        flex: 1,
-                        position: "relative",
-                        width: "100%",
-                        height: "400px",
-                    }}
-                >
-                    <Image
-                        src={productImageUrl}
-                        alt={product.product_name || "Product Image"}
-                        fill
-                        style={{ objectFit: "contain" }}
-                    />
-                </Box>
+                <Typography fontWeight="bold" gutterBottom sx={{fontSize: "4rem"}}>
+                    {product.product_name}
+                </Typography>
 
-                {/* Product Info */}
-                <Box sx={{ flex: 1 }}>
-                    <Typography variant="h4" fontWeight="bold" gutterBottom>
-                        {product.product_name}
-                    </Typography>
-                    <Typography variant="h6" color="textSecondary" gutterBottom>
-                        {product.brand}
-                    </Typography>
+                <Grid container spacing={3}>
+                    <Grid item xs={12} md={5}>
+                        <Box sx={{ position: "relative", width: "100%", height: "400px" }}>
+                            <Image
+                                src={productImageUrl}
+                                alt={product.product_name || "Product Image"}
+                                fill
+                                style={{ objectFit: "contain", borderRadius: "8px" }}
+                            />
+                        </Box>
+                    </Grid>
 
-                    <Box sx={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
-                        <Rating value={product.rating || 0} readOnly precision={0.5} />
-                        <Typography variant="body2" sx={{ marginLeft: "0.5rem" }}>
-                            ({product.rating_count || 0} reviews)
-                        </Typography>
-                    </Box>
-
-                    <Box sx={{ marginBottom: "1rem" }}>
-                        <Typography variant="h5" fontWeight="bold">
-                            Rs. {parseFloat(product.sale_price).toFixed(2)}
-                        </Typography>
-                        {product.regular_price && (
-                            <Typography
-                                variant="body1"
-                                sx={{ textDecoration: "line-through", color: "#FF6961" }}
-                            >
-                                Rs. {parseFloat(product.regular_price).toFixed(2)}
+                    <Grid item xs={12} md={7}>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "space-between" }}>
+                                <Typography color="textSecondary" sx={{ fontSize: "2rem" }}>
+                                    Brand: {product.brand}
+                                </Typography>
+                                {product.authenticity && (
+                                    <Chip
+                                        icon={<VerifiedIcon sx={{ color: "#66bb6a" }} />}
+                                        label="100% Authentic"
+                                        sx={{
+                                            backgroundColor: "#66bb6a",
+                                            color: "white",
+                                            fontSize: "1.2rem",
+                                            padding: "0.1rem 0.4rem",
+                                        }}
+                                    />
+                                )}
+                            </Box>
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <Rating value={product.rating || 0} readOnly precision={0.5} />
+                                <Typography sx={{ fontSize: "1.6rem" }}>
+                                    ({product.rating_count || 0} reviews)
+                                </Typography>
+                            </Box>
+                            <Typography fontWeight="bold" color="primary" sx={{ fontSize: "2.4rem" }}>
+                                Rs. {parseFloat(product.sale_price).toFixed(2)}
                             </Typography>
-                        )}
-                    </Box>
+                            {product.regular_price && (
+                                <Typography
+                                    sx={{
+                                        textDecoration: "line-through",
+                                        color: "#FF6961",
+                                        fontSize: "1.8rem",
+                                    }}
+                                >
+                                    Rs. {parseFloat(product.regular_price).toFixed(2)}
+                                </Typography>
+                            )}
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleBuyNowClick}
+                                sx={{
+                                    fontWeight: "bold",
+                                    marginTop: "1rem",
+                                    maxWidth: "40%",
+                                    fontSize: "1.8rem"
+                                }}
+                            >
+                                Buy Now
+                            </Button>
+                        </Box>
+                    </Grid>
+                </Grid>
 
-                    {product.authenticity && (
-                        <Chip
-                            icon={<VerifiedIcon sx={{ color: "#66bb6a" }} />}
-                            label="100% Authentic"
-                            sx={{
-                                backgroundColor: "#66bb6a",
-                                color: "white",
-                                fontSize: "0.8rem",
-                                padding: "0.1rem 0.3rem",
-                                maxWidth: "12rem",
-                                marginBottom: "1rem",
-                            }}
-                        />
-                    )}
-
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleBuyNowClick}
-                        sx={{ padding: "0.7rem 2.6rem", fontWeight: "bold", marginBottom: "1rem" }}
-                    >
-                        Buy Now
-                    </Button>
-
-                    {/* Additional Product Details */}
-                    <Typography variant="body1" gutterBottom>
-                        {product.description}
-                    </Typography>
-                </Box>
-            </Box>
-
-            {/* Reviews Section */}
-            <Box sx={{ marginBottom: "2rem" }}>
-                <Typography variant="h5" gutterBottom>
+                <Typography gutterBottom sx={{fontSize: "2.8rem", mt: 3}}>
                     Reviews
                 </Typography>
 
-                <Box mb={2}>
-                    <Typography variant="h6" color="black" mb={1}>
+                <Box sx={{ marginBottom: "2rem" }}>
+                    <Typography mb={1} sx={{fontSize: "2rem"}}>
                         Write a Review
                     </Typography>
                     <Rating
@@ -304,12 +282,12 @@ const ProductPage = () => {
                         variant="contained"
                         onClick={handleSubmitReview}
                         disabled={!newComment || newRating === 0}
+                        sx={{fontSize: "1.6rem"}}
                     >
                         Submit Review
                     </Button>
                 </Box>
 
-                {/* Reviews List */}
                 <Box
                     sx={{
                         maxHeight: "500px",
@@ -334,7 +312,6 @@ const ProductPage = () => {
                                         <Typography
                                             variant="h6"
                                             fontWeight="bold"
-                                            color="black"
                                         >
                                             {review.profiles
                                                 ? `${review.profiles.first_name} ${review.profiles.last_name}`
@@ -347,43 +324,41 @@ const ProductPage = () => {
                                         />
                                     </Box>
                                 </Box>
-                                <Typography variant="body2" color="black">
+                                <Typography variant="body2">
                                     {review.comment}
                                 </Typography>
                                 <Typography
                                     variant="caption"
-                                    sx={{ color: "gray", display: "block", mt: 1 }}
+                                    sx={{ color: theme.palette.mode === 'light' ? 'grey' : 'white', display: "block", mt: 1 }}
                                 >
                                     {new Date(review.created_at).toLocaleDateString()}
                                 </Typography>
-                                <Box display="flex" alignItems="center" mt={1}>
-                                    <IconButton
-                                        size="small"
-                                        sx={{ color: "#1976d2" }}
-                                        onClick={() => handleLike(review.id)}
-                                    >
-                                        <ThumbUpIcon fontSize="small" />
-                                    </IconButton>
-                                    <Typography
-                                        variant="caption"
-                                        sx={{ color: "black", fontSize: "1rem" }}
-                                    >
-                                        {review.likes || 0} Likes
-                                    </Typography>
-                                </Box>
                             </Box>
                         ))
                     ) : (
-                        <Typography variant="body2" color="black">
+                        <Typography variant="body2">
                             No reviews yet.
                         </Typography>
                     )}
                 </Box>
-            </Box>
+            </Card>
 
-            {/* Related Products Section*/}
-            <Box>
-                <Typography variant="h5" gutterBottom>
+            <Card sx={{
+                minHeight: '300px',
+                maxWidth: "80%",
+                zIndex: 1,
+                minWidth: "80%",
+                borderRadius: "24px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                padding: "3rem",
+                backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
+                color: theme.palette.mode === "light" ? '#212121' : '#fff',
+                boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
+                marginBottom: "8rem",
+            }}>
+                <Typography gutterBottom sx={{fontSize: "2.8rem", mb: 3}}>
                     Related Products
                 </Typography>
                 <Box
@@ -391,16 +366,16 @@ const ProductPage = () => {
                         display: "flex",
                         flexWrap: "wrap",
                         gap: "1rem",
-                        justifyContent: "flex-start",
+                        justifyContent: "center",
                     }}
                 >
                     {relatedProducts.map((relatedProduct) => (
-                        <Box key={relatedProduct.id} sx={{ width: "200px" }}>
+                        <Box key={relatedProduct.id}>
                             <ProductCard product={relatedProduct} />
                         </Box>
                     ))}
                 </Box>
-            </Box>
+            </Card>
         </Box>
     );
 };

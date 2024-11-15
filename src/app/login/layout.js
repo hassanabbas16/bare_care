@@ -1,6 +1,4 @@
 "use client";
-import Navbar from "../../components/navbar/Navbar";
-import Footer from "../../components/footer/Footer";
 import { useTheme } from "../../contexts/themeContext";
 
 export default function RootLayout({ children }) {
@@ -15,9 +13,7 @@ export default function RootLayout({ children }) {
                 backgroundColor: theme.palette.background.default,
             }}
         >
-            <Navbar />
             <div style={{ flex: "1" }}>{children}</div>
-            <Footer />
         </div>
     );
 }
