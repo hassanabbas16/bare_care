@@ -50,7 +50,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer, handleTabChange }) => {
                                     {item.icon}
                                 </ListItemIcon>
                                 {drawerOpen && (
-                                    <ListItemText primary={item.text} sx={{ fontSize: "1.2rem", fontWeight: 600 }} />
+                                    <ListItemText primary={item.text} sx={{ fontSize: "1.6rem", fontWeight: 600 }} />
                                 )}
                             </ListItem>
                         ))}

@@ -35,3 +35,20 @@ export async function GET(request) {
 
     return NextResponse.json({ wishlistItems }, { status: 200 });
 }
+
+export async function GET_ANALYTICS(request) {
+    try {
+        const { data: wishlistAnalytics, error } = await supabase
+            .from('wishlist')
+            .select('product_id, products(*), count(*)')
+            .group('product_id')
+            .order('count', { ascending: false });
+
+        if (error) throw error;
+
+        return NextResponse.json({ wishlistAnalytics }, { status: 200 });
+    } catch (error) {
+        console.error('Error fetching wishlist analytics:', error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}

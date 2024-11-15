@@ -1,3 +1,4 @@
+// components/Admin/Navbar.js
 "use client";
 import { AppBar, Box, IconButton, Toolbar, Typography, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -16,9 +17,7 @@ const Navbar = ({ toggleDrawer, user }) => {
         try {
             const response = await fetch('/api/auth/logout', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
             });
             if (response.ok) {
@@ -43,7 +42,7 @@ const Navbar = ({ toggleDrawer, user }) => {
                 boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)',
                 backdropFilter: isScrolled ? 'blur(8px)' : 'none',
                 transition: 'background-color 0.3s ease',
-                padding: '0.5rem 2rem'
+                padding: '0.5rem 2rem',
             }}
         >
             <Toolbar>
@@ -51,7 +50,7 @@ const Navbar = ({ toggleDrawer, user }) => {
                     <MenuIcon />
                 </IconButton>
                 <Typography variant="h4" noWrap component="div" sx={{ flexGrow: 1, fontSize: "2rem", fontWeight: "bold", color: "black" }}>
-                    {`Welcome, ${user.user_metadata?.display_name || 'User'}!`}
+                    {`Welcome, ${user.user_metadata?.display_name || 'Admin'}!`}
                 </Typography>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>

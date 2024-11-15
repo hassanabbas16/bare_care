@@ -3,30 +3,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { Box, Toolbar, Typography } from '@mui/material';
-import Navbar from '../../components/Customer/Navbar';
-import Sidebar from '../../components/Customer/Sidebar';
-import SkinQuiz from '../../components/Customer/SkinQuiz';
-import Recommendations from '../../components/Customer/Recommendations';
-import TipsWithTabs from '../../components/Customer/Tips';
-import Wishlist from '../../components/Customer/Wishlist';
-import CustomerBlogs from '../../components/Customer/CustomerBlogs';
-import GeneralDashboard from '../../components/Customer/GeneralDashboard';
+import Navbar from '@/components/Admin/Navbar';
+import Sidebar from '@/components/Admin/Sidebar';
+import AdminProducts from '@/components/Admin/Products';
+import UserManagement from '@/components/Admin/Users';
+import AdminBlogs from '@/components/Admin/Blogs';
+import SkinQuizEntries from '@/components/Admin/SkinQuiz';
+import GeneralDashboard from "@/components/Admin/GeneralDashboard";
+import PollManagement from "@/components/Admin/Polls";
 import FloatingCircle from '../../components/common/FloatingCircle';
 
-const CustomerDashboard = () => {
+const AdminDashboard = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [selectedTab, setSelectedTab] = useState('Dashboard');
+    const [selectedTab, setSelectedTab] = useState('Review Products');
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    const marqueeTexts = {
-        Dashboard: ["Welcome! Let's get that glow up!", "Ready to slay today? 💅", "Your skin journey starts here! 🌟"],
-        'Skin Quiz': ["What's your skin vibe? Take the quiz to find out! 🎯", "Get to know your skin like a pro!", "Let’s find your skin’s BFFs! 🌈"],
-        Recommendations: ["We’ve got your beauty essentials covered! 💄", "Curated for you, because you’re special! 💖", "Peep these recs, they're fire 🔥"],
-        Tips: ["Glow-up tips just for you 💅", "Skincare secrets unlocked! 🔐", "Your daily dose of beauty wisdom ✨"],
-        Wishlist: ["Manifesting those skincare goals 🌟", "Wishlisted and ready to cop 🛍️", "Dream products waiting for you 💖"],
-        Blogs: ["Latest tea on skincare and beauty 🍵", "Stay woke with skincare trends 👀", "Your beauty inspo, all in one place ✨"]
-    };
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -58,19 +49,19 @@ const CustomerDashboard = () => {
     const renderTabContent = () => {
         switch (selectedTab) {
             case 'Dashboard':
-                return <GeneralDashboard onQuizClick={handleTabChange} />;
-            case 'Skin Quiz':
-                return <SkinQuiz />;
-            case 'Recommendations':
-                return <Recommendations />;
-            case 'Tips':
-                return <TipsWithTabs />;
-            case 'Wishlist':
-                return <Wishlist />;
+                return <GeneralDashboard/>
+            case 'Products':
+                return <AdminProducts />;
+            case 'Users':
+                return <UserManagement />;
             case 'Blogs':
-                return <CustomerBlogs />;
+                return <AdminBlogs />;
+            case 'Skin Quiz':
+                return <SkinQuizEntries />;
+            case 'Polls':
+                return <PollManagement />;
             default:
-                return <GeneralDashboard onQuizClick={handleTabChange} />;
+                return <GeneralDashboard />;
         }
     };
 
@@ -78,52 +69,18 @@ const CustomerDashboard = () => {
     if (!user) return <Typography>Redirecting to login...</Typography>;
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                height: '100vh',
-                overflow: 'hidden',
-                position: 'relative',
-                '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundImage: `url('/dash1.png')`,
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center, bottom right',
-                    opacity: 0.7,
-                    zIndex: 0,
-                },
-                zIndex: 1,
-            }}
-        >
-            <FloatingCircle size="400px" top="-10%" left="-40%" dark />
-            <FloatingCircle size="500px" top="40%" right="-20%" />
+        <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+            <FloatingCircle size="400px" top="10%" left="5%" dark />
+            <FloatingCircle size="500px" top="40%" right="10%" />
             <FloatingCircle size="600px" bottom="0" left="-10%" />
-            <Navbar toggleDrawer={toggleDrawer} drawerOpen={drawerOpen} user={user} />
+            <Navbar toggleDrawer={toggleDrawer} user={user} />
             <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} handleTabChange={handleTabChange} />
-
             <Box component="main" sx={{ flexGrow: 1, overflowY: 'auto', position: 'relative', zIndex: 1 }}>
                 <Toolbar />
                 {renderTabContent()}
             </Box>
-            <Box
-                sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                    zIndex: 0,
-                }}
-            />
         </Box>
     );
 };
 
-export default CustomerDashboard;
+export default AdminDashboard;

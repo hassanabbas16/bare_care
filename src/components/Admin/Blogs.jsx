@@ -16,38 +16,25 @@ import SearchIcon from '@mui/icons-material/Search';
 import Link from 'next/link';
 import { format } from 'date-fns';
 
-export default function CustomerBlogs() {
+export default function AdminBlogs() {
     const [blogs, setBlogs] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const router = useRouter();
 
     useEffect(() => {
-        async function fetchUserBlogs() {
+        async function fetchAllBlogs() {
             try {
-                const sessionResponse = await fetch('/api/auth/session', {
-                    method: 'GET',
-                    credentials: 'include',
-                });
-                const sessionData = await sessionResponse.json();
-
-                if (!sessionData || !sessionData.user) {
-                    console.error('User not logged in');
-                    return;
-                }
-
                 const response = await fetch('/api/blog', {
                     method: 'GET',
                     credentials: 'include',
                 });
                 const data = await response.json();
-
-                const userBlogs = data.filter(blog => blog.user_id === sessionData.user.id);
-                setBlogs(userBlogs);
+                setBlogs(data);
             } catch (error) {
-                console.error('Error fetching user blogs:', error);
+                console.error('Error fetching blogs:', error);
             }
         }
-        fetchUserBlogs();
+        fetchAllBlogs();
     }, []);
 
     const handleDeleteBlog = async (blogId) => {
@@ -76,12 +63,12 @@ export default function CustomerBlogs() {
     return (
         <Box sx={{ mt: 4, padding: "3rem" }}>
             <Typography sx={{ fontWeight: 'bold', fontSize: '2.4rem', mb: 2, color: "black" }}>
-                Your Blogs
+                All Blogs
             </Typography>
 
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <TextField
-                    label="Search your blogs..."
+                    label="Search blogs..."
                     variant="outlined"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -99,7 +86,7 @@ export default function CustomerBlogs() {
                     onClick={() => router.push('/blog/create')}
                     sx={{ padding: '0.8rem 1.5rem', fontSize: '1rem', fontWeight: 'bold' }}
                 >
-                    Write a New Blog Post
+                    Create New Blog
                 </Button>
             </Box>
 
@@ -140,7 +127,7 @@ export default function CustomerBlogs() {
                                         {blog.content}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary">
-                                        By {blog.author_name || 'You'} on {format(new Date(blog.created_at), 'MMMM dd, yyyy')}
+                                        By {blog.author_name || 'Anonymous'} on {format(new Date(blog.created_at), 'MMMM dd, yyyy')}
                                     </Typography>
                                 </CardContent>
 
@@ -169,8 +156,8 @@ export default function CustomerBlogs() {
                         </Grid>
                     ))
                 ) : (
-                    <Typography color="text.secondary" sx={{ mt: 2, fontSize: "3rem" }}>
-                        You have not created any blogs yet.
+                    <Typography color="text.secondary" sx={{ mt: 2, fontSize: "1.5rem", textAlign: "center" }}>
+                        No blogs found.
                     </Typography>
                 )}
             </Grid>

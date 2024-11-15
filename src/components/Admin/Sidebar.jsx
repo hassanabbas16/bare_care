@@ -1,20 +1,22 @@
-// components/Customer/Sidebar.js
+// components/Admin/Sidebar.js
 import { Box, Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar } from "@mui/material";
+import InventoryIcon from "@mui/icons-material/Inventory";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import QuizIcon from "@mui/icons-material/Quiz";
-import SpaIcon from "@mui/icons-material/Spa";
-import LightbulbIcon from "@mui/icons-material/Lightbulb";
-import FavoriteIcon from "@mui/icons-material/Favorite";
+import PeopleIcon from "@mui/icons-material/People";
 import ArticleIcon from "@mui/icons-material/Article";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import QuizIcon from "@mui/icons-material/Quiz";
+import PollIcon from '@mui/icons-material/Poll';
+
 
 const Sidebar = ({ drawerOpen, toggleDrawer, handleTabChange }) => {
     const tabs = [
         { text: "Dashboard", icon: <DashboardIcon /> },
-        { text: "Skin Quiz", icon: <QuizIcon /> },
-        { text: "Recommendations", icon: <SpaIcon /> },
-        { text: "Tips", icon: <LightbulbIcon /> },
-        { text: "Wishlist", icon: <FavoriteIcon /> },
+        { text: "Products", icon: <InventoryIcon /> },
+        { text: "Users", icon: <PeopleIcon /> },
         { text: "Blogs", icon: <ArticleIcon /> },
+        { text: "Skin Quiz", icon: <QuizIcon /> },
+        { text: "Polls", icon: <PollIcon/> },
     ];
 
     return (
@@ -33,7 +35,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer, handleTabChange }) => {
             <Toolbar />
             <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
-                    <List sx={{ paddingTop: "1.6rem",}}>
+                    <List sx={{ paddingTop: "1.6rem" }}>
                         {tabs.map((item) => (
                             <ListItem
                                 button
@@ -50,7 +52,7 @@ const Sidebar = ({ drawerOpen, toggleDrawer, handleTabChange }) => {
                                     {item.icon}
                                 </ListItemIcon>
                                 {drawerOpen && (
-                                    <ListItemText primary={item.text} sx={{ fontSize: "1.2rem", fontWeight: 600 }} />
+                                    <ListItemText primary={item.text} sx={{ fontSize: "1.6rem", fontWeight: 600 }} />
                                 )}
                             </ListItem>
                         ))}

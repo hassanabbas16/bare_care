@@ -11,7 +11,7 @@ import {
     InputBase,
     styled,
     TableCell,
-    TableContainer,
+    TableContainer, TablePagination,
     TableRow,
     Toolbar,
     Typography
@@ -40,7 +40,7 @@ export const TableHeading = styled(Typography)(({ theme }) => ({
 }));
 
 export const SectionHeading = styled(Typography)(({ theme }) => ({
-    fontSize: '1.8rem',
+    fontSize: '2.4rem',
     fontWeight: 'bold',
     color: theme.palette.text.primary,
     marginBottom: '20px',
@@ -325,4 +325,47 @@ export const ModalLabel = styled(Typography)(() => ({
 export const ModalValue = styled(Typography)(() => ({
     fontWeight: "medium",
     fontSize: "1.4rem",
+}));
+
+export const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+    borderRadius: '12px',
+    boxShadow: '0px 4px 15px rgba(0, 0, 0, 0.1)',
+    overflow: 'hidden',
+    maxHeight: '600px',
+}));
+
+export const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    fontWeight: 'bold',
+    fontSize: '1rem',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#333333',
+    backgroundColor: theme.palette.mode === 'dark' ? '#333333' : '#f5f5f5',
+    textTransform: 'capitalize',
+}));
+
+export const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.mode === 'dark' ? '#444444' : '#fafafa',
+    },
+    '&:nth-of-type(even)': {
+        backgroundColor: theme.palette.mode === 'dark' ? '#555555' : '#ffffff',
+    },
+    '&:hover': {
+        backgroundColor: theme.palette.action.hover,
+    },
+}));
+
+export const StyledTablePagination = styled(TablePagination)(({ theme }) => ({
+    '& .MuiTablePagination-selectLabel, & .MuiTablePagination-select': {
+        color: theme.palette.text.primary,
+    },
+    '& .MuiTablePagination-actions': {
+        color: theme.palette.text.primary,
+    },
+}));
+
+export const StyledTypography = styled(Typography)(({ theme }) => ({
+    fontWeight: 'bold',
+    fontSize: '1.8rem',
+    marginBottom: '1.5rem',
+    color: theme.palette.text.primary,
 }));
