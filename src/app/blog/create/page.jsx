@@ -8,18 +8,25 @@ import {
     Card,
     Box,
 } from '@mui/material';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { supabase } from '../../../lib/supabaseClient';
 import FloatingCircle from "../../../components/common/FloatingCircle";
+import { useTheme } from "../../../contexts/themeContext";
 
 export default function CreateOrEditBlogPage() {
+    const { theme } = useTheme();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [user, setUser] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [blogId, setBlogId] = useState(null); // Move blogId to state
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const blogId = searchParams.get('id');
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search); // Get query params manually
+        const id = urlParams.get('id');
+        setBlogId(id);
+    }, []);
 
     useEffect(() => {
         async function fetchSession() {
@@ -33,7 +40,7 @@ export default function CreateOrEditBlogPage() {
             }
         }
         fetchSession();
-    }, []);
+    }, [blogId]);
 
     useEffect(() => {
         if (blogId) {
@@ -42,7 +49,7 @@ export default function CreateOrEditBlogPage() {
                 try {
                     const response = await fetch(`/api/blog/${blogId}`);
                     const data = await response.json();
-                    if (data.user_id !== user.id) {
+                    if (data.user_id !== user?.id) {
                         router.push('/blog');
                     } else {
                         setTitle(data.title);
@@ -100,7 +107,7 @@ export default function CreateOrEditBlogPage() {
                     fontWeight: 'bold',
                     mb: 3,
                     fontSize: "4rem",
-                    color: theme => theme.palette.mode === 'dark' ? '#FFF' : '#000'
+                    color: theme.palette.mode === 'dark' ? '#FFF' : '#000'
                 }}
             >
                 {isEditing ? 'Edit Blog Post' : 'Create a New Blog Post'}
@@ -109,10 +116,10 @@ export default function CreateOrEditBlogPage() {
             <Card sx={{
                 padding: 4,
                 borderRadius: "16px",
-                boxShadow: theme => theme.palette.mode === 'light'
+                boxShadow: theme.palette.mode === 'light'
                     ? "0px 8px 24px rgba(0, 0, 0, 0.1)"
                     : "0px 8px 24px rgba(255, 255, 255, 0.1)",
-                backgroundColor: theme => theme.palette.mode === 'light' ? '#fff' : '#1a1a1a',
+                backgroundColor: theme.palette.mode === 'light' ? '#fff' : '#1a1a1a',
             }}>
                 <form onSubmit={handleSubmit}>
                     <TextField
@@ -157,10 +164,10 @@ export default function CreateOrEditBlogPage() {
                                 fontSize: '1.1rem',
                                 fontWeight: 'bold',
                                 borderRadius: '8px',
-                                backgroundColor: theme => theme.palette.primary.main,
+                                backgroundColor: theme.palette.primary.main,
                                 color: '#FFF',
                                 '&:hover': {
-                                    backgroundColor: theme => theme.palette.primary.dark,
+                                    backgroundColor: theme.palette.primary.dark,
                                 },
                             }}
                         >
