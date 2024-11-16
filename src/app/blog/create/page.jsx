@@ -29,18 +29,23 @@ export default function CreateOrEditBlogPage() {
     }, []);
 
     useEffect(() => {
-        async function fetchSession() {
-            const {
-                data: { session },
-            } = await supabase.auth.getSession();
-            if (!session) {
-                router.push(`/login?redirect=/blog/create${blogId ? `?id=${blogId}` : ''}`);
-            } else {
-                setUser(session.user);
+        const fetchSession = async () => {
+            try {
+                const response = await fetch("/api/auth/session");
+                const data = await response.json();
+                if (!data.loggedIn) {
+                    router.push(`/login?redirect=/blog/create${blogId ? `?id=${blogId}` : ""}`);
+                } else {
+                    setUser(data.user);
+                }
+            } catch (error) {
+                console.error("Error fetching session:", error);
+                router.push(`/login?redirect=/blog/create${blogId ? `?id=${blogId}` : ""}`);
             }
-        }
+        };
+
         fetchSession();
-    }, [blogId]);
+    }, [blogId, router]);
 
     useEffect(() => {
         if (blogId) {
