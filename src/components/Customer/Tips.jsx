@@ -43,12 +43,16 @@ const FlipCardInner = styled(Box)({
     transformStyle: 'preserve-3d',
 });
 
-const FlipCardFront = styled(Card)({
+const FlipCardFront = styled(Card)(({ theme }) => ({
     position: 'absolute',
     width: '100%',
     height: '100%',
     backfaceVisibility: 'hidden',
-});
+    backgroundColor: theme.palette.background.paper, // White front
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}));
 
 const FlipCardBack = styled(Card)({
     position: 'absolute',
@@ -63,12 +67,30 @@ const FlipCardBack = styled(Card)({
     color: 'white',
 });
 
+const AbstractShape = styled(Box)(({ theme }) => ({
+    width: '80%',
+    height: '80%',
+    backgroundColor: theme.palette.primary.light,
+    borderRadius: '50%',
+    position: 'relative',
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: '30%',
+        left: '30%',
+        width: '50%',
+        height: '50%',
+        backgroundColor: theme.palette.primary.main,
+        borderRadius: '50%',
+    },
+}));
+
 const TipsWithTabs = () => {
     const [selectedCategory, setSelectedCategory] = useState("General");
     const [tips, setTips] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const categories = ["Acne", "Dry Skin", "Sun Care", "Anti-Aging", "Oily Skin", "General", "Sensitive Skin", "Hydration", "Diet", "Eye Care", "Lip Care", "Hand Care", "Body Care"];
+    const categories = ["Acne", "Dry Skin", "Sun Care", "Anti-Aging", "General"]; // Reduced categories
 
     const handleTabChange = (event, newValue) => {
         setSelectedCategory(newValue);
@@ -93,12 +115,13 @@ const TipsWithTabs = () => {
 
         fetchTips();
     }, [selectedCategory]);
+
     const marqueeTexts = ["Glow-up tips just for you 💅", "Skincare secrets unlocked! 🔐", "Your daily dose of beauty wisdom ✨"];
 
     return (
         <Box sx={{ width: '100%' }}>
             <MarqueeSwiper texts={marqueeTexts} speed={20000} dashboard={true} />
-            <Box sx={{padding: "3rem"}}>
+            <Box sx={{ padding: "3rem" }}>
                 <Typography variant="h4" sx={{ fontSize: '2.4rem', fontWeight: 'bold', mb: 3, color: "black" }}>
                     Tips for You!
                 </Typography>
@@ -137,13 +160,8 @@ const TipsWithTabs = () => {
                                     <FlipCard>
                                         <FlipCardInner>
                                             <FlipCardFront>
-                                                <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: '#f0f0f0' }}>
-                                                    <img
-                                                        src={`/images/${selectedCategory.toLowerCase().replace(" ", "-")}.jpg`}
-                                                        alt={selectedCategory}
-                                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                    />
-                                                </CardContent>
+                                                {/* Abstract Shape instead of an image */}
+                                                <AbstractShape />
                                             </FlipCardFront>
                                             <FlipCardBack>
                                                 <CardContent>

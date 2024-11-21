@@ -19,7 +19,7 @@ import {
     TableCellCustom,
     StyledTablePagination,
     SectionHeading,
-} from '../mui/AdminPkgs'; // Importing styled components
+} from '../mui/AdminPkgs';
 
 export default function UserManagement() {
     const [users, setUsers] = useState([]);

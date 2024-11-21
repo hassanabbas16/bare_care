@@ -28,7 +28,7 @@ import {
     ModalContentBox,
     ModalLabel,
     ModalValue,
-} from '../mui/AdminPkgs'; // Importing reusable styled components
+} from '../mui/AdminPkgs';
 
 export default function PollManagement() {
     const [polls, setPolls] = useState([]);
@@ -45,7 +45,6 @@ export default function PollManagement() {
                 const data = await response.json();
                 setPolls(data || []);
 
-                // Identify the current poll
                 const today = new Date().toISOString().split('T')[0];
                 const runningPoll = data.find((poll) => poll.display_date === today);
                 setCurrentPoll(runningPoll || null);

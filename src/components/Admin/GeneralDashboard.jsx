@@ -62,7 +62,7 @@ const GeneralDashboard = () => {
         };
 
         calculateTimeRemaining();
-        const interval = setInterval(calculateTimeRemaining, 1000); // Update every second
+        const interval = setInterval(calculateTimeRemaining, 1000);
 
         return () => clearInterval(interval);
     }, []);

@@ -18,7 +18,7 @@ import {
     TableHeaderCell,
     TableCellCustom,
     SectionHeading,
-} from '../mui/AdminPkgs'; // Styled components for consistency
+} from '../mui/AdminPkgs';
 
 export default function SkinQuizEntries() {
     const [skinQuizEntries, setSkinQuizEntries] = useState([]);
