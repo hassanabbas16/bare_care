@@ -70,9 +70,6 @@ const AdminDashboard = () => {
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
-            <FloatingCircle size="400px" top="10%" left="5%" dark />
-            <FloatingCircle size="500px" top="40%" right="10%" />
-            <FloatingCircle size="600px" bottom="0" left="-10%" />
             <Navbar toggleDrawer={toggleDrawer} user={user} />
             <Sidebar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} handleTabChange={handleTabChange} />
             <Box component="main" sx={{ flexGrow: 1, overflowY: 'auto', position: 'relative', zIndex: 1 }}>

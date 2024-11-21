@@ -22,6 +22,7 @@ import { useTheme } from "../../../contexts/themeContext";
 import ProductCard from "../../../components/products/ProductCard";
 import Image from "next/image";
 import FloatingCircle from '../../../components/common/FloatingCircle';
+import { useMediaQuery } from "@mui/material";
 
 const ProductPage = () => {
     const { theme } = useTheme();
@@ -35,6 +36,8 @@ const ProductPage = () => {
     const [newRating, setNewRating] = useState(0);
     const [relatedProducts, setRelatedProducts] = useState([]);
     const [otherVendors, setOtherVendors] = useState([]);
+
+    const isScreen1368 = useMediaQuery("(max-width: 1368px)");
 
     // Fetch product and vendors
     useEffect(() => {
@@ -160,6 +163,11 @@ const ProductPage = () => {
     const productImageUrl = product.image_url.startsWith("//")
         ? `https:${product.image_url}`
         : product.image_url;
+
+    const displayedRelatedProducts = isScreen1368
+        ? relatedProducts.slice(0, 4)
+        : relatedProducts;
+
 
     return (
         <Box sx={{ paddingTop: "15rem", alignItems: "center", justifyContent: "center", paddingBottom: "10rem", display: "flex", flexDirection: "column" }}>
@@ -345,7 +353,7 @@ const ProductPage = () => {
 
             <Card sx={{
                 minHeight: '300px',
-                maxWidth: "80%",
+                maxWidth: "90%",
                 zIndex: 1,
                 minWidth: "80%",
                 borderRadius: "24px",
@@ -369,7 +377,7 @@ const ProductPage = () => {
                         justifyContent: "center",
                     }}
                 >
-                    {relatedProducts.map((relatedProduct) => (
+                    {displayedRelatedProducts.map((relatedProduct) => (
                         <Box key={relatedProduct.id}>
                             <ProductCard product={relatedProduct} />
                         </Box>

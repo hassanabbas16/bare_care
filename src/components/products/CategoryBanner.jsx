@@ -1,7 +1,5 @@
-// components/products/CategoryBanner.jsx
 "use client";
-import { Box, Typography } from "@mui/material";
-import { useSearchParams } from "next/navigation";
+import { Box } from "@mui/material";
 import productsImage from "../../../public/products/products.png";
 import cleanserImage from "../../../public/products/cleanser.png";
 import moisturizerImage from "../../../public/products/moisturizer.png";
@@ -41,46 +39,18 @@ const CategoryBanner = ({ category, brand }) => {
         ? brandImages[brand] || productsImage
         : categoryImages[category] || productsImage;
 
-    // Determine the display text
-    const displayText = brand || category;
-
     return (
         <Box
             sx={{
                 width: "100%",
-                height: "400px",
+                height: "50vh",
                 position: "relative",
                 backgroundImage: `url(${backgroundImage.src})`,
                 backgroundPosition: "center",
                 backgroundSize: "cover",
                 backgroundRepeat: "no-repeat",
             }}
-        >
-            <Box
-                sx={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "rgba(0, 0, 0, 0.6)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <Typography
-                    sx={{
-                        color: "#fff",
-                        fontWeight: "bold",
-                        textTransform: "capitalize",
-                        fontSize: "4.4rem",
-                    }}
-                >
-                    {displayText}
-                </Typography>
-            </Box>
-        </Box>
+        />
     );
 };
 

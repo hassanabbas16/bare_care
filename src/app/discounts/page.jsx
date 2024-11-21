@@ -1,4 +1,3 @@
-// pages/discounts/page.jsx
 "use client";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
@@ -13,6 +12,7 @@ import garnier from "../../../public/garnier.png";
 import { useTheme } from "../../contexts/themeContext";
 import FloatingCircle from '../../components/common/FloatingCircle';
 import CallToActionBox from "../../components/common/CallToActionBox";
+import { useMediaQuery } from "@mui/material";
 
 const DiscountsPage = () => {
     const { theme } = useTheme();
@@ -21,6 +21,9 @@ const DiscountsPage = () => {
     const [bundles, setBundles] = useState([]);
     const [limitedTimeOffers, setLimitedTimeOffers] = useState([]);
     const router = useRouter();
+
+    // Media query to check if screen width is 1368px or below
+    const isScreen1368 = useMediaQuery("(max-width: 1368px)");
 
     useEffect(() => {
         const fetchDiscountedProducts = async () => {
@@ -59,6 +62,11 @@ const DiscountsPage = () => {
         const shuffled = [...productsArray].sort(() => 0.5 - Math.random());
         return shuffled.slice(0, count);
     };
+
+    // Limit the displayed products dynamically
+    const displayedExclusiveProducts = isScreen1368
+        ? exclusiveProducts.slice(0, 4)
+        : exclusiveProducts;
 
     return (
         <Box>
@@ -131,7 +139,7 @@ const DiscountsPage = () => {
                     Exclusive Offers
                 </Typography>
                 <Grid container spacing={2} justifyContent="center">
-                    {exclusiveProducts.map((product) => (
+                    {displayedExclusiveProducts.map((product) => (
                         <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                             <ProductCard product={product} />
                         </Grid>

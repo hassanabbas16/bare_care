@@ -2,12 +2,14 @@
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from "swiper/modules";
-import { Typography, Box } from '@mui/material';
+import { Typography, Box, useMediaQuery } from '@mui/material';
 
 import 'swiper/css';
 import 'swiper/css/autoplay';
 
 const MarqueeSwiper = ({ texts = [], speed = 30000, dashboard = false }) => {
+    const isScreen1368 = useMediaQuery('(max-width: 1368px)');
+
     return (
         <div
             style={{
@@ -19,7 +21,7 @@ const MarqueeSwiper = ({ texts = [], speed = 30000, dashboard = false }) => {
                 width: "100%",
                 whiteSpace: "nowrap",
                 textAlign: "center",
-                top: dashboard ? "1rem" : "7.5rem",
+                top: dashboard ? "1rem" : isScreen1368 ? "6.5rem" : "7.5rem",
                 zIndex: 98,
                 marginBottom: "24px",
             }}

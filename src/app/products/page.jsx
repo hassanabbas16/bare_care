@@ -238,7 +238,7 @@ const ProductsPage = () => {
             )}
 
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <Typography sx={{ fontSize: "3rem", fontWeight: "600", marginBottom: "2rem", color: theme.palette.mode === 'light' ? '#000' : '#fff' }}>
+                <Typography sx={{ fontSize: "3rem", fontWeight: "600", marginBottom: "2rem", marginTop: "4rem", color: theme.palette.mode === 'light' ? '#000' : '#fff' }}>
                     {selectedBrandFromQuery ? `${selectedBrandFromQuery} Products` : `${category} Products`}
                 </Typography>
             </Box>

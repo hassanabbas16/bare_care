@@ -7,10 +7,13 @@ import ProductCard from './ProductCard';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useTheme } from "../../contexts/themeContext";
+import { useMediaQuery } from "@mui/material";
 
 const RelatedSection = ({ type, category, brand, products, brands }) => {
     const { theme } = useTheme();
     const router = useRouter();
+
+    const isScreen1368 = useMediaQuery("(max-width: 1368px)");
 
     if (type === 'category') {
         const relatedProducts = products.filter(
@@ -18,14 +21,17 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
         );
 
         const shuffledProducts = [...relatedProducts].sort(() => 0.5 - Math.random());
-        const displayedProducts = shuffledProducts.slice(0, 5); // Show 5 products
+        const displayedProducts = isScreen1368
+            ? shuffledProducts.slice(0, 4)
+            : shuffledProducts.slice(0, 5);
+
 
         return (
             <Box sx={{ padding: '2rem', display: "flex", textAlign: 'center', justifyContent: "center", alignItems: "center", mt: 4, mb: 4 }}>
                 <Card
                     sx={{
                         minHeight: '300px',
-                        maxWidth: "80%",
+                        maxWidth: "90%",
                         minWidth: "80%",
                         borderRadius: "24px",
                         display: "flex",

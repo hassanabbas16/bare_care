@@ -1,10 +1,10 @@
-// components/products/CategorySection.jsx
 import React from 'react';
 import { Box, Typography, Card } from '@mui/material';
 import Grid from "@mui/material/Grid2";
 import { useRouter } from 'next/navigation';
 import { useTheme } from "../../../contexts/themeContext";
 import Image from 'next/image';
+import { useMediaQuery } from '@mui/material';
 
 const categoryIcons = {
     Moisturizers: '/categories/moisturizer.png',
@@ -28,8 +28,11 @@ const CategorySection = () => {
     const { theme } = useTheme();
     const router = useRouter();
 
+    // Media query to check if screen width is 1368px or below
+    const isScreen1368 = useMediaQuery('(max-width: 1368px)');
+
     return (
-        <Box sx={{ padding: '2rem', textAlign: 'center', mt: 4, mb: 4 }}>
+        <Box sx={{ padding: '2rem', textAlign: 'center', mt: 4, mb: 4, maxWidth: "60%", alignSelf: "center" }}>
             <Typography
                 sx={{
                     fontSize: '3rem',
@@ -40,13 +43,18 @@ const CategorySection = () => {
             >
                 Categories
             </Typography>
-            <Grid container spacing={3} justifyContent="center">
+            <Grid
+                container
+                spacing={3}
+                justifyContent="center"
+                columns={isScreen1368 ? 3 : 12} // Adjust columns dynamically
+            >
                 {productsData.map((category) => (
                     <Grid
                         item
                         xs={6}
-                        sm={4}
-                        md={2}
+                        sm={isScreen1368 ? 4 : 4}
+                        md={isScreen1368 ? 4 : 2}
                         key={category.title}
                         sx={{
                             cursor: 'pointer',

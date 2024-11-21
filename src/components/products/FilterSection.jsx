@@ -35,14 +35,12 @@ const FilterSection = ({
         <Card
             sx={{
                 width: "340px",
-                maxHeight: "80vh",
-                overflowY: "auto",
                 padding: "3rem",
+                maxHeight: "750px",
                 borderRadius: "16px",
                 backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
                 color: theme.palette.mode === "light" ? '#212121' : '#fff',
                 boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
-                position: "sticky",
                 top: "20px",
                 marginBottom: "2rem",
             }}
