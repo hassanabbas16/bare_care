@@ -243,7 +243,7 @@ const ProductsPage = () => {
                 </Typography>
             </Box>
 
-            <Box sx={{ padding: "2rem", alignItems: "center", justifyContent: "center", display: "flex" }}>
+            <Box sx={{ padding: "2rem", alignItems: "center", justifyContent: "center", display: "flex", marginTop: "4rem" }}>
                 <Box sx={{ display: "flex", gap: "2rem", maxWidth: "90%"}}>
                     <FilterSection
                         minPrice={minPrice}

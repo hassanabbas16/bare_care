@@ -14,7 +14,7 @@ import faceCareImage from "../../../public/products/facecare.png";
 import theOrdinaryImage from "../../../public/products/ordinarybrand.png";
 import ceraveImage from "../../../public/products/ceravebrand.png";
 import neutrogenaImage from "../../../public/products/neutrogenabrand.png";
-import garnierImage from "../../../public/products/garneirbrand.png";
+import garnierImage from "../../../public/products/garnierbrand.png";
 import glamGlowImage from "../../../public/products/glamglowbrand.png";
 
 const CategoryBanner = ({ category, brand }) => {
