@@ -36,7 +36,7 @@ export const CTAContentBox = styled(Paper)(({ theme }) => ({
     position: "relative",
     zIndex: 2,
     "@media (max-width: 600px)": {
-        padding: "2rem",
+        padding: "5rem 2rem",
     },
 }));
 
@@ -46,7 +46,7 @@ export const CTAHeading = styled(Typography)(({ theme }) => ({
     marginBottom: "3rem",
     color: "white",
     "@media (max-width: 600px)": {
-        fontSize: "2.8rem",
+        fontSize: "2.4rem",
         marginBottom: "1.5rem",
     },
 }));
@@ -56,7 +56,7 @@ export const CTADescription = styled(Typography)(({ theme }) => ({
     fontWeight: 400,
     color: "#FFFFFF",
     "@media (max-width: 600px)": {
-        fontSize: "1.6rem",
+        fontSize: "1.2rem",
     },
 }));
 
@@ -73,4 +73,7 @@ export const CTAButton = styled(ServiceBtn1)(({ theme }) => ({
     fontWeight: "bold",
     backgroundColor: theme.palette.primary.main, // Adjusts button color to match site theme
     color: "white",
+    "@media (max-width: 600px)": {
+        fontSize: "1.2rem",
+    },
 }));

@@ -6,22 +6,13 @@ import { useTheme } from "../../../contexts/themeContext";
 import Image from 'next/image';
 import { useMediaQuery } from '@mui/material';
 
-const categoryIcons = {
-    Moisturizers: '/categories/moisturizer.png',
-    Cleansers: '/categories/cleanser.png',
-    'Face Masks': '/categories/masks.png',
-    'Face Serums': '/categories/serum.png',
-    'Face Care': '/categories/face_care.png',
-    Sunscreens: '/categories/sunscreen.png',
-};
-
 const productsData = [
-    { title: "Cleansers", link: "/products?category=Cleanser" },
-    { title: "Face Serums", link: "/products?category=Serum" },
-    { title: "Sunscreens", link: "/products?category=Sunscreen" },
-    { title: "Moisturizers", link: "/products?category=Moisturizer" },
-    { title: "Face Masks", link: "/products?category=Face%20Mask" },
-    { title: "Face Care", link: "/products?category=Face%20Care" },
+    { title: "Cleansers", icon:'/categories/cleanser.png', link: "/products?category=Cleanser" },
+    { title: "Face Serums", icon:'/categories/serum.png', link: "/products?category=Serum" },
+    { title: "Sunscreens", icon:'/categories/sunscreen.png', link: "/products?category=Sunscreen" },
+    { title: "Moisturizers", icon:'/categories/moisturizer.png', link: "/products?category=Moisturizer" },
+    { title: "Face Masks", icon:'/categories/masks.png', link: "/products?category=Face%20Mask" },
+    { title: "Face Care", icon:'/categories/face_care.png', link: "/products?category=Face%20Care" },
 ];
 
 const CategorySection = () => {
@@ -35,7 +26,7 @@ const CategorySection = () => {
         <Box sx={{ padding: '2rem', textAlign: 'center', mt: 4, mb: 4, maxWidth: "60%", alignSelf: "center" }}>
             <Typography
                 sx={{
-                    fontSize: '3rem',
+                    fontSize: { xs: '2.4rem', sm: '3rem' },
                     fontWeight: 'bold',
                     marginBottom: '1.5rem',
                     color: theme.palette.mode === 'light' ? '#000' : '#fff',
@@ -94,7 +85,7 @@ const CategorySection = () => {
                                 }}
                             >
                                 <Image
-                                    src={categoryIcons[category.title] || '/categories/default.png'}
+                                    src={category.icon}
                                     alt={category.title}
                                     width={category.title === "Sunscreens" ? 90 : 150}
                                     height={category.title === "Sunscreens" ? 90 : 150}

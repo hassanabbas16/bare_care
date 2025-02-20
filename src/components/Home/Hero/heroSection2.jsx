@@ -8,8 +8,8 @@ const HeroSection = () => {
         <Box
             sx={{
                 position: 'relative',
-                paddingTop: "5rem",
-                height: { xs: '60vh', sm: '75vh', md: '100vh' },
+                marginTop: {xs:"3rem",  md:"6rem", xl:"7rem"},
+                height: { xs: '60vh', sm: '75vh', md: 'calc(100vh - 60px)' },
                 backgroundImage: 'url(/HomeBanner.png)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -20,7 +20,8 @@ const HeroSection = () => {
                 marginBottom: "6rem",
                 textAlign: 'center',
                 p: 3,
-                top: isScreen1368 ? '6rem' : 'unset',
+                backgroundRepeat: 'no-repeat',
+                // top: isScreen1368 ? '6rem' : 'unset',
             }}
         ></Box>
     );

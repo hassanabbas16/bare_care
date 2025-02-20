@@ -75,18 +75,20 @@ export default function Home() {
                 justifyContent: "space-between",
             }}
         >
+            <Box sx={{display:{xs:"none",md:"block"}}}>
             <FloatingCircle size="400px" top="150%" left="10%" dark />
             <FloatingCircle size="500px" top="220%" right="5%" />
-            <FloatingCircle size="600px" bottom="-250%" left="-10%" />
-            <FloatingCircle size="400px" top="400%" left="10%" dark />
+            <FloatingCircle size="600px" bottom="-120%" left="-10%" />
+            <FloatingCircle size="400px" top="200%" left="10%" dark />
             <FloatingCircle size="500px" top="90%" right="5%" />
-            <FloatingCircle size="600px" bottom="-380%" right="-10%" />
+            <FloatingCircle size="600px" bottom="-180%" right="10%" />
+            </Box>
             <Navbar />
             <HeroSection />
             <CategorySection />
             <RelatedSection type="brand" brands={topBrands} />
             <Box sx={{ padding: "2rem" }}>
-                <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
+                <Typography variant="h4" sx={{ fontSize:{sm:'2.4rem',sm:'4rem'}, marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Exclusive Offers
                 </Typography>
                 <Grid container spacing={2} justifyContent="center">

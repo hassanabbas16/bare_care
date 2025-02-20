@@ -70,10 +70,12 @@ const DiscountsPage = () => {
 
     return (
         <Box>
-            <FloatingCircle size="400px" top="100%" left="10%" dark />
-            <FloatingCircle size="500px" top="70%" right="5%" />
-            <FloatingCircle size="600px" bottom="-120%" left="-10%" />
-            <FloatingCircle size="700px" bottom="-200%" right="5%" />
+            <Box sx={{ display: { xs: "none", md: "block" } }}>
+                <FloatingCircle size="400px" top="100%" left="10%" dark />
+                <FloatingCircle size="500px" top="70%" right="5%" />
+                <FloatingCircle size="600px" bottom="-120%" left="-10%" />
+                <FloatingCircle size="700px" bottom="-200%" right="5%" />
+            </Box>
             <Box
                 sx={{
                     height: "100vh",
@@ -94,8 +96,8 @@ const DiscountsPage = () => {
                 </Typography>
                 <Grid container spacing={4} justifyContent="center">
                     {[{ img: cerave, label: "Up to 40% OFF", name: "Cerave" },
-                        { img: neutrogena, label: "Up to 20% OFF", name: "Neutrogena" },
-                        { img: garnier, label: "Up to 50% OFF", name: "Garnier" }].map((product, index) => (
+                    { img: neutrogena, label: "Up to 20% OFF", name: "Neutrogena" },
+                    { img: garnier, label: "Up to 50% OFF", name: "Garnier" }].map((product, index) => (
                         <Grid item xs={12} sm={6} md={3} key={index}>
                             <Box
                                 onClick={() => router.push(`/products?brand=${product.name}`)}

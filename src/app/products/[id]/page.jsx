@@ -171,9 +171,9 @@ const ProductPage = () => {
 
     return (
         <Box sx={{ paddingTop: "15rem", alignItems: "center", justifyContent: "center", paddingBottom: "10rem", display: "flex", flexDirection: "column" }}>
-            <FloatingCircle size="400px" top="10%" left="0%" dark />
+            {/* <FloatingCircle size="400px" top="10%" left="0%" dark />
             <FloatingCircle size="500px" top="40%" right="0" />
-            <FloatingCircle size="600px" bottom="-50%" left="-10%" />
+            <FloatingCircle size="600px" bottom="-50%" left="-10%" /> */}
             <Card
                 sx={{
                     minHeight: '300px',

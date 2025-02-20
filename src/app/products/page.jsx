@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import React, { useState, useEffect, useContext } from "react";
 import { ComparisonContext } from "../../contexts/ComparisonContext";
-import {Box, Button, TextField, Typography} from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../../components/products/ProductCard";
@@ -225,9 +225,9 @@ const ProductsPage = () => {
 
     return (
         <Box>
-            <FloatingCircle size="400px" top="50%" left="10%" dark />
-            <FloatingCircle size="500px" top="70%" right="5%" />
-            <FloatingCircle size="600px" bottom="-80%" left="-10%" />
+            <FloatingCircle size="200px" top="50%" left="10%" dark />
+            <FloatingCircle size="230px" top="70%" right="5%" />
+            <FloatingCircle size="300px" bottom="-80%" left="-10%" />
             <CategoryBanner category={category} brand={selectedBrandFromQuery} />
             {selectedBrandFromQuery && (
                 <RelatedSection
@@ -243,8 +243,8 @@ const ProductsPage = () => {
                 </Typography>
             </Box>
 
-            <Box sx={{ padding: "2rem", alignItems: "center", justifyContent: "center", display: "flex", marginTop: "4rem" }}>
-                <Box sx={{ display: "flex", gap: "2rem", maxWidth: "90%"}}>
+            <Box sx={{ padding: "2rem", alignItems: "center", justifyContent: "center", display: "flex", marginTop: "4rem", }}>
+                <Box sx={{ display: "flex", gap: "2rem", maxWidth: "90%", "@media (max-width: 600px)": { flexDirection: "column", alignItems:'center' } }}>
                     <FilterSection
                         minPrice={minPrice}
                         maxPrice={maxPrice}
@@ -269,7 +269,7 @@ const ProductsPage = () => {
                             flexDirection: "column",
                         }}
                     >
-                        <Box sx={{ display: "flex", gap: "1rem", width: "100%", marginBottom: "2rem", marginLeft: "2rem" }}>
+                        <Box sx={{ display: "flex", gap: "1rem", width:{sx:'90%', sm:'70%'}, margin:'0 auto 20px',}}>
                             <TextField
                                 label="Search Products"
                                 variant="outlined"
@@ -281,7 +281,7 @@ const ProductsPage = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                sx={{ height: "100%", whiteSpace: "nowrap", padding: "0 2rem" }}
+                                sx={{ height: "100%", whiteSpace: "nowrap", padding: "16px 2rem" }}
                             >
                                 Search
                             </Button>

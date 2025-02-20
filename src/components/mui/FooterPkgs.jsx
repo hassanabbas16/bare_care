@@ -28,6 +28,7 @@ export const FooterInnerContainer = styled(Box)(({ theme }) => ({
         alignItems: 'center',
         textAlign: 'center',
         padding: "0 2rem",
+        gap: "2rem",
     },
 }));
 
@@ -46,16 +47,13 @@ export const FooterLinksContainer = styled(Box)(({ theme }) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: 'center',
-    position: 'absolute',
-    top: '26%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    
+    // transform: 'translate(-50%, -50%)',
     gap: "6rem",
     '@media (max-width: 1368px)': {
         gap: '6rem',
     },
-    '@media (max-width: 768px)': {
-        flexDirection: 'column',
+    '@media (max-width: 900px)': {
         gap: '1.5rem',
         position: 'static',
         transform: 'none',

@@ -14,28 +14,28 @@ import {
 import { useTheme } from "../../contexts/themeContext";
 
 const FilterSection = ({
-                           minPrice,
-                           maxPrice,
-                           selectedBrands = [],
-                           selectedSkinTypes = [],
-                           authenticityFilter,
-                           ratingFilter,
-                           handleMinPriceChange,
-                           handleMaxPriceChange,
-                           handleBrandChange,
-                           handleSkinTypeChange,
-                           handleAuthenticityChange,
-                           handleRatingChange,
-                           brands,
-                           hideBrandFilter = false,
-                       }) => {
+    minPrice,
+    maxPrice,
+    selectedBrands = [],
+    selectedSkinTypes = [],
+    authenticityFilter,
+    ratingFilter,
+    handleMinPriceChange,
+    handleMaxPriceChange,
+    handleBrandChange,
+    handleSkinTypeChange,
+    handleAuthenticityChange,
+    handleRatingChange,
+    brands,
+    hideBrandFilter = false,
+}) => {
     const { theme } = useTheme();
 
     return (
         <Card
             sx={{
-                width: "340px",
-                padding: "3rem",
+                width: "280px",
+                padding: "1rem",
                 maxHeight: "750px",
                 borderRadius: "16px",
                 backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',

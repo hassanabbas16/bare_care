@@ -22,7 +22,7 @@ const MarqueeSwiper = ({ texts = [], speed = 30000, dashboard = false }) => {
                 whiteSpace: "nowrap",
                 textAlign: "center",
                 top: dashboard ? "1rem" : isScreen1368 ? "6.5rem" : "7.5rem",
-                zIndex: 98,
+                zIndex: 99998,
                 marginBottom: "24px",
             }}
         >
