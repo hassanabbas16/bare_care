@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import React, { useState, useEffect, useContext } from "react";
 import { ComparisonContext } from "../../contexts/ComparisonContext";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography, useMediaQuery, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProductCard from "../../components/products/ProductCard";
@@ -15,6 +15,18 @@ import FloatingCircle from '../../components/common/FloatingCircle';
 import CallToActionBox from "../../components/common/CallToActionBox";
 
 const ProductsPage = () => {
+
+
+    // State for modal
+    const [openFilterModal, setOpenFilterModal] = useState(false);
+
+    // Function to handle modal open/close
+    const handleOpenFilterModal = () => setOpenFilterModal(true);
+    const handleCloseFilterModal = () => setOpenFilterModal(false);
+
+    // Media query to check for small screens
+    const isSmallScreen = useMediaQuery("(max-width: 600px)");
+
     const { theme } = useTheme();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -244,23 +256,73 @@ const ProductsPage = () => {
             </Box>
 
             <Box sx={{ padding: "2rem", alignItems: "center", justifyContent: "center", display: "flex", marginTop: "4rem", }}>
-                <Box sx={{ display: "flex", gap: "2rem", maxWidth: "90%", "@media (max-width: 600px)": { flexDirection: "column", alignItems:'center' } }}>
-                    <FilterSection
-                        minPrice={minPrice}
-                        maxPrice={maxPrice}
-                        selectedBrands={selectedBrands}
-                        selectedSkinTypes={selectedSkinTypes}
-                        authenticityFilter={authenticityFilter}
-                        ratingFilter={ratingFilter}
-                        handleMinPriceChange={handleMinPriceChange}
-                        handleMaxPriceChange={handleMaxPriceChange}
-                        handleBrandChange={handleBrandChange}
-                        handleSkinTypeChange={handleSkinTypeChange}
-                        handleAuthenticityChange={handleAuthenticityChange}
-                        handleRatingChange={handleRatingChange}
-                        brands={filterBrands}
-                        hideBrandFilter={selectedBrandFromQuery !== ""}
-                    />
+                <Box sx={{ display: "flex", gap: "2rem", maxWidth: "90%", "@media (max-width: 600px)": { flexDirection: "column", alignItems: 'center' } }}>
+                    <Box sx={{ display: { xs: 'flex', sm: 'none' }, gap: "1rem", width: { sx: '90%', sm: '70%' }, margin: '0 auto 20px', }}>
+                        <TextField
+                            label="Search Products"
+                            variant="outlined"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            sx={{ flexGrow: 1 }}
+                            InputProps={{ style: { color: "black" } }}
+                        />
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{ height: "100%", whiteSpace: "nowrap", padding: "16px 2rem" }}
+                        >
+                            Search
+                        </Button>
+                    </Box>
+                    <Box>
+                        {isSmallScreen ? (
+                            <Button variant="contained" onClick={handleOpenFilterModal}>
+                                Open Filters
+                            </Button>
+                        ) : (<FilterSection
+                            minPrice={minPrice}
+                            maxPrice={maxPrice}
+                            selectedBrands={selectedBrands}
+                            selectedSkinTypes={selectedSkinTypes}
+                            authenticityFilter={authenticityFilter}
+                            ratingFilter={ratingFilter}
+                            handleMinPriceChange={handleMinPriceChange}
+                            handleMaxPriceChange={handleMaxPriceChange}
+                            handleBrandChange={handleBrandChange}
+                            handleSkinTypeChange={handleSkinTypeChange}
+                            handleAuthenticityChange={handleAuthenticityChange}
+                            handleRatingChange={handleRatingChange}
+                            brands={filterBrands}
+                            hideBrandFilter={selectedBrandFromQuery !== ""}
+                        />)}
+
+                        {/* Filter Modal */}
+                        <Dialog open={openFilterModal} onClose={handleCloseFilterModal} fullWidth>
+                            <DialogTitle>Filters</DialogTitle>
+                            <DialogContent>
+                                <FilterSection
+                                    minPrice={minPrice}
+                                    maxPrice={maxPrice}
+                                    selectedBrands={selectedBrands}
+                                    selectedSkinTypes={selectedSkinTypes}
+                                    authenticityFilter={authenticityFilter}
+                                    ratingFilter={ratingFilter}
+                                    handleMinPriceChange={handleMinPriceChange}
+                                    handleMaxPriceChange={handleMaxPriceChange}
+                                    handleBrandChange={handleBrandChange}
+                                    handleSkinTypeChange={handleSkinTypeChange}
+                                    handleAuthenticityChange={handleAuthenticityChange}
+                                    handleRatingChange={handleRatingChange}
+                                    brands={filterBrands}
+                                    hideBrandFilter={selectedBrandFromQuery !== ""}
+                                />
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleCloseFilterModal}>Close</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </Box>
+
 
                     <Box
                         sx={{
@@ -269,7 +331,7 @@ const ProductsPage = () => {
                             flexDirection: "column",
                         }}
                     >
-                        <Box sx={{ display: "flex", gap: "1rem", width:{sx:'90%', sm:'70%'}, margin:'0 auto 20px',}}>
+                        <Box sx={{ display: { xs: 'none', sm: 'flex' }, gap: "1rem", width: { sx: '90%', sm: '70%' }, margin: '0 auto 20px', }}>
                             <TextField
                                 label="Search Products"
                                 variant="outlined"

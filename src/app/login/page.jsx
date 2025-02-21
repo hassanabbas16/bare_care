@@ -194,9 +194,9 @@ const AuthPage = () => {
                 sx={{
                     position: 'relative',
                     zIndex: 1,
-                    width: '90%',
+                    width: {xs: '75%', sm: '90%'},
                     maxWidth: 400,
-                    padding: 4,
+                    padding:'24px 8px',
                     transition: 'opacity 0.5s ease',
                     opacity: isSignup ? 0.95 : 1,
                 }}

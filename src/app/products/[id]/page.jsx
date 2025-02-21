@@ -177,13 +177,13 @@ const ProductPage = () => {
             <Card
                 sx={{
                     minHeight: '300px',
-                    maxWidth: "80%",
+                    maxWidth: { xs: '90%', sm: '80%' },
                     minWidth: "80%",
                     borderRadius: "24px",
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "space-between",
-                    padding: "3rem",
+                    padding: { xs: '1.6rem', sm: '3rem' },
                     zIndex: 1,
                     backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
                     color: theme.palette.mode === "light" ? '#212121' : '#fff',
@@ -191,7 +191,7 @@ const ProductPage = () => {
                     marginBottom: "8rem",
                 }}
             >
-                <Typography fontWeight="bold" gutterBottom sx={{fontSize: "4rem"}}>
+                <Typography fontWeight="bold" gutterBottom sx={{ fontSize: { xs: '2rem', sm: '4rem' } }}>
                     {product.product_name}
                 </Typography>
 
@@ -210,7 +210,7 @@ const ProductPage = () => {
                     <Grid item xs={12} md={7}>
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "space-between" }}>
-                                <Typography color="textSecondary" sx={{ fontSize: "2rem" }}>
+                                <Typography color="textSecondary" sx={{ fontSize: { xs: '1.6rem', sm: '2rem' } }}>
                                     Brand: {product.brand}
                                 </Typography>
                                 {product.authenticity && (
@@ -232,7 +232,7 @@ const ProductPage = () => {
                                     ({product.rating_count || 0} reviews)
                                 </Typography>
                             </Box>
-                            <Typography fontWeight="bold" color="primary" sx={{ fontSize: "2.4rem" }}>
+                            <Typography fontWeight="bold" color="primary" sx={{ fontSize: { xs: '1.6rem', sm: '2.4rem' } }}>
                                 Rs. {parseFloat(product.sale_price).toFixed(2)}
                             </Typography>
                             {product.regular_price && (
@@ -240,7 +240,7 @@ const ProductPage = () => {
                                     sx={{
                                         textDecoration: "line-through",
                                         color: "#FF6961",
-                                        fontSize: "1.8rem",
+                                        fontSize: { xs: '1.4rem', sm: '1.8rem' },
                                     }}
                                 >
                                     Rs. {parseFloat(product.regular_price).toFixed(2)}
@@ -253,8 +253,8 @@ const ProductPage = () => {
                                 sx={{
                                     fontWeight: "bold",
                                     marginTop: "1rem",
-                                    maxWidth: "40%",
-                                    fontSize: "1.8rem"
+                                    maxWidth: { xs: '100%', sm: '40%' },
+                                    fontSize: { xs: '1.4rem', sm: '1.8rem' }
                                 }}
                             >
                                 Buy Now
@@ -263,12 +263,12 @@ const ProductPage = () => {
                     </Grid>
                 </Grid>
 
-                <Typography gutterBottom sx={{fontSize: "2.8rem", mt: 3}}>
+                <Typography gutterBottom sx={{ fontSize: { xs: '1.6rem', sm: '2.8rem' }, mt: 3 }}>
                     Reviews
                 </Typography>
 
                 <Box sx={{ marginBottom: "2rem" }}>
-                    <Typography mb={1} sx={{fontSize: "2rem"}}>
+                    <Typography mb={1} sx={{ fontSize: { xs: '1.5rem', sm: '2rem' } }}>
                         Write a Review
                     </Typography>
                     <Rating
@@ -290,7 +290,7 @@ const ProductPage = () => {
                         variant="contained"
                         onClick={handleSubmitReview}
                         disabled={!newComment || newRating === 0}
-                        sx={{fontSize: "1.6rem"}}
+                        sx={{ fontSize: { xs: '1.2rem', sm: '1.6rem' } }}
                     >
                         Submit Review
                     </Button>
@@ -352,12 +352,12 @@ const ProductPage = () => {
             </Card>
 
             <Card sx={{
+                display: { xs: 'none', sm: 'flex' },
                 minHeight: '300px',
                 maxWidth: "90%",
                 zIndex: 1,
                 minWidth: "80%",
                 borderRadius: "24px",
-                display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
                 padding: "3rem",
@@ -366,7 +366,7 @@ const ProductPage = () => {
                 boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
                 marginBottom: "8rem",
             }}>
-                <Typography gutterBottom sx={{fontSize: "2.8rem", mb: 3}}>
+                <Typography gutterBottom sx={{ fontSize: { xs: '1.6rem', sm: '2.8rem' }, mb: 3, textAlign: "center" }}>
                     Related Products
                 </Typography>
                 <Box

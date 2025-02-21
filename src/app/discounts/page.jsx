@@ -137,7 +137,7 @@ const DiscountsPage = () => {
             </Box>
 
             <Box sx={{ padding: "2rem" }}>
-                <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
+                <Typography variant="h4" sx={{ fontSize: { xs: '2.4rem', sm: '4rem' }, marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Exclusive Offers
                 </Typography>
                 <Grid container spacing={2} justifyContent="center">
@@ -150,7 +150,7 @@ const DiscountsPage = () => {
             </Box>
 
             <Box sx={{ padding: "2rem" }}>
-                <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
+                <Typography variant="h4" sx={{ fontSize: { xs: '2.4rem', sm: '4rem' }, marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Discounted Bundles
                 </Typography>
                 <Grid container spacing={4} justifyContent="center">
@@ -173,7 +173,7 @@ const DiscountsPage = () => {
                                 <Typography sx={{ fontWeight: "bold", fontSize: "1.8rem", color: "#1976d2", marginBottom: "1rem" }}>
                                     Bundle Deal {index + 1}
                                 </Typography>
-                                <Box sx={{ display: "flex", gap: "1rem" }}>
+                                <Box sx={{ display: "flex", flexDirection :{ xs: 'column', sm: 'row' } ,gap: "1rem" }}>
                                     {bundle.map((product) => (
                                         <Box key={product.id} sx={{ flex: 1 }}>
                                             <ProductCard product={product} />

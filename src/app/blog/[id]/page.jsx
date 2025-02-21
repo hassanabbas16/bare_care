@@ -153,7 +153,11 @@ export default function BlogPostPage() {
 
     return (
         <Container maxWidth="lg" sx={{ mt: 15, mb: 10 }}>
-            <Card sx={{ p: 3, boxShadow: 3, borderRadius: '24px', overflow: 'hidden', backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent' }}>
+            <Card sx={{
+                p: 3, boxShadow: 3, borderRadius: '24px', overflow: 'hidden', backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
+                color: theme.palette.mode === "light" ? '#212121' : '#fff',
+                boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
+            }}>
                 {blog.image_url && (
                     <CardMedia
                         component="img"
@@ -163,15 +167,15 @@ export default function BlogPostPage() {
                     />
                 )}
                 <CardContent>
-                    <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', fontSize: "4rem" }}>
+                    <Typography gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', fontSize: { xs: '2.4rem', sm: '4rem' } }}>
                         {blog.title}
                     </Typography>
-                    <Typography color="text.secondary" sx={{ mb: 1, fontSize: "2.4rem", fontWeight: "400" }}>
+                    <Typography color="text.secondary" sx={{ mb: 1, fontSize: { xs: '1.6rem', sm: '2.4rem' }, fontWeight: "400" }}>
                         By {blog.author_name || 'Anonymous'} on {formattedDate}
                     </Typography>
                     <Divider sx={{ my: 2 }} />
 
-                    <Typography sx={{ fontSize: '1.8rem', lineHeight: 1.7, fontWeight: "300" }}>
+                    <Typography sx={{ fontSize: { xs: '1.2rem', sm: '1.8rem' }, lineHeight: 1.7, fontWeight: "300" }}>
                         {blog.content}
                     </Typography>
 
@@ -197,14 +201,14 @@ export default function BlogPostPage() {
                     <Divider sx={{ my: 2 }} />
 
                     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end", gap: 1 }}>
-                        <IconButton onClick={handleLikeToggle} color="error" sx={{fontSize: "2rem" }}>
+                        <IconButton onClick={handleLikeToggle} color="error" sx={{ fontSize: "2rem" }}>
                             {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
                         </IconButton>
-                        <Typography sx={{fontSize: "2rem"}}>{likes}</Typography>
+                        <Typography sx={{ fontSize: "2rem" }}>{likes}</Typography>
                     </Box>
 
                     <Box sx={{ display: 'flex', alignItems: 'left', mb: 2, gap: 1, flexDirection: "column" }}>
-                        <Typography sx={{fontSize: "2.4rem", fontWeight: '400'}}>Add a Comment!</Typography>
+                        <Typography sx={{ fontSize: { xs: '1.6rem', sm: '2.4rem' }, fontWeight: '400' }}>Add a Comment!</Typography>
                         <TextField
                             fullWidth
                             label="Add a comment"
@@ -225,7 +229,7 @@ export default function BlogPostPage() {
                         </Button>
                     </Box>
 
-                    <Typography variant="h5" gutterBottom sx={{ mt: 4, fontWeight: 'bold', fontSize: "2.4rem" }}>
+                    <Typography variant="h5" gutterBottom sx={{ mt: 4, fontWeight: 'bold', fontSize: { xs: '1.6rem', sm: '2.4rem' } }}>
                         Comments
                     </Typography>
                     <Box sx={{ maxHeight: '300px', overflowY: 'auto', mb: 2, pr: 1 }}>
@@ -246,7 +250,7 @@ export default function BlogPostPage() {
                                             </Typography>
                                         </Box>
                                     </Box>
-                                    <Typography variant="body1" color="text.secondary" sx={{ mt: 1, fontSize: '1.4rem' }}>
+                                    <Typography variant="body1" color="text.secondary" sx={{ mt: 1, fontSize: { xs: '1.2rem', sm: '1.4rem' } }}>
                                         {commentItem.content}
                                     </Typography>
                                     <Divider sx={{ my: 1 }} />
@@ -258,7 +262,7 @@ export default function BlogPostPage() {
             </Card>
 
             {/* Other Blogs Section */}
-            <Typography sx={{ mt: 6, mb: 3, fontWeight: 'bold', color: 'primary.main', fontSize: "2.4rem" }}>
+            <Typography sx={{ mt: 6, mb: 3, fontWeight: 'bold', color: 'primary.main', fontSize: { xs: '2.4rem', sm: '4rem' } }}>
                 Other Blogs You Might Like
             </Typography>
             <Grid container spacing={3}>

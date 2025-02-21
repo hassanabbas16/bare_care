@@ -87,7 +87,7 @@ export default function BlogPage() {
                 <FloatingCircle size="600px" bottom="0" left="-10%" />
                 </Box>
 
-                <Typography gutterBottom sx={{ fontSize:{sx:'2.4rem',sm:'4.4rem'}, textAlign: 'center', color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
+                <Typography variant='h3' gutterBottom sx={{ fontSize:{  xs:'2.4rem',sm:'4.4rem'}, textAlign: 'center', color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Skincare Blogs
                 </Typography>
 
