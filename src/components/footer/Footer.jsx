@@ -8,9 +8,11 @@ import {
     FooterLinksContainer,
     FooterSocialIconsContainer,
     FooterBottomContainer,
-    FooterText } from "../mui/FooterPkgs";
+    FooterText
+} from "../mui/FooterPkgs";
 import { Facebook, Instagram, Twitter, YouTube, Email } from "@mui/icons-material";
 import { useTheme } from "../../contexts/themeContext";
+import { Box } from "@mui/system";
 
 export default function Footer() {
     const { theme } = useTheme();
@@ -18,9 +20,11 @@ export default function Footer() {
     return (
         <FooterContainer>
             <FooterInnerContainer>
-                <FooterLogoContainer variant="h4">
-                    Bare Care.
-                </FooterLogoContainer>
+                <Box>
+                    <FooterLogoContainer variant="h4">
+                        Bare Care.
+                    </FooterLogoContainer>
+                </Box>
 
                 <FooterLinksContainer>
                     <MuiLink href="/" sx={{ color: "#FFF", textDecoration: "none", fontSize: "1.5rem", fontWeight: "300" }}>

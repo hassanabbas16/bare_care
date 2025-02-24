@@ -70,10 +70,12 @@ const DiscountsPage = () => {
 
     return (
         <Box>
-            <FloatingCircle size="400px" top="100%" left="10%" dark />
-            <FloatingCircle size="500px" top="70%" right="5%" />
-            <FloatingCircle size="600px" bottom="-120%" left="-10%" />
-            <FloatingCircle size="700px" bottom="-200%" right="5%" />
+            <Box sx={{ display: { xs: "none", md: "block" } }}>
+                <FloatingCircle size="400px" top="100%" left="10%" dark />
+                <FloatingCircle size="500px" top="70%" right="5%" />
+                <FloatingCircle size="600px" bottom="-120%" left="-10%" />
+                <FloatingCircle size="700px" bottom="-200%" right="5%" />
+            </Box>
             <Box
                 sx={{
                     height: "100vh",
@@ -94,8 +96,8 @@ const DiscountsPage = () => {
                 </Typography>
                 <Grid container spacing={4} justifyContent="center">
                     {[{ img: cerave, label: "Up to 40% OFF", name: "Cerave" },
-                        { img: neutrogena, label: "Up to 20% OFF", name: "Neutrogena" },
-                        { img: garnier, label: "Up to 50% OFF", name: "Garnier" }].map((product, index) => (
+                    { img: neutrogena, label: "Up to 20% OFF", name: "Neutrogena" },
+                    { img: garnier, label: "Up to 50% OFF", name: "Garnier" }].map((product, index) => (
                         <Grid item xs={12} sm={6} md={3} key={index}>
                             <Box
                                 onClick={() => router.push(`/products?brand=${product.name}`)}
@@ -135,7 +137,7 @@ const DiscountsPage = () => {
             </Box>
 
             <Box sx={{ padding: "2rem" }}>
-                <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
+                <Typography variant="h4" sx={{ fontSize: { xs: '2.4rem', sm: '4rem' }, marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Exclusive Offers
                 </Typography>
                 <Grid container spacing={2} justifyContent="center">
@@ -148,7 +150,7 @@ const DiscountsPage = () => {
             </Box>
 
             <Box sx={{ padding: "2rem" }}>
-                <Typography variant="h4" sx={{ fontSize: "4rem", marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
+                <Typography variant="h4" sx={{ fontSize: { xs: '2.4rem', sm: '4rem' }, marginBottom: "2rem", textAlign: "center", fontWeight: "bold", color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Discounted Bundles
                 </Typography>
                 <Grid container spacing={4} justifyContent="center">
@@ -171,7 +173,7 @@ const DiscountsPage = () => {
                                 <Typography sx={{ fontWeight: "bold", fontSize: "1.8rem", color: "#1976d2", marginBottom: "1rem" }}>
                                     Bundle Deal {index + 1}
                                 </Typography>
-                                <Box sx={{ display: "flex", gap: "1rem" }}>
+                                <Box sx={{ display: "flex", flexDirection :{ xs: 'column', sm: 'row' } ,gap: "1rem" }}>
                                     {bundle.map((product) => (
                                         <Box key={product.id} sx={{ flex: 1 }}>
                                             <ProductCard product={product} />

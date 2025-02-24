@@ -31,8 +31,8 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
                 <Card
                     sx={{
                         minHeight: '300px',
-                        maxWidth: "90%",
-                        minWidth: "80%",
+                        maxWidth: "1440px",
+                        // minWidth: "80%",
                         borderRadius: "24px",
                         display: "flex",
                         flexDirection: "column",
@@ -55,7 +55,7 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
                     >
                         Related Products
                     </Typography>
-                    <Grid container spacing={3} justifyContent="center">
+                    <Grid container spacing={3} sx={{}} justifyContent="center">
                         {displayedProducts.map((product) => (
                             <Grid
                                 item
@@ -101,7 +101,7 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
                 <Card
                     sx={{
                         minHeight: '300px',
-                        maxWidth: "80%",
+                        maxWidth: {xs:"90%",sm:"80%"},
                         minWidth: "80%",
                         borderRadius: "24px",
                         display: "flex",
@@ -150,7 +150,7 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
                                     flexDirection: "column",
                                     alignItems: "center",
                                     justifyContent: "space-between",
-                                    height: "250px",
+                                    height: {xs:"15 0px",sm:"250px"},
                                     padding: "1rem",
                                     boxSizing: "border-box",
                                     borderRadius: "8px",
@@ -171,6 +171,7 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
                                             color: theme.palette.mode === 'light' ? '#212121' : '#fff',
                                             textAlign: "center",
                                             marginTop: 'auto',
+                                            display:{xs:"none",sm:"block"}
                                         }}
                                     >
                                         {brandName}

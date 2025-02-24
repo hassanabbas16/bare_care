@@ -16,10 +16,8 @@ const CallToActionBox = ({ hideImage = false }) => {
             <CTAContentBox>
                 <CTAHeading>Find Your Perfect Skincare Routine!</CTAHeading>
 
-                <CTADescription sx={{ maxWidth: "70%", margin: "0 auto" }}>
-                    Take our personalized skin quiz to unlock the best products and routines tailored specifically for your skin type
-                    and concerns. Whether you struggle with acne, dryness, or sensitivity, we’ll provide recommendations designed to
-                    help you achieve and maintain healthy, glowing skin. It’s fast, easy, and takes the guesswork out of skincare!
+                <CTADescription sx={{ maxWidth: {xs:'90%', sm:'71%'}, margin: "0 auto" }}>
+                    Take our personalized skin quiz to unlock the best products and routines tailored specifically for your skin type and concerns. Whether you struggle with acne, dryness, or sensitivity, we’ll provide recommendations designed tovhelp you achieve and maintain healthy, glowing skin. It’s fast, easy, and takes the guesswork out of skincare!
                 </CTADescription>
 
                 <CTAInnerBox>

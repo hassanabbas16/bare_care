@@ -51,8 +51,9 @@ const works = [
 // Styled components for layout and responsiveness
 const SectionContainer = styled(Box)(({ theme }) => ({
     position: "relative",
+    maxWidth: "1440px",
     padding: "2rem 0",
-    marginTop: "5rem",
+    margin: "5rem auto 0 auto",
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -81,7 +82,7 @@ export default function HowItWorks() {
     return (
         <SectionContainer>
             <Box sx={{ display: "flex", justifyContent: "center", marginBottom: "2rem" }}>
-                <Typography sx={{ fontSize: "4rem", fontWeight: "bold", color: theme.palette.mode === 'light' ? '#000' : '#fff' }}>HOW IT WORKS</Typography>
+                <Typography sx={{ fontSize: {xs:'2.4rem' ,sm:'4rem'}, fontWeight: "bold", color: theme.palette.mode === 'light' ? '#000' : '#fff' }}>HOW IT WORKS</Typography>
             </Box>
 
             <ResponsiveGrid container>
@@ -109,10 +110,10 @@ export default function HowItWorks() {
                         >
                             {work.icon}
                         </Box>
-                        <Typography sx={{ fontWeight: "bold", marginBottom: "0.5rem", fontSize: "2rem", color: theme.palette.mode === 'light' ? '#000' : "#fff" }}>
+                        <Typography sx={{ fontWeight: "bold", marginBottom: "0.5rem", fontSize: {xs:"1.6rem", sm:"2rem"}, color: theme.palette.mode === 'light' ? '#000' : "#fff" }}>
                             {work.title}
                         </Typography>
-                        <Typography sx={{ color: theme.palette.mode === 'light' ? "#666" : "#fff", fontSize: "1.6rem", fontWeight: "400"  }}>
+                        <Typography sx={{ color: theme.palette.mode === 'light' ? "#666" : "#fff", fontSize: {xs:"1.2rem", sm:"1.6rem"}, fontWeight: "400", maxWidth: "30rem" }}>
                             {work.description}
                         </Typography>
                     </Box>

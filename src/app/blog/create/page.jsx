@@ -103,9 +103,11 @@ export default function CreateOrEditBlogPage() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 15, position: 'relative', alignItems: "center", justifyContent: "center" }}>
-            <FloatingCircle size="400px" top="-45%" left="-70%" dark />
-            <FloatingCircle size="500px" top="50%" right="-50%" />
+        <Container maxWidth="md" sx={{ my: 15, position: 'relative', alignItems: "center", justifyContent: "center", }}>
+            <Box sx={{display: { xs: 'none', sm: 'block' }}}>
+            <FloatingCircle size="400px" top="-45%" left={{sm:"0%",lg:'-16%', xl:'-50%'}} dark />
+            <FloatingCircle size="500px" top="30%" right={{sm:"0%",lg:'-16%', xl:'-30%'}} />
+            </Box>
             <Typography
                 align="center"
                 sx={{

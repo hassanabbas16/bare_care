@@ -80,11 +80,14 @@ export default function BlogPage() {
     return (
         <Box>
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4, paddingTop: "6rem", position: 'relative' }}>
+                <Box sx={{ display: { xs: "none", md: "block" } }}>
+
                 <FloatingCircle size="400px" top="-10%" left="-40%" dark />
                 <FloatingCircle size="500px" top="40%" right="-20%" />
                 <FloatingCircle size="600px" bottom="0" left="-10%" />
+                </Box>
 
-                <Typography gutterBottom sx={{ fontSize: '4.4rem', textAlign: 'center', color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
+                <Typography variant='h3' gutterBottom sx={{ fontSize:{  xs:'2.4rem',sm:'4.4rem'}, textAlign: 'center', color: theme.palette.mode === 'dark' ? '#FFF' : '#000' }}>
                     Skincare Blogs
                 </Typography>
 
@@ -110,6 +113,10 @@ export default function BlogPage() {
                             padding: '0.8rem 1.5rem',
                             fontSize: '2rem',
                             fontWeight: 'bold',
+                            "@media (max-width: 600px)": { 
+                                fontSize: '1.2rem',
+                                padding: '0.6rem 1.2rem',
+                            },
                         }}
                     >
                         Write a New Blog Post
