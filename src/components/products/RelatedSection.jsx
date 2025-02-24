@@ -31,8 +31,8 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
                 <Card
                     sx={{
                         minHeight: '300px',
-                        maxWidth: "90%",
-                        minWidth: "80%",
+                        maxWidth: "1440px",
+                        // minWidth: "80%",
                         borderRadius: "24px",
                         display: "flex",
                         flexDirection: "column",
@@ -55,7 +55,7 @@ const RelatedSection = ({ type, category, brand, products, brands }) => {
                     >
                         Related Products
                     </Typography>
-                    <Grid container spacing={3} justifyContent="center">
+                    <Grid container spacing={3} sx={{}} justifyContent="center">
                         {displayedProducts.map((product) => (
                             <Grid
                                 item

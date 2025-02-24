@@ -171,14 +171,17 @@ const ProductPage = () => {
 
     return (
         <Box sx={{ paddingTop: "15rem", alignItems: "center", justifyContent: "center", paddingBottom: "10rem", display: "flex", flexDirection: "column" }}>
-            {/* <FloatingCircle size="400px" top="10%" left="0%" dark />
+            <Box sx={{display:{xs:"none",sm:"block"}}}>
+
+            <FloatingCircle size="400px" top="10%" left="0%" dark />
             <FloatingCircle size="500px" top="40%" right="0" />
-            <FloatingCircle size="600px" bottom="-50%" left="-10%" /> */}
+            <FloatingCircle size="600px" bottom="-20%" left="-10%" />
+            </Box>
             <Card
                 sx={{
                     minHeight: '300px',
-                    maxWidth: { xs: '90%', sm: '80%' },
-                    minWidth: "80%",
+                    maxWidth: { xs: '90%', sm: '1440px' },
+                    // minWidth: "80%",
                     borderRadius: "24px",
                     display: "flex",
                     flexDirection: "column",
@@ -187,7 +190,7 @@ const ProductPage = () => {
                     zIndex: 1,
                     backgroundColor: theme.palette.mode === 'light' ? '#fff' : 'transparent',
                     color: theme.palette.mode === "light" ? '#212121' : '#fff',
-                    boxShadow: theme.palette.mode === 'light' ? "0px 4px 12px rgba(0, 0, 0, 0.1)" : "none",
+                    boxShadow: theme.palette.mode === 'light' ? {xs:'none',sm:"0px 4px 12px rgba(0, 0, 0, 0.1)"} : "none",
                     marginBottom: "8rem",
                 }}
             >
@@ -352,11 +355,12 @@ const ProductPage = () => {
             </Card>
 
             <Card sx={{
-                display: { xs: 'none', sm: 'flex' },
+                // display: { xs: 'none', sm: 'flex' },
                 minHeight: '300px',
-                maxWidth: "90%",
+                maxWidth: "1440px",
+                margin: "0 auto",
                 zIndex: 1,
-                minWidth: "80%",
+                // minWidth: "80%",
                 borderRadius: "24px",
                 flexDirection: "column",
                 justifyContent: "space-between",
